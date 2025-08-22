@@ -416,7 +416,7 @@
                 "categories": ["f"],
                 "remission": "salitrera",
                 "meaning": "Conjunto de instalaciones de una **salitrera** (lugar de extracción de salitre), incluyendo las viviendas de los trabajadores.",
-                "styles": ["(Norte)", "hist"],
+                "styles": ["Norte", "hist"],
                 "observation": null,
                 "example": [
                   {
@@ -1815,7 +1815,7 @@
                 "categories": ["marc", "disc"],
                 "remission": null,
                 "meaning": "*Especialmente entre los jóvenes*, se usa para indicar que lo que se dirá a continuación es una explicación o una reformulación de lo dicho inmediatamente antes.",
-                "styles": ["espon."],
+                "styles": ["espon"],
                 "observation": null,
                 "example": [
                   {
@@ -1842,7 +1842,7 @@
                 "categories": ["loc", "adj/sust"],
                 "remission": null,
                 "meaning": "*Referido a una persona*, de carácter simpático.",
-                "styles": ["espon."],
+                "styles": ["espon"],
                 "observation": null,
                 "example": [
                   {
