@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import Image from "next/image";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,8 +23,14 @@ export default function RootLayout({
           <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               <div className="flex items-center">
-                <Link href="/" className="text-2xl font-bold text-white hover:text-duech-gold transition-colors flex items-center gap-3">
-                  <span className="text-3xl">📚</span>
+                <Link href="/" className="text-2xl font-bold text-white hover:text-duech-gold transition-colors flex items-center gap-4">
+                  <Image 
+                    src="/logo_medium.png" 
+                    alt="DUECh Logo" 
+                    width={50} 
+                    height={50}
+                    className="object-contain"
+                  />
                   <div>
                     <div className="text-duech-gold">DUECh</div>
                     <div className="text-xs font-normal text-gray-200">Diccionario del Español de Chile</div>

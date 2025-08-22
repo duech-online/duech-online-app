@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { 
   advancedSearch, 
   getAvailableCategories, 
@@ -25,6 +26,14 @@ export default function AdvancedSearchPage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+    hasNext: false,
+    hasPrev: false
+  });
 
   const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
@@ -47,14 +56,15 @@ export default function AdvancedSearchPage() {
     setHasSearched(true);
     
     try {
-      const searchResults = await advancedSearch({
+      const searchData = await advancedSearch({
         query: query.trim(),
         categories: selectedCategories,
         styles: selectedStyles,
         origin: selectedOrigin,
         letter: selectedLetter
       });
-      setResults(searchResults);
+      setResults(searchData.results);
+      setPagination(searchData.pagination);
     } catch (error) {
       console.error('Error in advanced search:', error);
     } finally {
@@ -256,9 +266,9 @@ export default function AdvancedSearchPage() {
                               </div>
                             )}
 
-                            <p className="text-gray-700 mb-2">
-                              {truncatedMeaning}
-                            </p>
+                            <div className="text-gray-700 mb-2">
+                              <MarkdownRenderer content={truncatedMeaning} />
+                            </div>
 
                             {result.word.values.length > 1 && (
                               <p className="text-sm text-gray-500">

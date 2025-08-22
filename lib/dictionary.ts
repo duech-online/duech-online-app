@@ -1,135 +1,87 @@
 /**
- * Dictionary data loader and utility functions
+ * Client-side dictionary API functions
  */
 
-import { Dictionary, Word, LetterGroup, SearchResult, WordDefinition } from '@/types/dictionary';
-
-let dictionaryData: Dictionary[] | null = null;
+import { SearchResult, Word } from '@/types/dictionary';
 
 /**
- * Load dictionary data from JSON file
- * This function works on the client side
+ * Search words using API
  */
-export async function loadDictionary(): Promise<Dictionary[]> {
-  if (dictionaryData) return dictionaryData;
+export async function searchWords(query: string, page: number = 1, limit: number = 20): Promise<{
+  results: SearchResult[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}> {
+  if (!query || query.trim().length === 0) {
+    return {
+      results: [],
+      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false }
+    };
+  }
 
   try {
-    // Use absolute URL for client-side fetching
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
-    const response = await fetch(`${baseUrl}/data/example.json`);
+    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
+    
     if (!response.ok) {
-      throw new Error('Failed to load dictionary data');
+      throw new Error('Search failed');
     }
-    dictionaryData = await response.json();
-    return dictionaryData;
+
+    const result = await response.json();
+    return result.data;
   } catch (error) {
-    console.error('Error loading dictionary:', error);
-    return [];
+    console.error('Error searching words:', error);
+    return {
+      results: [],
+      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false }
+    };
   }
-}
-
-/**
- * Get all words from the dictionary
- */
-export async function getAllWords(): Promise<Word[]> {
-  const dictionaries = await loadDictionary();
-  const allWords: Word[] = [];
-
-  dictionaries.forEach(dict => {
-    dict.value.forEach(letterGroup => {
-      allWords.push(...letterGroup.values);
-    });
-  });
-
-  return allWords;
 }
 
 /**
  * Get a random word for "Lotería de palabras"
  */
 export async function getRandomWord(): Promise<{ word: Word; letter: string } | null> {
-  const dictionaries = await loadDictionary();
-  if (!dictionaries.length) return null;
-
-  const dict = dictionaries[0];
-  const letterGroups = dict.value.filter(lg => lg.values.length > 0);
-  if (!letterGroups.length) return null;
-
-  const randomLetterGroup = letterGroups[Math.floor(Math.random() * letterGroups.length)];
-  const randomWord = randomLetterGroup.values[Math.floor(Math.random() * randomLetterGroup.values.length)];
-
-  return { word: randomWord, letter: randomLetterGroup.letter };
-}
-
-/**
- * Search words by query
- */
-export async function searchWords(query: string): Promise<SearchResult[]> {
-  if (!query || query.trim().length === 0) return [];
-
-  const normalizedQuery = query.toLowerCase().trim();
-  const dictionaries = await loadDictionary();
-  const results: SearchResult[] = [];
-
-  dictionaries.forEach(dict => {
-    dict.value.forEach(letterGroup => {
-      letterGroup.values.forEach(word => {
-        // Exact match
-        if (word.lemma.toLowerCase() === normalizedQuery) {
-          results.push({
-            word,
-            letter: letterGroup.letter,
-            matchType: 'exact',
-          });
-        }
-        // Partial match in lemma
-        else if (word.lemma.toLowerCase().includes(normalizedQuery)) {
-          results.push({
-            word,
-            letter: letterGroup.letter,
-            matchType: 'partial',
-          });
-        }
-        // Search in definitions
-        else {
-          const hasDefinitionMatch = word.values.some(def =>
-            def.meaning.toLowerCase().includes(normalizedQuery)
-          );
-          if (hasDefinitionMatch) {
-            results.push({
-              word,
-              letter: letterGroup.letter,
-              matchType: 'definition',
-            });
-          }
-        }
-      });
-    });
-  });
-
-  // Sort results: exact matches first, then partial, then definition matches
-  return results.sort((a, b) => {
-    const order = { exact: 0, partial: 1, definition: 2 };
-    return order[a.matchType] - order[b.matchType];
-  });
-}
-
-/**
- * Get word by ID (lemma)
- */
-export async function getWordById(id: string): Promise<{ word: Word; letter: string } | null> {
-  const dictionaries = await loadDictionary();
-  
-  for (const dict of dictionaries) {
-    for (const letterGroup of dict.value) {
-      const word = letterGroup.values.find(w => w.lemma === id);
-      if (word) {
-        return { word, letter: letterGroup.letter };
-      }
+  try {
+    const response = await fetch('/api/words/random');
+    
+    if (!response.ok) {
+      throw new Error('Failed to get random word');
     }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error('Error getting random word:', error);
+    return null;
   }
-  
-  return null;
+}
+
+/**
+ * Get word by lemma
+ */
+export async function getWordByLemma(lemma: string): Promise<{ word: Word; letter: string } | null> {
+  try {
+    const response = await fetch(`/api/words/${encodeURIComponent(lemma)}`);
+    
+    if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
+      throw new Error('Failed to get word');
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error('Error getting word:', error);
+    return null;
+  }
 }
 
 /**
@@ -143,111 +95,92 @@ export interface AdvancedSearchFilters {
   letter?: string;
 }
 
-export async function advancedSearch(filters: AdvancedSearchFilters): Promise<SearchResult[]> {
-  const dictionaries = await loadDictionary();
-  const results: SearchResult[] = [];
+export async function advancedSearch(
+  filters: AdvancedSearchFilters, 
+  page: number = 1, 
+  limit: number = 20
+): Promise<{
+  results: SearchResult[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}> {
+  try {
+    const params = new URLSearchParams();
+    
+    if (filters.query) params.append('q', filters.query);
+    if (filters.categories?.length) params.append('categories', filters.categories.join(','));
+    if (filters.styles?.length) params.append('styles', filters.styles.join(','));
+    if (filters.origin) params.append('origin', filters.origin);
+    if (filters.letter) params.append('letter', filters.letter);
+    params.append('page', page.toString());
+    params.append('limit', limit.toString());
 
-  dictionaries.forEach(dict => {
-    dict.value.forEach(letterGroup => {
-      // Filter by letter if specified
-      if (filters.letter && letterGroup.letter !== filters.letter) return;
+    const response = await fetch(`/api/search/advanced?${params}`);
+    
+    if (!response.ok) {
+      throw new Error('Advanced search failed');
+    }
 
-      letterGroup.values.forEach(word => {
-        let matches = true;
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error('Error in advanced search:', error);
+    return {
+      results: [],
+      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false }
+    };
+  }
+}
 
-        // Check query in lemma or meaning
-        if (filters.query && filters.query.trim()) {
-          const normalizedQuery = filters.query.toLowerCase();
-          const inLemma = word.lemma.toLowerCase().includes(normalizedQuery);
-          const inMeaning = word.values.some(def =>
-            def.meaning.toLowerCase().includes(normalizedQuery)
-          );
-          matches = inLemma || inMeaning;
-        }
+/**
+ * Get metadata (categories, styles, origins)
+ */
+export async function getMetadata(): Promise<{
+  categories: string[];
+  styles: string[];
+  origins: string[];
+}> {
+  try {
+    const response = await fetch('/api/metadata');
+    
+    if (!response.ok) {
+      throw new Error('Failed to get metadata');
+    }
 
-        // Check categories
-        if (matches && filters.categories && filters.categories.length > 0) {
-          matches = word.values.some(def =>
-            def.categories.some(cat => filters.categories?.includes(cat))
-          );
-        }
-
-        // Check styles
-        if (matches && filters.styles && filters.styles.length > 0) {
-          matches = word.values.some(def =>
-            def.styles && def.styles.some(style => filters.styles?.includes(style))
-          );
-        }
-
-        // Check origin
-        if (matches && filters.origin) {
-          matches = word.values.some(def =>
-            def.origin && def.origin.toLowerCase().includes(filters.origin!.toLowerCase())
-          );
-        }
-
-        if (matches) {
-          results.push({
-            word,
-            letter: letterGroup.letter,
-            matchType: filters.query ? 'partial' : 'exact',
-          });
-        }
-      });
-    });
-  });
-
-  return results;
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error('Error getting metadata:', error);
+    return { categories: [], styles: [], origins: [] };
+  }
 }
 
 /**
  * Get unique categories from dictionary
  */
 export async function getAvailableCategories(): Promise<string[]> {
-  const words = await getAllWords();
-  const categories = new Set<string>();
-
-  words.forEach(word => {
-    word.values.forEach(def => {
-      def.categories.forEach(cat => categories.add(cat));
-    });
-  });
-
-  return Array.from(categories).sort();
+  const metadata = await getMetadata();
+  return metadata.categories;
 }
 
 /**
  * Get unique styles from dictionary
  */
 export async function getAvailableStyles(): Promise<string[]> {
-  const words = await getAllWords();
-  const styles = new Set<string>();
-
-  words.forEach(word => {
-    word.values.forEach(def => {
-      if (def.styles) {
-        def.styles.forEach(style => styles.add(style));
-      }
-    });
-  });
-
-  return Array.from(styles).sort();
+  const metadata = await getMetadata();
+  return metadata.styles;
 }
 
 /**
  * Get unique origins from dictionary
  */
 export async function getAvailableOrigins(): Promise<string[]> {
-  const words = await getAllWords();
-  const origins = new Set<string>();
-
-  words.forEach(word => {
-    word.values.forEach(def => {
-      if (def.origin) {
-        origins.add(def.origin);
-      }
-    });
-  });
-
-  return Array.from(origins).sort();
+  const metadata = await getMetadata();
+  return metadata.origins;
 }

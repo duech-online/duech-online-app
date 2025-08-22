@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import SearchBar from '@/components/SearchBar';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 import { searchWords } from '@/lib/dictionary';
 import { SearchResult } from '@/types/dictionary';
 
@@ -12,14 +13,23 @@ function SearchResults() {
   const query = searchParams.get('q') || '';
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 20,
+    total: 0,
+    totalPages: 0,
+    hasNext: false,
+    hasPrev: false
+  });
 
   useEffect(() => {
     const performSearch = async () => {
       if (query) {
         setLoading(true);
         try {
-          const searchResults = await searchWords(query);
-          setResults(searchResults);
+          const searchData = await searchWords(query);
+          setResults(searchData.results);
+          setPagination(searchData.pagination);
         } catch (error) {
           console.error('Error searching:', error);
         } finally {
@@ -103,9 +113,9 @@ function SearchResults() {
                           </div>
                         )}
 
-                        <p className="text-gray-800 mb-3 text-lg leading-relaxed">
-                          {truncatedMeaning}
-                        </p>
+                        <div className="text-gray-800 mb-3 text-lg leading-relaxed">
+                          <MarkdownRenderer content={truncatedMeaning} />
+                        </div>
 
                         {result.word.values.length > 1 && (
                           <p className="text-sm text-duech-blue font-medium">

@@ -16,7 +16,7 @@ export async function loadDictionaryServer(): Promise<Dictionary[]> {
   if (cachedData) return cachedData;
 
   try {
-    const filePath = path.join(process.cwd(), 'public', 'data', 'example.json');
+    const filePath = path.join(process.cwd(), 'data', 'example.json');
     const fileContent = await fs.readFile(filePath, 'utf-8');
     cachedData = JSON.parse(fileContent);
     return cachedData || [];

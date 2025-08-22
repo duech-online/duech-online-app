@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getRandomWord } from '@/lib/dictionary';
 import { Word } from '@/types/dictionary';
+import MarkdownRenderer from './MarkdownRenderer';
 
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
@@ -71,9 +72,9 @@ export default function WordOfTheDay() {
         )}
       </div>
 
-      <p className="text-gray-800 mb-6 leading-relaxed text-lg">
-        {shortMeaning}
-      </p>
+      <div className="text-gray-800 mb-6 leading-relaxed text-lg">
+        <MarkdownRenderer content={shortMeaning} />
+      </div>
 
       <Link 
         href={`/palabra/${encodeURIComponent(word.word.lemma)}`}

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getWordByLemmaServer } from '@/lib/dictionary-server';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
 import { Example } from '@/types/dictionary';
+import MarkdownRenderer from '@/components/MarkdownRenderer';
 
 export default async function WordDetailPage({
   params,
@@ -11,6 +12,8 @@ export default async function WordDetailPage({
 }) {
   const { id } = await params;
   const decodedLemma = decodeURIComponent(id);
+  
+  // Use server-side function for better performance in server components
   const wordData = await getWordByLemmaServer(decodedLemma);
 
   if (!wordData) {
@@ -24,7 +27,9 @@ export default async function WordDetailPage({
     
     return examples.map((ex, index) => (
       <div key={index} className="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-400">
-        <p className="text-gray-700 italic mb-2">{ex.value}</p>
+        <div className="text-gray-700 italic mb-2">
+          <MarkdownRenderer content={ex.value} />
+        </div>
         <div className="text-sm text-gray-600">
           {ex.author && <span className="mr-3">Autor: {ex.author}</span>}
           {ex.source && <span className="mr-3">Fuente: {ex.source}</span>}
@@ -97,20 +102,25 @@ export default async function WordDetailPage({
                   )}
 
                   {definition.remission ? (
-                    <div className="mb-4">
-                      <p className="text-gray-800 text-lg">
-                        Ver: <Link 
-                          href={`/palabra/${encodeURIComponent(definition.remission)}`}
-                          className="font-bold text-duech-blue hover:text-duech-gold transition-colors"
-                        >
-                          {definition.remission}
-                        </Link>
-                      </p>
+                    <div>
+                      <div className="mb-4">
+                        <p className="text-gray-800 text-lg">
+                          Ver: <Link 
+                            href={`/palabra/${encodeURIComponent(definition.remission)}`}
+                            className="font-bold text-duech-blue hover:text-duech-gold transition-colors"
+                          >
+                            {definition.remission}
+                          </Link>
+                        </p>
+                      </div>
+                      <div className="text-xl text-gray-900 mb-4 leading-relaxed">
+                        <MarkdownRenderer content={definition.meaning} />
+                      </div>
                     </div>
                   ) : (
-                    <p className="text-xl text-gray-900 mb-4 leading-relaxed">
-                      {definition.meaning}
-                    </p>
+                    <div className="text-xl text-gray-900 mb-4 leading-relaxed">
+                      <MarkdownRenderer content={definition.meaning} />
+                    </div>
                   )}
 
                   {definition.styles && definition.styles.length > 0 && (
