@@ -40,7 +40,13 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
       - name: Run formatting check
-        run: ${{ steps.detect-package-manager.outputs.runner }} run format -- --check
+        run: |
+          if [ -f "yarn.lock" ]; then
+            yarn format --check
+          else
+            npm run format -- --check
+          fi
+
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
