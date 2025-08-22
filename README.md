@@ -1,111 +1,103 @@
-# 📚 DUECh Online App
+# DUECh Online - Diccionario del Español de Chile
 
-A web application to host and navigate the **Diccionario del Uso del Español de Chile (DUECh)**, integrating multiple historical dictionaries and allowing researchers to explore relationships between words, meanings, and sources.
+MVP de aplicación web para el Diccionario del uso del español de Chile (DUECh).
 
-Built with **Next.js** for the frontend and **Neo4j** for graph-based semantic modeling.
+## Descripción
 
----
+Esta aplicación web permite explorar y buscar palabras del español chileno, incluyendo chilenismos, modismos y expresiones propias del país. El proyecto está diseñado con una arquitectura modular para facilitar la futura integración con Neo4j.
 
-## 🚀 Features
+## Características
 
-- Explore Chilean Spanish words and definitions
-- Graph-based structure to represent semantic and historical relationships
-- API layer for CRUD operations on dictionary entries
-- Modern Next.js frontend with server-side rendering (SSR)
-- Scalable architecture ready for production
+- **Búsqueda rápida**: Busca palabras por lemma o contenido en las definiciones
+- **Lotería de palabras**: Descubre una palabra aleatoria cada vez que visitas la página principal
+- **Búsqueda avanzada**: Filtra por categorías gramaticales, estilos de uso, origen y letra inicial
+- **Visualización detallada**: Explora definiciones completas con ejemplos, variantes y expresiones relacionadas
+- **Diseño responsivo**: Interfaz optimizada para dispositivos móviles y escritorio
 
----
+## Tecnologías
 
-## 🛠️ Tech Stack
+- **Next.js 14** con App Router
+- **TypeScript** para tipado estático
+- **TailwindCSS** para estilos
+- **ESLint y Prettier** para calidad de código
 
-- **Frontend**: [Next.js](https://nextjs.org/) + [TypeScript](https://www.typescriptlang.org/)
-- **Database**: [Neo4j](https://neo4j.com/) (Graph database)
-- **ORM/Driver**: [Neo4j JavaScript Driver](https://neo4j.com/developer/javascript/)
-- **Deployment**: [Vercel](https://vercel.com/) (Frontend) + [Neo4j Aura](https://neo4j.com/cloud/aura/) (Database)
+## Instalación
 
----
+1. Asegúrate de tener Node.js 18+ instalado
 
-## 📦 Getting Started
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/your-org/duech-online-app.git
-cd duech-online-app
-```
-
-### 2. Install Dependencies
+2. Instala las dependencias:
 ```bash
 npm install
-# or
-yarn install
 ```
 
-### 3. Configure Environment Variables
+## Ejecución
 
-Create a `.env.local` file in the root directory:
-
-```
-NEO4J_URI=bolt://localhost:7687
-NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password
-```
-
-### 4. Run the Development Server
+### Modo desarrollo
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
 
----
+### Modo producción
+```bash
+npm run build
+npm run start
+```
 
-## 📂 Project Structure
+## Estructura del proyecto
 
 ```
 duech-online-app/
-│
-├── lib/
-│   └── neo4j.ts          # Neo4j driver configuration
-├── models/
-│   └── word.ts           # Data access layer for words
-├── pages/
-│   ├── api/              # API routes for dictionary CRUD
-│   └── index.tsx         # Home page
-├── components/           # Reusable UI components
-└── .env.local            # Environment variables
+├── app/                    # Páginas y rutas (App Router)
+│   ├── page.tsx           # Página principal
+│   ├── search/            # Página de resultados de búsqueda
+│   ├── palabra/[id]/      # Página de detalle de palabra
+│   ├── busqueda-avanzada/ # Página de búsqueda avanzada
+│   ├── recursos/          # Página de recursos
+│   └── acerca/            # Página acerca del proyecto
+├── components/            # Componentes reutilizables
+│   ├── SearchBar.tsx     # Barra de búsqueda
+│   └── WordOfTheDay.tsx  # Componente de palabra aleatoria
+├── lib/                   # Utilidades y lógica de negocio
+│   └── dictionary.ts     # Funciones para manejo de datos
+├── types/                 # Definiciones de TypeScript
+│   └── dictionary.ts     # Tipos para el diccionario
+└── public/               
+    └── data/             
+        └── example.json  # Datos del diccionario (mock)
 ```
 
----
+## Datos
 
-## ✅ Example API Usage
+Actualmente la aplicación utiliza el archivo `example.json` del repositorio `duech-online-parsing` como fuente de datos. Este archivo contiene una muestra de entradas del diccionario con su estructura completa.
 
-**Add a Word**
+## Desarrollo futuro
 
-`POST /api/words`
+- Integración con base de datos Neo4j para relaciones semánticas
+- API REST para acceso programático
+- Sistema de contribuciones de usuarios
+- Visualizaciones de relaciones entre palabras
+- Exportación de datos en diferentes formatos
 
-```json
-{
-  "text": "cachai",
-  "language": "es-CL",
-  "definition": "Expresión utilizada para confirmar comprensión.",
-  "source": "Diccionario Chileno 1998"
-}
-```
+## Scripts disponibles
 
----
+- `npm run dev` - Inicia el servidor de desarrollo
+- `npm run build` - Construye la aplicación para producción
+- `npm run start` - Inicia el servidor de producción
+- `npm run lint` - Ejecuta el linter
+- `npm run format` - Formatea el código con Prettier
 
-## 🔮 Roadmap
+## Contribuir
 
-- [ ] Build graph schema for words, synonyms, and historical relationships
-- [ ] Implement full-text search and filters
-- [ ] Integrate user authentication and contribution workflow
-- [ ] Deploy to Vercel (Frontend) + Neo4j Aura (DB)
-- [ ] Add API and data export options
+Este es un MVP en desarrollo activo. Para contribuir:
 
----
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
-## 📜 License
+## Licencia
 
-MIT License – free to use and adapt.
+Este proyecto está en desarrollo como parte de un esfuerzo de digitalización del patrimonio lingüístico chileno.
