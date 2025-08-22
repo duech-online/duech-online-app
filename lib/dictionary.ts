@@ -7,7 +7,11 @@ import { SearchResult, Word } from '@/types/dictionary';
 /**
  * Search words using API
  */
-export async function searchWords(query: string, page: number = 1, limit: number = 20): Promise<{
+export async function searchWords(
+  query: string,
+  page: number = 1,
+  limit: number = 20
+): Promise<{
   results: SearchResult[];
   pagination: {
     page: number;
@@ -21,13 +25,15 @@ export async function searchWords(query: string, page: number = 1, limit: number
   if (!query || query.trim().length === 0) {
     return {
       results: [],
-      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false }
+      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
     };
   }
 
   try {
-    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`);
-    
+    const response = await fetch(
+      `/api/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
+    );
+
     if (!response.ok) {
       throw new Error('Search failed');
     }
@@ -38,7 +44,7 @@ export async function searchWords(query: string, page: number = 1, limit: number
     console.error('Error searching words:', error);
     return {
       results: [],
-      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false }
+      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
     };
   }
 }
@@ -49,7 +55,7 @@ export async function searchWords(query: string, page: number = 1, limit: number
 export async function getRandomWord(): Promise<{ word: Word; letter: string } | null> {
   try {
     const response = await fetch('/api/words/random');
-    
+
     if (!response.ok) {
       throw new Error('Failed to get random word');
     }
@@ -65,10 +71,12 @@ export async function getRandomWord(): Promise<{ word: Word; letter: string } | 
 /**
  * Get word by lemma
  */
-export async function getWordByLemma(lemma: string): Promise<{ word: Word; letter: string } | null> {
+export async function getWordByLemma(
+  lemma: string
+): Promise<{ word: Word; letter: string } | null> {
   try {
     const response = await fetch(`/api/words/${encodeURIComponent(lemma)}`);
-    
+
     if (!response.ok) {
       if (response.status === 404) {
         return null;
@@ -96,8 +104,8 @@ export interface AdvancedSearchFilters {
 }
 
 export async function advancedSearch(
-  filters: AdvancedSearchFilters, 
-  page: number = 1, 
+  filters: AdvancedSearchFilters,
+  page: number = 1,
   limit: number = 20
 ): Promise<{
   results: SearchResult[];
@@ -112,7 +120,7 @@ export async function advancedSearch(
 }> {
   try {
     const params = new URLSearchParams();
-    
+
     if (filters.query) params.append('q', filters.query);
     if (filters.categories?.length) params.append('categories', filters.categories.join(','));
     if (filters.styles?.length) params.append('styles', filters.styles.join(','));
@@ -122,7 +130,7 @@ export async function advancedSearch(
     params.append('limit', limit.toString());
 
     const response = await fetch(`/api/search/advanced?${params}`);
-    
+
     if (!response.ok) {
       throw new Error('Advanced search failed');
     }
@@ -133,7 +141,7 @@ export async function advancedSearch(
     console.error('Error in advanced search:', error);
     return {
       results: [],
-      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false }
+      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
     };
   }
 }
@@ -148,7 +156,7 @@ export async function getMetadata(): Promise<{
 }> {
   try {
     const response = await fetch('/api/metadata');
-    
+
     if (!response.ok) {
       throw new Error('Failed to get metadata');
     }

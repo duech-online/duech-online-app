@@ -13,7 +13,7 @@ interface AdvancedSearchFilters {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    
+
     // Parse parameters
     const query = searchParams.get('q') || '';
     const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
@@ -25,25 +25,16 @@ export async function GET(request: NextRequest) {
 
     // Input validation
     if (query.length > 100) {
-      return NextResponse.json(
-        { error: 'Query too long' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Query too long' }, { status: 400 });
     }
 
     if (categories.length > 10 || styles.length > 10) {
-      return NextResponse.json(
-        { error: 'Too many filter options' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Too many filter options' }, { status: 400 });
     }
 
     // Validate pagination parameters
     if (page < 1 || limit < 1) {
-      return NextResponse.json(
-        { error: 'Invalid pagination parameters' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid pagination parameters' }, { status: 400 });
     }
 
     const filters: AdvancedSearchFilters = {
@@ -51,25 +42,25 @@ export async function GET(request: NextRequest) {
       categories,
       styles,
       origin: origin.trim(),
-      letter: letter.trim()
+      letter: letter.trim(),
     };
 
     const dictionaries = await loadDictionaryServer();
     const results: SearchResult[] = [];
 
-    dictionaries.forEach(dict => {
-      dict.value.forEach(letterGroup => {
+    dictionaries.forEach((dict) => {
+      dict.value.forEach((letterGroup) => {
         // Filter by letter if specified
         if (filters.letter && letterGroup.letter !== filters.letter) return;
 
-        letterGroup.values.forEach(word => {
+        letterGroup.values.forEach((word) => {
           let matches = true;
 
           // Check query in lemma or meaning
           if (filters.query && filters.query.trim()) {
             const normalizedQuery = filters.query.toLowerCase();
             const inLemma = word.lemma.toLowerCase().includes(normalizedQuery);
-            const inMeaning = word.values.some(def =>
+            const inMeaning = word.values.some((def) =>
               def.meaning.toLowerCase().includes(normalizedQuery)
             );
             matches = inLemma || inMeaning;
@@ -77,22 +68,23 @@ export async function GET(request: NextRequest) {
 
           // Check categories
           if (matches && filters.categories && filters.categories.length > 0) {
-            matches = word.values.some(def =>
-              def.categories.some(cat => filters.categories?.includes(cat))
+            matches = word.values.some((def) =>
+              def.categories.some((cat) => filters.categories?.includes(cat))
             );
           }
 
           // Check styles
           if (matches && filters.styles && filters.styles.length > 0) {
-            matches = word.values.some(def =>
-              def.styles && def.styles.some(style => filters.styles?.includes(style))
+            matches = word.values.some(
+              (def) => def.styles && def.styles.some((style) => filters.styles?.includes(style))
             );
           }
 
           // Check origin
           if (matches && filters.origin) {
-            matches = word.values.some(def =>
-              def.origin && def.origin.toLowerCase().includes(filters.origin!.toLowerCase())
+            matches = word.values.some(
+              (def) =>
+                def.origin && def.origin.toLowerCase().includes(filters.origin!.toLowerCase())
             );
           }
 
@@ -122,16 +114,12 @@ export async function GET(request: NextRequest) {
           total: results.length,
           totalPages: Math.ceil(results.length / limit),
           hasNext: endIndex < results.length,
-          hasPrev: page > 1
-        }
-      }
+          hasPrev: page > 1,
+        },
+      },
     });
-
   } catch (error) {
     console.error('Error in advanced search API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

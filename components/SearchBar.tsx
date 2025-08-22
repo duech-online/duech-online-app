@@ -9,10 +9,10 @@ interface SearchBarProps {
   initialValue?: string;
 }
 
-export default function SearchBar({ 
-  placeholder = 'Buscar palabra...', 
+export default function SearchBar({
+  placeholder = 'Buscar palabra...',
   className = '',
-  initialValue = ''
+  initialValue = '',
 }: SearchBarProps) {
   const [query, setQuery] = useState(initialValue);
   const router = useRouter();
@@ -32,15 +32,15 @@ export default function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="w-full px-6 py-4 pr-16 text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:border-duech-blue focus:ring-4 focus:ring-blue-200 transition-all duration-200 text-lg shadow-lg"
+          className="focus:border-duech-blue w-full rounded-xl border-2 border-gray-300 bg-white px-6 py-4 pr-16 text-lg text-gray-900 shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200 focus:outline-none"
         />
         <button
           type="submit"
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 p-3 text-gray-600 hover:text-duech-blue transition-colors bg-gray-100 hover:bg-blue-50 rounded-lg"
+          className="hover:text-duech-blue absolute top-1/2 right-3 -translate-y-1/2 transform rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
           aria-label="Buscar"
         >
           <svg
-            className="w-6 h-6"
+            className="h-6 w-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

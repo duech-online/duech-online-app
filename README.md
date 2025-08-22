@@ -26,6 +26,7 @@ Esta aplicación web permite explorar y buscar palabras del español chileno, in
 1. Asegúrate de tener Node.js 18+ instalado
 
 2. Instala las dependencias:
+
 ```bash
 npm install
 ```
@@ -33,6 +34,7 @@ npm install
 ## Ejecución
 
 ### Modo desarrollo
+
 ```bash
 npm run dev
 ```
@@ -40,6 +42,7 @@ npm run dev
 La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
 
 ### Modo producción
+
 ```bash
 npm run build
 npm run start
@@ -63,8 +66,8 @@ duech-online-app/
 │   └── dictionary.ts     # Funciones para manejo de datos
 ├── types/                 # Definiciones de TypeScript
 │   └── dictionary.ts     # Tipos para el diccionario
-└── public/               
-    └── data/             
+└── public/
+    └── data/
         └── example.json  # Datos del diccionario (mock)
 ```
 

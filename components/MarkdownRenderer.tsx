@@ -14,19 +14,13 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
       remarkPlugins={[remarkGfm]}
       components={{
         // Custom styling for markdown elements
-        strong: ({ children }) => (
-          <strong className="font-bold text-duech-blue">{children}</strong>
-        ),
-        em: ({ children }) => (
-          <em className="italic text-gray-800">{children}</em>
-        ),
-        p: ({ children }) => (
-          <span className="inline">{children}</span>
-        ),
+        strong: ({ children }) => <strong className="text-duech-blue font-bold">{children}</strong>,
+        em: ({ children }) => <em className="text-gray-800 italic">{children}</em>,
+        p: ({ children }) => <span className="inline">{children}</span>,
         // Handle links if they exist in definitions
         a: ({ href, children }) => (
-          <a 
-            href={href} 
+          <a
+            href={href}
             className="text-duech-blue hover:text-duech-gold underline transition-colors"
             target="_blank"
             rel="noopener noreferrer"
@@ -36,7 +30,7 @@ export default function MarkdownRenderer({ content, className = '' }: MarkdownRe
         ),
         // Handle code if it exists
         code: ({ children }) => (
-          <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono text-gray-800">
+          <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm text-gray-800">
             {children}
           </code>
         ),

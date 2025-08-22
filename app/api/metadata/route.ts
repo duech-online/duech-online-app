@@ -4,12 +4,9 @@ import { loadDictionaryServer } from '@/lib/dictionary-server';
 export async function GET() {
   try {
     const dictionaries = await loadDictionaryServer();
-    
+
     if (!dictionaries.length) {
-      return NextResponse.json(
-        { error: 'No dictionary data available' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'No dictionary data available' }, { status: 404 });
     }
 
     const categories = new Set<string>();
@@ -17,18 +14,18 @@ export async function GET() {
     const origins = new Set<string>();
 
     // Extract unique values
-    dictionaries.forEach(dict => {
-      dict.value.forEach(letterGroup => {
-        letterGroup.values.forEach(word => {
-          word.values.forEach(def => {
+    dictionaries.forEach((dict) => {
+      dict.value.forEach((letterGroup) => {
+        letterGroup.values.forEach((word) => {
+          word.values.forEach((def) => {
             // Collect categories
-            def.categories.forEach(cat => categories.add(cat));
-            
+            def.categories.forEach((cat) => categories.add(cat));
+
             // Collect styles
             if (def.styles) {
-              def.styles.forEach(style => styles.add(style));
+              def.styles.forEach((style) => styles.add(style));
             }
-            
+
             // Collect origins
             if (def.origin) {
               origins.add(def.origin);
@@ -43,15 +40,11 @@ export async function GET() {
       data: {
         categories: Array.from(categories).sort(),
         styles: Array.from(styles).sort(),
-        origins: Array.from(origins).sort()
-      }
+        origins: Array.from(origins).sort(),
+      },
     });
-
   } catch (error) {
     console.error('Error in metadata API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

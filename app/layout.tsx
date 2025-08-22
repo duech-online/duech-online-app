@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Link from "next/link";
-import Image from "next/image";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import Link from 'next/link';
+import Image from 'next/image';
+import './globals.css';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Diccionario del Español de Chile",
-  description: "Diccionario del uso del español de Chile - DUECh Online",
+  title: 'Diccionario del Español de Chile',
+  description: 'Diccionario del uso del español de Chile - DUECh Online',
 };
 
 export default function RootLayout({
@@ -20,49 +20,54 @@ export default function RootLayout({
     <html lang="es">
       <body className={`${inter.className}`} style={{ backgroundColor: 'var(--background)' }}>
         <header className="bg-duech-blue shadow-lg">
-          <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
+          <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-20 items-center justify-between">
               <div className="flex items-center">
-                <Link href="/" className="text-2xl font-bold text-white hover:text-duech-gold transition-colors flex items-center gap-4">
-                  <Image 
-                    src="/logo_medium.png" 
-                    alt="DUECh Logo" 
-                    width={50} 
+                <Link
+                  href="/"
+                  className="hover:text-duech-gold flex items-center gap-4 text-2xl font-bold text-white transition-colors"
+                >
+                  <Image
+                    src="/logo_medium.png"
+                    alt="DUECh Logo"
+                    width={50}
                     height={50}
                     className="object-contain"
                   />
                   <div>
                     <div className="text-duech-gold">DUECh</div>
-                    <div className="text-xs font-normal text-gray-200">Diccionario del Español de Chile</div>
+                    <div className="text-xs font-normal text-gray-200">
+                      Diccionario del Español de Chile
+                    </div>
                   </div>
                 </Link>
               </div>
-              
+
               <div className="flex items-center space-x-8">
-                <Link 
-                  href="/" 
-                  className="font-medium text-lg transition-colors"
+                <Link
+                  href="/"
+                  className="text-lg font-medium transition-colors"
                   style={{ color: '#ffffff' }}
                 >
                   <span className="hover:text-yellow-300">Inicio</span>
                 </Link>
-                <Link 
-                  href="/busqueda-avanzada" 
-                  className="font-medium text-lg transition-colors"
+                <Link
+                  href="/busqueda-avanzada"
+                  className="text-lg font-medium transition-colors"
                   style={{ color: '#ffffff' }}
                 >
                   <span className="hover:text-yellow-300">Búsqueda Avanzada</span>
                 </Link>
-                <Link 
-                  href="/recursos" 
-                  className="font-medium text-lg transition-colors"
+                <Link
+                  href="/recursos"
+                  className="text-lg font-medium transition-colors"
                   style={{ color: '#ffffff' }}
                 >
                   <span className="hover:text-yellow-300">Recursos</span>
                 </Link>
-                <Link 
-                  href="/acerca" 
-                  className="font-medium text-lg transition-colors"
+                <Link
+                  href="/acerca"
+                  className="text-lg font-medium transition-colors"
                   style={{ color: '#ffffff' }}
                 >
                   <span className="hover:text-yellow-300">Acerca</span>
@@ -71,23 +76,22 @@ export default function RootLayout({
             </div>
           </nav>
         </header>
-        
-        <main className="min-h-screen bg-gray-50">
-          {children}
-        </main>
-        
-        <footer style={{ backgroundColor: 'var(--footer-background)' }} className="text-white py-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <main className="min-h-screen bg-gray-50">{children}</main>
+
+        <footer
+          style={{ backgroundColor: 'var(--footer-background)' }}
+          className="py-12 text-white"
+        >
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <p className="text-lg font-semibold text-duech-gold mb-2">
+              <p className="text-duech-gold mb-2 text-lg font-semibold">
                 Diccionario del uso del español de Chile (DUECh)
               </p>
               <p className="text-sm text-gray-300">
                 Proyecto de digitalización del patrimonio lingüístico chileno
               </p>
-              <div className="mt-4 text-xs text-gray-400">
-                MVP - Versión 0.1.0
-              </div>
+              <div className="mt-4 text-xs text-gray-400">MVP - Versión 0.1.0</div>
             </div>
           </div>
         </footer>

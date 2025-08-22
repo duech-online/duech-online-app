@@ -1,2264 +1,2029 @@
 [
-    {
-        "name": "duech",
-        "description": "Diccionario del uso del español de Chile",
-        "value": [
-            {
-                "letter": "a",
-                "values": [
-                    {
-                        "lemma": "achurar",
-                        "root": "achurar",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "tr"
-                                ],
-                                "remission": null,
-                                "meaning": "Cubrir *una superficie* de varias líneas paralelas mediante lápiz o algún instrumento similar.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Creo que el único dibujo que está bueno es el mío, porque es el único de los seis en que se dividió el papel lustre en cuatro partes iguales y se *achuró* una de ellas.",
-                                        "author": "Espinoza",
-                                        "title": null,
-                                        "source": "Cuantificando",
-                                        "date": null,
-                                        "page": 112
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "letter": "d",
-                "values": [
-                    {
-                        "lemma": "depa",
-                        "root": "depa",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": "departamento",
-                                "meaning": "Vivienda independiente en un edificio de varios pisos.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Un concurso de miedo, con un tocomocho cero kilómetro y un *depa* a sortearse en diciembre",
-                                        "author": null,
-                                        "title": "Micros se paletean",
-                                        "source": "La Cuarta@",
-                                        "date": "2006-09-06",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "departamento",
-                        "root": "departamento",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": null,
-                                "meaning": "Vivienda independiente en un edificio de varios pisos.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Somos dos chicas estudiantes  de  arquitectura,  arrendamos una pieza en un *departamento* con excelente ubicación al lado del Parque Forestal y el museo Bellas Artes",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "compartodepto.cl",
-                                        "date": "2008-09-06",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "letter": "f",
-                "values": [
-                    {
-                        "lemma": "fome",
-                        "root": "fome",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj"
-                                ],
-                                "remission": null,
-                                "meaning": "Aburrido, sin gracia.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": {
-                                    "value": "Ya no le interesa trabajar en el medio [televisivo]: \"Es *fome*, no te aporta nada\".",
-                                    "author": null,
-                                    "title": null,
-                                    "source": "Zona de Contacto",
-                                    "date": "1998-09-11",
-                                    "page": 12
-                                },
-                                "variant": null,
-                                "expressions": []
-                            },
-                            {
-                                "number": 2,
-                                "categories": [
-                                    "adj"
-                                ],
-                                "meaning": "Lamentable.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "example": [
-                                    {
-                                        "value": "Chiquilla encontró súper fome que NN censurara las imágenes de su topless en el reality.",
-                                        "author": null,
-                                        "title": "J. lamenta...",
-                                        "source": "La Cuarta@",
-                                        "date": "2007-02-10",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "letter": "g",
-                "values": [
-                    {
-                        "lemma": "guaipe",
-                        "root": "guaipe",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "inglés",
-                                "categories": [],
-                                "remission": null,
-                                "meaning": "Estopa, masa de hilachas de algodón o trozos de tela, que se utiliza para limpiar en trabajos de mecánica y similares.",
-                                "styles": null,
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "En otra oportunidad dio a entender que se habría encontrado *guaipe* dentro del orificio para cargar con aceite el torpedo",
-                                        "author": null,
-                                        "title": "El Indio...",
-                                        "source": "ligamar.cl",
-                                        "date": "2007-10-20",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": "huaipe",
-                                "expressions": null
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "letter": "j",
-                "values": [
-                    {
-                        "lemma": "jumper",
-                        "root": "jumper",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "inglés",
-                                "categories": [],
-                                "remission": null,
-                                "meaning": "Vestido femenino sin cuello ni mangas, que se usa sobre una **polera** o blusa y que integra con frecuencia el uniforme escolar femenino.",
-                                "styles": [],
-                                "observation": "Se pronuncia [yámper].",
-                                "example": [
-                                    {
-                                        "value": "A mediados de los 60 se instauró el uniforme tal y como ahora lo conocemos: *jumper* azul para las chicas y pantalón gris para el varón",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2009-02-21",
-                                        "page": 8
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "letter": "o",
-                "values": [
-                    {
-                        "lemma": "oblea",
-                        "root": "oblea",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": null,
-                                "meaning": "Galleta alargada compuesta de dos o más hojas delgadas de masa crocante, de superficie cuadriculada, entre las que se pone crema dulce saborizada.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "En el mercado hay una amplia variedad de productos en segmentos como *obleas* bañadas, alfajores, galletas y quequitos.",
-                                        "author": null,
-                                        "title": "El esperado...",
-                                        "source": "LUN@",
-                                        "date": "2007-02-26",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ocear",
-                        "root": "ocear",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "intr"
-                                ],
-                                "remission": null,
-                                "meaning": "En la *ganadería*, pasar un animal, generalmente un cerdo, su hocico por encima de algo, para olerlo.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Un rebaño de venados que cruza  por  el  jardín  y  *ocea*  en  la  nieve  en busca  de  musgo",
-                                        "author": "Ampuero",
-                                        "title": "Amantes",
-                                        "source": null,
-                                        "date": null,
-                                        "page": 271
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "mas que ocho",
-                        "root": "ocho",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "adv"
-                                ],
-                                "remission": null,
-                                "meaning": "Muy o mucho.",
-                                "styles": [
-                                    "espon",
-                                    "fest"
-                                ],
-                                "observation": "Cuando lo que se quiere decir que tiene abundancia se expresa con un adjetivo, éste se ubica entre \"más\" y \"qué\".",
-                                "example": [
-                                    {
-                                        "value": "\"No creo que la vaya a conocer, pero igual bacán\", cuenta el bailarín, más entusiasmado que *ocho* con su premio.",
-                                        "author": null,
-                                        "title": "Voy a participar...",
-                                        "source": "La Cuarta@",
-                                        "date": "2003-02-13",
-                                        "page": null
-                                    },
-                                    {
-                                        "value": "Aconséjeme, ya que este viejo me hace vibrar más que *ocho* y no sé si estoy enamorada",
-                                        "author": null,
-                                        "title": "La ventanita...",
-                                        "source": "La Cuarta@",
-                                        "date": "2004-04-21",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "qué X ni que ocho cuartos",
-                        "root": "ocho",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "fórm"
-                                ],
-                                "remission": null,
-                                "meaning": "Se  usa  para  negar la veracidad o pertinencia de algo o alguien (representado por X) respecto  de  una  situación.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Además qué Antonio Banderas, ni qué Terminator, ni qué Jean Claude Van Damme, *ni qué ocho cuartos*. Iron Man es el único compadre que de verdad sabe caminar con una explosión de fondo, sin inmutarse.",
-                                        "author": null,
-                                        "title": "Iron Man",
-                                        "source": "zona.cl",
-                                        "date": "2008-06-04",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ociosear",
-                        "root": "ociosear",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "intr"
-                                ],
-                                "remission": null,
-                                "meaning": "Dedicarse a una actividad ociosa o no productiva.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Estoy aprovechando mi hora de almuerzo para *ociosear* y comer.",
-                                        "author": null,
-                                        "title": "Marque tarjeta...",
-                                        "source": "rompiendoelsilencio.cl",
-                                        "date": "2007-05-09",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "octayino,-a",
-                        "root": "octayino,-a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "remission": null,
-                                "meaning": "De Puerto Octay, comuna de la X Región de Los Lagos.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "",
-                                        "author": null,
-                                        "title": null,
-                                        "source": null,
-                                        "date": null,
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ocupado",
-                        "root": "ocupado",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj/adv"
-                                ],
-                                "remission": null,
-                                "meaning": "*Referido a una línea telefónica*, que está siendo empleada para cursar otra llamada en el momento en que alguien la quiere usar.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Debe insistir o volver a repetir la llamada si suena *ocupado*.",
-                                        "author": null,
-                                        "title": "Suena ocupado...",
-                                        "source": "terra.cl",
-                                        "date": "2009-06-02",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": [
-                                    "marcando ocupado"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oficina",
-                        "root": "oficina",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": "salitrera",
-                                "meaning": "Conjunto de instalaciones de una **salitrera** (lugar de extracción de salitre), incluyendo las viviendas de los trabajadores.",
-                                "styles": [
-                                    "(Norte)",
-                                    "hist"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Esta es la historia de A. B., una singular mujer que vivió en la *oficina* Resurrección y que gozaba el raro privilegio de tener el úncio árbol del campamento plantado a la puerta de su casa, hecho que, por su puesto, constituía la envidia comprensible de todos los resurrectinos.",
-                                        "author": "Rivera Letelier",
-                                        "title": null,
-                                        "source": "Trenes",
-                                        "date": null,
-                                        "page": 26
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oficinero",
-                        "root": "oficinero",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": "salitrera",
-                                "meaning": "Funcionario que trabajaba en la administración de una **salitrera** (lugar de extracción de salitre).",
-                                "styles": [
-                                    "hist"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Ya era hora de poner coto a la explotación y a la rapiña sin control de los *oficineros* abusadores.",
-                                        "author": "Rivera Letelier",
-                                        "title": null,
-                                        "source": "Santa María",
-                                        "date": null,
-                                        "page": 18
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oh",
-                        "root": "oh",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "interj"
-                                ],
-                                "remission": null,
-                                "meaning": "Se usa como elemento de interpelación, siempre al final de una frase.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Es que es re tarde, *oh*.",
-                                        "author": "Lafourcade",
-                                        "title": null,
-                                        "source": "Palomita",
-                                        "date": null,
-                                        "page": 19
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": [
-                                    "¡sí, oh!"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ohigginiano,-a",
-                        "root": "ohigginiano,-a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj"
-                                ],
-                                "remission": null,
-                                "meaning": "Relativo a Bernardo O'Higgins, primer Jefe de Estado del Chile independiente (entre 1817 y 1823).",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Un convenio para la administración conjunta del Museo *O'Higginiano* y de Bellas Artes de esta ciudad firmaron la Dirección de Bibliotecas, Archivos y Museos (Dibam) y la Universidad de Talca [...].",
-                                        "author": null,
-                                        "title": "Casa de la...",
-                                        "source": "La Tercera@",
-                                        "date": "1997-12-25",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojito de diuca",
-                        "root": "ojito de diuca",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "remission": null,
-                                "meaning": "Pasta usada en sopas, de forma similar a un ojo minúsculo.",
-                                "styles": [],
-                                "observation": "Normalmente en plural.",
-                                "example": [
-                                    {
-                                        "value": "¿Y las sopas de letras, los caracolitos de colores, los *ojitos de diuca*: son menos engañifas que la cajita feliz?",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2009-04-28",
-                                        "page": 34
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojito de gato",
-                        "root": "ojito de gato",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "remission": "Bolita",
-                                "meaning": "**Bolita** pequeña de cristal.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Las bolitas más populares son de cristal, acero, piedra o barro cocido y pintado y cada una tiene su nombre. Las más pequeñas de cristal se llaman \"*ojito de gato*\".",
-                                        "author": null,
-                                        "title": "Tiqui tiqui...",
-                                        "source": "universidiario.cl",
-                                        "date": "2009-06-23",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojo al charqui",
-                        "root": "ojo al charqui",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "adv"
-                                ],
-                                "remission": null,
-                                "meaning": "En actitud muy atenta y vigilante.",
-                                "styles": [
-                                    "espon",
-                                    "fest"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "El intendente [...], pidió a choferes y transeúntes estar *ojo al charqui* con las medidas de seguridad.",
-                                        "author": null,
-                                        "title": "Como esclavos...",
-                                        "source": "La Cuarta@",
-                                        "date": "2004-02-19",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojo de gato",
-                        "root": "ojo de gato",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "remission": null,
-                                "meaning": "Pieza pequeña de plástico, de forma rectangular y chata, con material reflectante a sus lados y que se instala a ras de piso alineada junto con muchas otras para señalizar una vía.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Anoche venía de regreso (desde Temuco), y entre la lluvia (que me vino persiguiendo desde Los Ángeles) y la poca neblina, no se veía mucho. La parte desagradable es que en muchos sectores hay curvas no tan pronunciadas, pero que pierden por completo los *ojos de gato*, e incluso la línea del medio. Ni siquiera una baranda de referencia.",
-                                        "author": null,
-                                        "title": "Malditos ojos...",
-                                        "source": "groups.google.cl / chile.mercado.vehiculos",
-                                        "date": "2009-05-25",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojo de pollo",
-                        "root": "ojo de pollo",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "remission": null,
-                                "meaning": "Ano.",
-                                "styles": [
-                                    "vulgar"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "[...] alguna va a mostrar [...] el *ojo de pollo*.",
-                                        "author": null,
-                                        "title": "La lucha...",
-                                        "source": "chile.com, Foro",
-                                        "date": "2009-03-20",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojo, pestaña y ceja",
-                        "root": "ojo, pestaña y ceja",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "fórm"
-                                ],
-                                "remission": null,
-                                "meaning": "Se usa para instar a poner mucha atención o adoptar cautela.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "*Ojo, pestaña y ceja* que les tenemos una tremenda papita festivalera que desembuchar.",
-                                        "author": null,
-                                        "title": "T. I alista...",
-                                        "source": "La Cuarta@",
-                                        "date": "2007-02-16",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojo piojo",
-                        "root": "ojo piojo",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "fórm"
-                                ],
-                                "remission": null,
-                                "meaning": "Se usa para instar a poner mucha atención o adoptar cautela.",
-                                "styles": [
-                                    "espon",
-                                    "fest"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "¡*Ojo piojo*, que la piscina puede convertirse en trampa mortal!",
-                                        "author": null,
-                                        "title": "¡Ojo piojo...",
-                                        "source": "La Cuarta@",
-                                        "date": "2007-01-24",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ojota",
-                        "root": "ojota",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "quechua",
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": null,
-                                "meaning": "Calzado abierto hecho de cuero de vaca o caucho, que se afirma al pie por medio de correas, usado principalmente por los trabajadores del campo chileno.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Todos eran pescadores, menos el carabinero, se entiende; y el cura, que nunca le trabajó un cinco a nadie; y el zapatero, que hacía *ojotas* y componía redes.",
-                                        "author": "Varas",
-                                        "title": null,
-                                        "source": "Porái",
-                                        "date": null,
-                                        "page": 135
-                                    }
-                                ],
-                                "variant": "hojota",
-                                "expressions": [
-                                    "mostrar la ojota",
-                                    "salírsele a alguien la ojota",
-                                    "vérsele a alguien la ojota"
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "okey",
-                        "root": "okey",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "inglés",
-                                "categories": [
-                                    "adv"
-                                ],
-                                "remission": null,
-                                "meaning": "Bien, en buen estado o condición.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "S. también hizo un paseo, pero reconoció que poco podía hacer al lado de A. D. \"Ella es sensacional. Igual mi percha está *okey*\", asumió.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2009-01-31",
-                                        "page": 32
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            },
-                            {
-                                "number": 2,
-                                "origin": "inglés",
-                                "categories": [
-                                    "fórm"
-                                ],
-                                "remission": null,
-                                "meaning": "Se usa para mostrar aprobación o conformidad.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Si hablaran de su comportamiento en el reality, *okey*. Pero considero que es una más de las faltas de respeto que se comete con tal de vender.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2009-04-16",
-                                        "page": 27
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "olivarino,-a",
-                        "root": "olivarino,-a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "remission": null,
-                                "meaning": "Nacido o que vive en Olivar, comuna de la VI Región del Libertador General Bernardo O'Higgins.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "olivo de Bohemia",
-                        "root": "olivo de Bohemia",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": null,
-                                "meaning": "Árbol ornamental que resalta por el color plateado de su follaje y puede alcanzar hasta 10 m de altura.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Estos árboles son *olivos de Bohemia* y esos, altos, frondosos, se llaman pitosporos.",
-                                        "author": "Peña",
-                                        "title": null,
-                                        "source": "Valparaíso",
-                                        "date": null,
-                                        "page": 28
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "olla común",
-                        "root": "olla común",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "remission": null,
-                                "meaning": "Comida sencilla que se prepara en gran cantidad para su consumo por parte de varias personas que se encuentran en situación de precariedad.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Cerca de la sede vecinal que cobija a los buzos en huelga, un grupo de mujeres se aprestaba a organizar una *olla común*.",
-                                        "author": null,
-                                        "title": "Buzos juran...",
-                                        "source": "Crónica@",
-                                        "date": "2003-07-22",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ollada",
-                        "root": "ollada",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": null,
-                                "meaning": "Cantidad *de alimento o líquido* que cabe en una olla.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Y cuando no hay, se hace una *ollada* de yerba buena y menta.",
-                                        "author": "Montecino",
-                                        "title": null,
-                                        "source": "Voces",
-                                        "date": null,
-                                        "page": 453
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ollagüino,-a",
-                        "root": "ollagüino,-a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "remission": null,
-                                "meaning": "De Ollagüe, comuna de la II Región de Antofagasta.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ollazo",
-                        "root": "ollazo",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": null,
-                                "meaning": "*En el fútbol*, disparo muy potente contra el arco del equipo contrario, hecho generalmente desde una gran distancia.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Y un \"*ollazo*\" terminó en un mal despeje de Muñoz y en una derecha furibunda de Ramírez que dejó la Copa Libertadores de América sin equipos chilenos en los octavos de final.",
-                                        "author": null,
-                                        "title": "En los descuentos...",
-                                        "source": "Renacer Angol@",
-                                        "date": "2006-04-20",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "olleta",
-                        "root": "olleta",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": null,
-                                "meaning": "Olla redondeada de metal, greda u otro material resistente, provista de tres o cuatro patas, que sirve para cocinar directamente sobre las brasas o suspendida sobre el fuego.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Entonces compraron ropa para el invierno, una *olleta* grande, una vaca y un burro.",
-                                        "author": "Brunet",
-                                        "title": null,
-                                        "source": "Marisol",
-                                        "date": null,
-                                        "page": 25
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "olmueíno,-a",
-                        "root": "olmueíno,-a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "remission": null,
-                                "meaning": "De Olmué, comuna de la V Región de Valparaíso.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "olorosar",
-                        "root": "olorosar",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "tr"
-                                ],
-                                "remission": null,
-                                "meaning": "Oler, percibir el olor de *algo*.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Ahora mi duda es ¿estás seguro que hay olor a amor en el Peda? ¿No será que te confundiste y accidentalmente te *olorosaste* otra cosa?",
-                                        "author": null,
-                                        "title": "Se huele...",
-                                        "source": "bananacorp.cl",
-                                        "date": "2006-07-12",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oro blanco",
-                        "root": "oro blanco",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "meaning": "Salitre, mezcla de nitrato de sodio y nitrato de potasio que se encuentra naturalmente  en  partes  del  norte de Chile y que constituyó el principal sustento de la riqueza del  país  entre  fines  del  s.  XIX  y comienzos del s. XX.",
-                                "styles": [
-                                    "esm"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Los tocopillanos  no  apelamos  a  los  hechos históricos que hicieron de este puerto la alcancía de Chile en la época del apogeo del  oro  blanco.",
-                                        "author": null,
-                                        "title": "Voy a participar...",
-                                        "source": "El mercurio",
-                                        "date": "2000-03-29",
-                                        "page": "p. A2 [cit. en DECh]"
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oro y cielo",
-                        "root": "oro y cielo",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "meaning": "Jugador o  hincha  del  equipo  de  fútbol  de Everton.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "La  página  que ha  marcado  pauta  en  la  hinchada  *oro  y cielo*, ha sido Everton Chile.cl con cómics en contra de sus archirrivales y ahora asumiendo la bandera de lucha por todos los equipos de provincia.",
-                                        "title": "Everton tocó...",
-                                        "source": "Triunfo@",
-                                        "date": "2008-06-03",
-                                        "page": null
-                                    }
-                                ]
-                            },
-                            {
-                                "number": 2,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "loc",
-                                    "adj"
-                                ],
-                                "meaning": "Relativo  al  equipo  de fútbol  de  Everton.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Parecía  injusto  que  los \"*oro y  cielo*\" se  fueran  al  descanso  sin  anotar. Pero recién iniciado el segundo lapso comenzó la ilusión.",
-                                        "title": "Hinchas oro..",
-                                        "source": "Triunfo@",
-                                        "date": "2008-05-26",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "a toda orquesta",
-                        "root": "orquesta",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "loc",
-                                    "adv",
-                                    "adj"
-                                ],
-                                "meaning": "Con mucha intensidad.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Estaba con una de esas bronconeumonías *a toda orquesta*.",
-                                        "author": "Barrenechea",
-                                        "title": "Frutos",
-                                        "source": null,
-                                        "date": null,
-                                        "page": 10
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "orto",
-                        "root": "orto",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Ano.",
-                                "styles": [
-                                    "vulgar"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Besaba de los dioses, así empezamos muchos juegos hasta que él me quiso tocar el *orto*",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "tusecretro.cl",
-                                        "date": "2006-12-19",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "como el orto",
-                        "root": "orto",
-                        "values": [
-                            {
-                                "number": 1,
-                                "categories": [
-                                    "loc",
-                                    "adv",
-                                    "adj"
-                                ],
-                                "meaning": "Muy mal.",
-                                "styles": [
-                                    "vulgar"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "En  un  momento donde  hay  mucha  plata  en  la  calle,  fue una  caricatura  de  nuestro  avance:  buses nuevos que funcionan como el orto, el Metro  con  guardias  que  llevaban  sables láser  al  estilo  Skywalke.",
-                                        "author": null,
-                                        "title": "El año...",
-                                        "source": "La Nación@",
-                                        "date": "2007-12-30",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oruga",
-                        "root": "oruga",
-                        "values": [
-                            {
-                                "number": 1,
-                                "categories": [
-                                    "m",
-                                    "f"
-                                ],
-                                "meaning": "Bus  de  transporte público urbano de gran capacidad, compuesto por dos secciones unidas por un segmento de material flexible.",
-                                "styles": [],
-                                "observation": "Frecuentemente en aposición con \"bus\".",
-                                "example": [
-                                    {
-                                        "value": "No les paraban y los asientos de los *orugas* ponían a prueba el equilibrio.",
-                                        "author": null,
-                                        "title": "No pensaron ...",
-                                        "source": "La Cuarta@",
-                                        "date": "2007-12-02",
-                                        "page": null
-                                    },
-                                    {
-                                        "value": "Hay recorridos desde 1921 hasta las *orugas* del Transantiago.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2009-01-05",
-                                        "page": 15
-                                    },
-                                    {
-                                        "value": "Egoísta,  que  no  piensa  que  en  un bus  *oruga*  caben  100  pasajeros  contra  la mitad que lleva un bus pullman.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": null,
-                                        "date": "2008-01-10",
-                                        "page": 8
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oscurón, -a",
-                        "root": "oscurón, -a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "adj"
-                                ],
-                                "meaning": "Medianamente oscuro",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Con  esa  ropa  tan  rara, medio *oscurona*, en bicicleta y con un burro al lado que iba tan campante.",
-                                        "author": "De la parra",
-                                        "title": "Éxitos",
-                                        "source": null,
-                                        "date": null,
-                                        "page": 185
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "osito",
-                        "root": "osito",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Prenda  de  vestir  para niños pequeños, de una sola pieza, que cubre todo el cuerpo.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "*Osito* de algodón  con  un  bordado  de  conejito  en el  bolsillo  y  broches  diagonales,  que  le otorgan  un  particular  diseño  en  4  tonos, celeste, rosado, amarillo y verde, talla 2.",
-                                        "author": null,
-                                        "title": "Aprovecha la...",
-                                        "source": "mercadolibre.cl",
-                                        "date": "2007-10-29",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "osnaburgo",
-                        "root": "osnaburgo",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Tela delgada y de  color  crudo,  generalmente  de lino  o  algodón,  que  se  utiliza  para confeccionar paños de cocina, sacos  o  prendas  ligeras.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Es  posible que  Neruda  usara  prendas  interiores  de *osnaburgo*, como se llama técnicamente la tela  con  que  se  confeccionaban  los  sacos de  harina  cruda.",
-                                        "author": null,
-                                        "title": "De osnaburgo",
-                                        "source": "Estrella Arica@",
-                                        "date": "2004-06-01",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "osobuco",
-                        "root": "osobuco",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "italiano",
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Corte de carne de vacuno de forma redonda,  con  hueso  en  el  centro, que se saca de la parte inferior de los cuartos del animal.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Un kilo de cazuela de  vacuno,  de  *osobuco*  o  de  espinazo  de cordero.",
-                                        "author": "Huneeus",
-                                        "title": "De osnaburgo",
-                                        "source": "Manual [CREA]",
-                                        "date": null,
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "osornino, -a",
-                        "root": "osornino, -a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "adj",
-                                    "sust"
-                                ],
-                                "meaning": "De Osorno, comuna de la X Región de Los Lagos.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": null,
-                                        "author": null,
-                                        "title": null,
-                                        "source": null,
-                                        "date": null,
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ossobuco",
-                        "root": "ossobuco",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "italiano",
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "**osobuco**",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Con el mismo fanatismo busca  en  el  cabernet  sauvignon  toda  la potencia de los taninos, para darle fuerza a  su  caldo  de  *ossobuco*",
-                                        "author": null,
-                                        "title": "Cocinae con...",
-                                        "source": "Qué Pasa@",
-                                        "date": "2006-05-13",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "otorgación",
-                        "root": "otorgación",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "meaning": "Otorgamiento, concesión, entrega de algún beneficio.",
-                                "styles": [
-                                    "p. us."
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "En estos momentos somos el patio trasero en le *otorgación* de fondos por parte del Estado, prueba de ello es que cerca del sesenta por ciento de los fondos de desarrollo regional se queda en tres comunas.",
-                                        "author": null,
-                                        "title": "Munis se sienten...",
-                                        "source": "La Cuarta@",
-                                        "date": "2003-02-03",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "outlet",
-                        "root": "outlet",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "inglés",
-                                "remission": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "meaning": "*Referido a una venta*, que ofrece productos sobrantes o de otras temporadas que están en almacén a menor precio del habitual.",
-                                "styles": [],
-                                "observation": "Se pronuncia [áutlet]",
-                                "example": [
-                                    {
-                                        "value": "Y como la idea es ahorrar, sobre todo en tiempos de crisis, las ventas de *outlet* y de bodega pueden ser una buena alternativa para pasar el mes más complejo.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2009-02-13",
-                                        "page": 17
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            },
-                            {
-                                "number": 2,
-                                "origin": "inglés",
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Establecimiento en el que se realiza la venta de productos sobrantes o de otras temporadas que están en almacén.",
-                                "styles": [],
-                                "observation": "Se pronuncia [áutlet]",
-                                "example": [
-                                    {
-                                        "value": "Venta se desarrollará en el *outlet* de Quilicura hasta el 24 de diciembre.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "LUN",
-                                        "date": "2008-12-12",
-                                        "page": 17
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ovallino, -a",
-                        "root": "ovallino, -a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "meaning": "De Ovalle, comuna de la IV Región de Coquimbo.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": null,
-                                        "author": null,
-                                        "title": null,
-                                        "source": null,
-                                        "date": null,
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ovejería",
-                        "root": "ovejería",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "meaning": "Crianza de ganado ovino.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "En Chile se pueden reconocer dos zonas para la *ovejería*. La austral, con Aisén y Magallanes, que tienen toda una tradición en el rubro y que por clima están destinadas aser ovejeras, sobre todo la XI Región. Y la zona centro sur que tiene dos sectores marcados, pero que por ahora no tienen una masa ganadera apropiada.",
-                                        "author": null,
-                                        "title": "Los ovinos...",
-                                        "source": "chilepotencialalimentaria.cl",
-                                        "date": "2007-12-18",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            },
-                            {
-                                "number": 2,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "meaning": "Lugar donde se crían o guardan ovejas.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "\"Además, que ocupan menos mano de obra y es un rubro que en Europa, por ejemplo, se están cambiando *ovejerías* por lecherías por la reducción de los subsidios y eso que la lechería está en su apogeo\", señala L. G.",
-                                        "author": null,
-                                        "title": "Los ovinos...",
-                                        "source": "chilepotencialalimentaria.cl",
-                                        "date": "2007-12-18",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "overlista",
-                        "root": "overlista",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m-f"
-                                ],
-                                "meaning": "Experto en costura de overlock, cierta máquina de coser que remata las junturas de las prendas.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Necesito singerista, *overlista*, botonera, experiencia, buen trato [...].",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "El Rastro",
-                                        "date": "1999-03-26",
-                                        "page": 20
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "overo, -a",
-                        "root": "overo, -a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "meaning": "*Referido al ganado mayor, especialmente aun caballo*, de color claro, generalmente blanco, y con manchas más o menos extensas de otro color más oscuro.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Durante un Rodeo Zonal en la medialuna de La Unión, un grupo de asistentes a la tribuna y muy chistosos, al ver que montaba un caballo *overo*, no vacilaron en gritale \"indio\". De inmediato, el jinete les respondió desde la pista \"Sí, pero yo me bajo y se me quita\".",
-                                        "author": null,
-                                        "title": "La picardía...",
-                                        "source": "caballoyrodeo.cl",
-                                        "date": "2007-09-28",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ovoide",
-                        "root": "ovoide",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Paquete con forma de huevo en el que se contrabandea droga.",
-                                "styles": [
-                                    "esm"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "En prisión preventiva en la Cárcel de Acha quedó ciudadano peruano, quien fue detenido por transportar 95 *ovoides* con clorhidrato de cocaína, en el Complejo Fronterizo Chacalluta.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "Estrella Arica@",
-                                        "date": "2007-07-05",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oxigenista",
-                        "root": "oxigenista",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m-f"
-                                ],
-                                "meaning": "Persona especializada en realizar soldaduras con oxígeno.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Hola, yo tengo 38 años, he trabajado en B. y en otras constructoras, yo he sido jefe, soldador, pintor, *oxigenista*, etc.",
-                                        "author": null,
-                                        "title": "Owtro trabajo...",
-                                        "source": "talcahuano.oxl.cl",
-                                        "date": "2009-05-23",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oxtail",
-                        "root": "oxtail",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "inglés",
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Sopa de cola de buey.",
-                                "styles": [],
-                                "observation": "Se pronuncia [óxteil]",
-                                "example": [
-                                    {
-                                        "value": "*Oxtail* con tallarines alemanes hechos en casa.",
-                                        "author": null,
-                                        "title": "Hay que...",
-                                        "source": "Mercurio Calama@",
-                                        "date": "2004-09-16",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "omelet",
-                        "root": "omelet",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "francés",
-                                "categories": [
-                                    "m o f"
-                                ],
-                                "remission": "omelette",
-                                "meaning": "",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "La quinta comida puede ser un *omelet* de espárragos con 6 a 8 claras de huevo.",
-                                        "author": null,
-                                        "title": "Recomendaciones...",
-                                        "source": "totalnutricion.cl",
-                                        "date": "2007-08-03",
-                                        "page": null
-                                    },
-                                    {
-                                        "value": "Lo único que le importa a la gente es el precio, no les preocupa si les sirves un trago o un *omelet* caliente.",
-                                        "author": null,
-                                        "title": "Viajes aéreos...",
-                                        "source": "businesschile.cl",
-                                        "date": "2007-08-03",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "omelette",
-                        "root": "omelette",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": "francés",
-                                "categories": [
-                                    "m o f"
-                                ],
-                                "remission": null,
-                                "meaning": "Tortilla hecha con huevo batido y rellena con algún otro ingrediente como queso, jamón o vegetales.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Agregue los champiñones, doble el *omelette* y deslice al centro del sartén.",
-                                        "author": null,
-                                        "title": "Omelette de...",
-                                        "source": "martita.cl",
-                                        "date": "2007-08-03",
-                                        "page": null
-                                    },
-                                    {
-                                        "value": "Prepare la otra *omelette* de igual forma.",
-                                        "author": null,
-                                        "title": "Omelette de...",
-                                        "source": "nestle.cl",
-                                        "date": "2007-08-03",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ona",
-                        "root": "ona",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m-f"
-                                ],
-                                "remission": "ona",
-                                "meaning": "Individuo de un pueblo indígena amerindio que habitó parte del extremo austral de Sudamérica (Isla Grande de Tierra del Fuego), de costumbres nómadas terrestres, y que vivía de la caza y la recolección de alimentos.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Me ha hablado de la inexplorada Tierra del Fuego donde están los yaganes y los *onas*.",
-                                        "author": "Campos",
-                                        "title": null,
-                                        "source": "Pioneros",
-                                        "date": null,
-                                        "page": 17
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            },
-                            {
-                                "number": 2,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": null,
-                                "meaning": "Lengua hablada por los **onas**.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Así, solamente en nuestro siglo se han extinguido tres lenguas indoamericanas chilenas: el kunza o atacameño del Gran Salar de Atacama, el *ona* o selk'nam de Tierra del Fuego, y el yámana o yagán de los canales Australes.",
-                                        "author": null,
-                                        "title": "Variación sociocultural...",
-                                        "source": "rmm.cl",
-                                        "date": null,
-                                        "page": 17
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            },
-                            {
-                                "number": 3,
-                                "origin": null,
-                                "categories": [
-                                    "adj"
-                                ],
-                                "remission": null,
-                                "meaning": "Relativo a los **onas**.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Esta realidad y el destino de los pueblos originarios de Tierra del Fuego preocupó a los integrantes de esta expedición y en especial a Väinö Auer quien le dedicó a la cultura *ona* un crítico y extenso capítulo en su libro \"Un pueblo moribundo\".",
-                                        "author": null,
-                                        "title": "Polémica en Magallanes...",
-                                        "source": "La Nación@",
-                                        "date": "2007-06-26",
-                                        "page": 17
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "once",
-                        "root": "once",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": null,
-                                "meaning": "Comida principal de la tarde, que se toma entre el almuerzo y la cena, que consiste generalmente en una bebida caliente acompañada de pan.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "AL almuerzo te servían tres platos, en la tarde, *once* y comida.",
-                                        "author": "Montecino",
-                                        "title": null,
-                                        "source": "Voces",
-                                        "date": null,
-                                        "page": 100
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "oncecomida",
-                        "root": "oncecomida",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "f"
-                                ],
-                                "remission": null,
-                                "meaning": "Comida que se toma en lugar de la **once** y la cena a la vez.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Excelente habitación en casa independiente, desayuno almuerzo y *oncecomida*.",
-                                        "author": null,
-                                        "title": null,
-                                        "source": "vivastreet.cl",
-                                        "date": "2007-06-18",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "onda",
-                        "root": "onda",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "marc",
-                                    "disc"
-                                ],
-                                "remission": null,
-                                "meaning": "*Especialmente entre los jóvenes*, se usa para indicar que lo que se dirá a continuación es una explicación o una reformulación de lo dicho inmediatamente antes.",
-                                "styles": [
-                                    "espon."
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Señalaron que NN sería “bodeguera”, *onda* que guardaba droga.",
-                                        "author": null,
-                                        "title": "Galán de...",
-                                        "source": "La Cuarta@",
-                                        "date": "2007-02-15",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "buena onda",
-                        "root": "onda",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "adj/sust"
-                                ],
-                                "remission": null,
-                                "meaning": "*Referido a una persona*, de carácter simpático.",
-                                "styles": [
-                                    "espon."
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Solo busco una mina *buena onda* que quiera pasarlo bien, carrete, salir, etc.",
-                                        "author": null,
-                                        "title": "Busco mina",
-                                        "source": "adoos.cl",
-                                        "date": "2008-03-18",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "¿qué onda?",
-                        "root": "onda",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "fórm"
-                                ],
-                                "remission": null,
-                                "meaning": "*Especialmente entre, los jóvenes*, se usa para instar al interlocutor a informar al hablante sobre algo.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Oye, ¿qué *onda* con el Máquina Miranda ese?",
-                                        "author": null,
-                                        "title": "XS, la peor talla",
-                                        "source": null,
-                                        "date": "18:39",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "onderismo",
-                        "root": "onderismo",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "remission": null,
-                                "meaning": "Actitud de constante seguimiento de las modas más recientes y prestigiosas.",
-                                "styles": [
-                                    "p",
-                                    "us"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "No me quiero dar [sic] de masajista ni mucho menos porque me da arcadas el *onderismo* con las sesiones de masajes.",
-                                        "author": "Errázuriz",
-                                        "title": "Carne",
-                                        "source": null,
-                                        "date": null,
-                                        "page": 49
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ondero, -a",
-                        "root": "ondero, -a",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "adj/sust"
-                                ],
-                                "meaning": "Que le gusta seguir las modas más recientes y prestigiosas.",
-                                "styles": [
-                                    "espon"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Para los más *onderos*, el dato es partir a Cacano (frente a la plaza principal).",
-                                        "author": "Domingo",
-                                        "title": null,
-                                        "source": "El Mercurio",
-                                        "date": "2006-09-06",
-                                        "page": 9
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "ondulín",
-                        "root": "ondulín",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "m"
-                                ],
-                                "meaning": "Tubo pequeño utilizado para ondular el cabello.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Compra tubos (*ondulines* [...] y afírmalos bien en las puntas no más, no enrolles el pelo entero al tubo porque te va a quedar un rulo en vez de la curvita.",
-                                        "author": "Pelucas",
-                                        "title": "Pelucas...",
-                                        "source": "cosplayelite.cl",
-                                        "date": "2008-01-12",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    },
-                    {
-                        "lemma": "onofre",
-                        "root": "onofre",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "remission": null,
-                                "categories": [
-                                    "fórm"
-                                ],
-                                "meaning": "Se usa para buscar la aprobación del interlocutor frente a algo que se ha dicho.",
-                                "styles": [
-                                    "espon",
-                                    "fest"
-                                ],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "El hombre demostró que siendo vendedor ambulante también se puede derrotar la pobreza y ser alguien en esta perra vida, ¿*onofre*?",
-                                        "author": "La Cuarta@",
-                                        "title": "Conejo Martínez...",
-                                        "source": null,
-                                        "date": "2006-12-10",
-                                        "page": null
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                "letter": "v",
-                "values": [
-                    {
-                        "lemma": "viejo del saco",
-                        "root": "viejo del saco",
-                        "values": [
-                            {
-                                "number": 1,
-                                "origin": null,
-                                "categories": [
-                                    "loc",
-                                    "sust"
-                                ],
-                                "remission": null,
-                                "meaning": "*En la mitología popular*, anciano que recorre  las  calles  de  la  ciudad  con un saco, en el que se lleva a los niños que se portan mal.",
-                                "styles": [],
-                                "observation": null,
-                                "example": [
-                                    {
-                                        "value": "Si te portas mal, te va a llevar el *viejo del saco*",
-                                        "author": null,
-                                        "title": "El viejo...",
-                                        "source": "jes.cl",
-                                        "date": "2007-10-12",
-                                        "page": null
-                                    }
-                                ],
-                                "variant": null,
-                                "expressions": []
-                            }
-                        ]
-                    }
-                ]
-            }
+  {
+    "name": "duech",
+    "description": "Diccionario del uso del español de Chile",
+    "value": [
+      {
+        "letter": "a",
+        "values": [
+          {
+            "lemma": "achurar",
+            "root": "achurar",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["tr"],
+                "remission": null,
+                "meaning": "Cubrir *una superficie* de varias líneas paralelas mediante lápiz o algún instrumento similar.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Creo que el único dibujo que está bueno es el mío, porque es el único de los seis en que se dividió el papel lustre en cuatro partes iguales y se *achuró* una de ellas.",
+                    "author": "Espinoza",
+                    "title": null,
+                    "source": "Cuantificando",
+                    "date": null,
+                    "page": 112
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          }
         ]
-    }
+      },
+      {
+        "letter": "d",
+        "values": [
+          {
+            "lemma": "depa",
+            "root": "depa",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m"],
+                "remission": "departamento",
+                "meaning": "Vivienda independiente en un edificio de varios pisos.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Un concurso de miedo, con un tocomocho cero kilómetro y un *depa* a sortearse en diciembre",
+                    "author": null,
+                    "title": "Micros se paletean",
+                    "source": "La Cuarta@",
+                    "date": "2006-09-06",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "departamento",
+            "root": "departamento",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m"],
+                "remission": null,
+                "meaning": "Vivienda independiente en un edificio de varios pisos.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Somos dos chicas estudiantes  de  arquitectura,  arrendamos una pieza en un *departamento* con excelente ubicación al lado del Parque Forestal y el museo Bellas Artes",
+                    "author": null,
+                    "title": null,
+                    "source": "compartodepto.cl",
+                    "date": "2008-09-06",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "letter": "f",
+        "values": [
+          {
+            "lemma": "fome",
+            "root": "fome",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj"],
+                "remission": null,
+                "meaning": "Aburrido, sin gracia.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": {
+                  "value": "Ya no le interesa trabajar en el medio [televisivo]: \"Es *fome*, no te aporta nada\".",
+                  "author": null,
+                  "title": null,
+                  "source": "Zona de Contacto",
+                  "date": "1998-09-11",
+                  "page": 12
+                },
+                "variant": null,
+                "expressions": []
+              },
+              {
+                "number": 2,
+                "categories": ["adj"],
+                "meaning": "Lamentable.",
+                "styles": ["espon"],
+                "example": [
+                  {
+                    "value": "Chiquilla encontró súper fome que NN censurara las imágenes de su topless en el reality.",
+                    "author": null,
+                    "title": "J. lamenta...",
+                    "source": "La Cuarta@",
+                    "date": "2007-02-10",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "letter": "g",
+        "values": [
+          {
+            "lemma": "guaipe",
+            "root": "guaipe",
+            "values": [
+              {
+                "number": 1,
+                "origin": "inglés",
+                "categories": [],
+                "remission": null,
+                "meaning": "Estopa, masa de hilachas de algodón o trozos de tela, que se utiliza para limpiar en trabajos de mecánica y similares.",
+                "styles": null,
+                "observation": null,
+                "example": [
+                  {
+                    "value": "En otra oportunidad dio a entender que se habría encontrado *guaipe* dentro del orificio para cargar con aceite el torpedo",
+                    "author": null,
+                    "title": "El Indio...",
+                    "source": "ligamar.cl",
+                    "date": "2007-10-20",
+                    "page": null
+                  }
+                ],
+                "variant": "huaipe",
+                "expressions": null
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "letter": "j",
+        "values": [
+          {
+            "lemma": "jumper",
+            "root": "jumper",
+            "values": [
+              {
+                "number": 1,
+                "origin": "inglés",
+                "categories": [],
+                "remission": null,
+                "meaning": "Vestido femenino sin cuello ni mangas, que se usa sobre una **polera** o blusa y que integra con frecuencia el uniforme escolar femenino.",
+                "styles": [],
+                "observation": "Se pronuncia [yámper].",
+                "example": [
+                  {
+                    "value": "A mediados de los 60 se instauró el uniforme tal y como ahora lo conocemos: *jumper* azul para las chicas y pantalón gris para el varón",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2009-02-21",
+                    "page": 8
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "letter": "o",
+        "values": [
+          {
+            "lemma": "oblea",
+            "root": "oblea",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["f"],
+                "remission": null,
+                "meaning": "Galleta alargada compuesta de dos o más hojas delgadas de masa crocante, de superficie cuadriculada, entre las que se pone crema dulce saborizada.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "En el mercado hay una amplia variedad de productos en segmentos como *obleas* bañadas, alfajores, galletas y quequitos.",
+                    "author": null,
+                    "title": "El esperado...",
+                    "source": "LUN@",
+                    "date": "2007-02-26",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ocear",
+            "root": "ocear",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["intr"],
+                "remission": null,
+                "meaning": "En la *ganadería*, pasar un animal, generalmente un cerdo, su hocico por encima de algo, para olerlo.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Un rebaño de venados que cruza  por  el  jardín  y  *ocea*  en  la  nieve  en busca  de  musgo",
+                    "author": "Ampuero",
+                    "title": "Amantes",
+                    "source": null,
+                    "date": null,
+                    "page": 271
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "mas que ocho",
+            "root": "ocho",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "adv"],
+                "remission": null,
+                "meaning": "Muy o mucho.",
+                "styles": ["espon", "fest"],
+                "observation": "Cuando lo que se quiere decir que tiene abundancia se expresa con un adjetivo, éste se ubica entre \"más\" y \"qué\".",
+                "example": [
+                  {
+                    "value": "\"No creo que la vaya a conocer, pero igual bacán\", cuenta el bailarín, más entusiasmado que *ocho* con su premio.",
+                    "author": null,
+                    "title": "Voy a participar...",
+                    "source": "La Cuarta@",
+                    "date": "2003-02-13",
+                    "page": null
+                  },
+                  {
+                    "value": "Aconséjeme, ya que este viejo me hace vibrar más que *ocho* y no sé si estoy enamorada",
+                    "author": null,
+                    "title": "La ventanita...",
+                    "source": "La Cuarta@",
+                    "date": "2004-04-21",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "qué X ni que ocho cuartos",
+            "root": "ocho",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["fórm"],
+                "remission": null,
+                "meaning": "Se  usa  para  negar la veracidad o pertinencia de algo o alguien (representado por X) respecto  de  una  situación.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Además qué Antonio Banderas, ni qué Terminator, ni qué Jean Claude Van Damme, *ni qué ocho cuartos*. Iron Man es el único compadre que de verdad sabe caminar con una explosión de fondo, sin inmutarse.",
+                    "author": null,
+                    "title": "Iron Man",
+                    "source": "zona.cl",
+                    "date": "2008-06-04",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ociosear",
+            "root": "ociosear",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["intr"],
+                "remission": null,
+                "meaning": "Dedicarse a una actividad ociosa o no productiva.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Estoy aprovechando mi hora de almuerzo para *ociosear* y comer.",
+                    "author": null,
+                    "title": "Marque tarjeta...",
+                    "source": "rompiendoelsilencio.cl",
+                    "date": "2007-05-09",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "octayino,-a",
+            "root": "octayino,-a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj/sust"],
+                "remission": null,
+                "meaning": "De Puerto Octay, comuna de la X Región de Los Lagos.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "",
+                    "author": null,
+                    "title": null,
+                    "source": null,
+                    "date": null,
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ocupado",
+            "root": "ocupado",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj/adv"],
+                "remission": null,
+                "meaning": "*Referido a una línea telefónica*, que está siendo empleada para cursar otra llamada en el momento en que alguien la quiere usar.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Debe insistir o volver a repetir la llamada si suena *ocupado*.",
+                    "author": null,
+                    "title": "Suena ocupado...",
+                    "source": "terra.cl",
+                    "date": "2009-06-02",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": ["marcando ocupado"]
+              }
+            ]
+          },
+          {
+            "lemma": "oficina",
+            "root": "oficina",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["f"],
+                "remission": "salitrera",
+                "meaning": "Conjunto de instalaciones de una **salitrera** (lugar de extracción de salitre), incluyendo las viviendas de los trabajadores.",
+                "styles": ["(Norte)", "hist"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Esta es la historia de A. B., una singular mujer que vivió en la *oficina* Resurrección y que gozaba el raro privilegio de tener el úncio árbol del campamento plantado a la puerta de su casa, hecho que, por su puesto, constituía la envidia comprensible de todos los resurrectinos.",
+                    "author": "Rivera Letelier",
+                    "title": null,
+                    "source": "Trenes",
+                    "date": null,
+                    "page": 26
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "oficinero",
+            "root": "oficinero",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m"],
+                "remission": "salitrera",
+                "meaning": "Funcionario que trabajaba en la administración de una **salitrera** (lugar de extracción de salitre).",
+                "styles": ["hist"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Ya era hora de poner coto a la explotación y a la rapiña sin control de los *oficineros* abusadores.",
+                    "author": "Rivera Letelier",
+                    "title": null,
+                    "source": "Santa María",
+                    "date": null,
+                    "page": 18
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "oh",
+            "root": "oh",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["interj"],
+                "remission": null,
+                "meaning": "Se usa como elemento de interpelación, siempre al final de una frase.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Es que es re tarde, *oh*.",
+                    "author": "Lafourcade",
+                    "title": null,
+                    "source": "Palomita",
+                    "date": null,
+                    "page": 19
+                  }
+                ],
+                "variant": null,
+                "expressions": ["¡sí, oh!"]
+              }
+            ]
+          },
+          {
+            "lemma": "ohigginiano,-a",
+            "root": "ohigginiano,-a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj"],
+                "remission": null,
+                "meaning": "Relativo a Bernardo O'Higgins, primer Jefe de Estado del Chile independiente (entre 1817 y 1823).",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Un convenio para la administración conjunta del Museo *O'Higginiano* y de Bellas Artes de esta ciudad firmaron la Dirección de Bibliotecas, Archivos y Museos (Dibam) y la Universidad de Talca [...].",
+                    "author": null,
+                    "title": "Casa de la...",
+                    "source": "La Tercera@",
+                    "date": "1997-12-25",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojito de diuca",
+            "root": "ojito de diuca",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "sust"],
+                "remission": null,
+                "meaning": "Pasta usada en sopas, de forma similar a un ojo minúsculo.",
+                "styles": [],
+                "observation": "Normalmente en plural.",
+                "example": [
+                  {
+                    "value": "¿Y las sopas de letras, los caracolitos de colores, los *ojitos de diuca*: son menos engañifas que la cajita feliz?",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2009-04-28",
+                    "page": 34
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojito de gato",
+            "root": "ojito de gato",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "sust"],
+                "remission": "Bolita",
+                "meaning": "**Bolita** pequeña de cristal.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Las bolitas más populares son de cristal, acero, piedra o barro cocido y pintado y cada una tiene su nombre. Las más pequeñas de cristal se llaman \"*ojito de gato*\".",
+                    "author": null,
+                    "title": "Tiqui tiqui...",
+                    "source": "universidiario.cl",
+                    "date": "2009-06-23",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojo al charqui",
+            "root": "ojo al charqui",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "adv"],
+                "remission": null,
+                "meaning": "En actitud muy atenta y vigilante.",
+                "styles": ["espon", "fest"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "El intendente [...], pidió a choferes y transeúntes estar *ojo al charqui* con las medidas de seguridad.",
+                    "author": null,
+                    "title": "Como esclavos...",
+                    "source": "La Cuarta@",
+                    "date": "2004-02-19",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojo de gato",
+            "root": "ojo de gato",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "sust"],
+                "remission": null,
+                "meaning": "Pieza pequeña de plástico, de forma rectangular y chata, con material reflectante a sus lados y que se instala a ras de piso alineada junto con muchas otras para señalizar una vía.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Anoche venía de regreso (desde Temuco), y entre la lluvia (que me vino persiguiendo desde Los Ángeles) y la poca neblina, no se veía mucho. La parte desagradable es que en muchos sectores hay curvas no tan pronunciadas, pero que pierden por completo los *ojos de gato*, e incluso la línea del medio. Ni siquiera una baranda de referencia.",
+                    "author": null,
+                    "title": "Malditos ojos...",
+                    "source": "groups.google.cl / chile.mercado.vehiculos",
+                    "date": "2009-05-25",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojo de pollo",
+            "root": "ojo de pollo",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "sust"],
+                "remission": null,
+                "meaning": "Ano.",
+                "styles": ["vulgar"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "[...] alguna va a mostrar [...] el *ojo de pollo*.",
+                    "author": null,
+                    "title": "La lucha...",
+                    "source": "chile.com, Foro",
+                    "date": "2009-03-20",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojo, pestaña y ceja",
+            "root": "ojo, pestaña y ceja",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["fórm"],
+                "remission": null,
+                "meaning": "Se usa para instar a poner mucha atención o adoptar cautela.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "*Ojo, pestaña y ceja* que les tenemos una tremenda papita festivalera que desembuchar.",
+                    "author": null,
+                    "title": "T. I alista...",
+                    "source": "La Cuarta@",
+                    "date": "2007-02-16",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojo piojo",
+            "root": "ojo piojo",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["fórm"],
+                "remission": null,
+                "meaning": "Se usa para instar a poner mucha atención o adoptar cautela.",
+                "styles": ["espon", "fest"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "¡*Ojo piojo*, que la piscina puede convertirse en trampa mortal!",
+                    "author": null,
+                    "title": "¡Ojo piojo...",
+                    "source": "La Cuarta@",
+                    "date": "2007-01-24",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ojota",
+            "root": "ojota",
+            "values": [
+              {
+                "number": 1,
+                "origin": "quechua",
+                "categories": ["f"],
+                "remission": null,
+                "meaning": "Calzado abierto hecho de cuero de vaca o caucho, que se afirma al pie por medio de correas, usado principalmente por los trabajadores del campo chileno.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Todos eran pescadores, menos el carabinero, se entiende; y el cura, que nunca le trabajó un cinco a nadie; y el zapatero, que hacía *ojotas* y componía redes.",
+                    "author": "Varas",
+                    "title": null,
+                    "source": "Porái",
+                    "date": null,
+                    "page": 135
+                  }
+                ],
+                "variant": "hojota",
+                "expressions": [
+                  "mostrar la ojota",
+                  "salírsele a alguien la ojota",
+                  "vérsele a alguien la ojota"
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "okey",
+            "root": "okey",
+            "values": [
+              {
+                "number": 1,
+                "origin": "inglés",
+                "categories": ["adv"],
+                "remission": null,
+                "meaning": "Bien, en buen estado o condición.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "S. también hizo un paseo, pero reconoció que poco podía hacer al lado de A. D. \"Ella es sensacional. Igual mi percha está *okey*\", asumió.",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2009-01-31",
+                    "page": 32
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              },
+              {
+                "number": 2,
+                "origin": "inglés",
+                "categories": ["fórm"],
+                "remission": null,
+                "meaning": "Se usa para mostrar aprobación o conformidad.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Si hablaran de su comportamiento en el reality, *okey*. Pero considero que es una más de las faltas de respeto que se comete con tal de vender.",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2009-04-16",
+                    "page": 27
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "olivarino,-a",
+            "root": "olivarino,-a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj/sust"],
+                "remission": null,
+                "meaning": "Nacido o que vive en Olivar, comuna de la VI Región del Libertador General Bernardo O'Higgins.",
+                "styles": [],
+                "observation": null,
+                "example": [],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "olivo de Bohemia",
+            "root": "olivo de Bohemia",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m"],
+                "remission": null,
+                "meaning": "Árbol ornamental que resalta por el color plateado de su follaje y puede alcanzar hasta 10 m de altura.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Estos árboles son *olivos de Bohemia* y esos, altos, frondosos, se llaman pitosporos.",
+                    "author": "Peña",
+                    "title": null,
+                    "source": "Valparaíso",
+                    "date": null,
+                    "page": 28
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "olla común",
+            "root": "olla común",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "sust"],
+                "remission": null,
+                "meaning": "Comida sencilla que se prepara en gran cantidad para su consumo por parte de varias personas que se encuentran en situación de precariedad.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Cerca de la sede vecinal que cobija a los buzos en huelga, un grupo de mujeres se aprestaba a organizar una *olla común*.",
+                    "author": null,
+                    "title": "Buzos juran...",
+                    "source": "Crónica@",
+                    "date": "2003-07-22",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ollada",
+            "root": "ollada",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["f"],
+                "remission": null,
+                "meaning": "Cantidad *de alimento o líquido* que cabe en una olla.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Y cuando no hay, se hace una *ollada* de yerba buena y menta.",
+                    "author": "Montecino",
+                    "title": null,
+                    "source": "Voces",
+                    "date": null,
+                    "page": 453
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ollagüino,-a",
+            "root": "ollagüino,-a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj/sust"],
+                "remission": null,
+                "meaning": "De Ollagüe, comuna de la II Región de Antofagasta.",
+                "styles": [],
+                "observation": null,
+                "example": [],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ollazo",
+            "root": "ollazo",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m"],
+                "remission": null,
+                "meaning": "*En el fútbol*, disparo muy potente contra el arco del equipo contrario, hecho generalmente desde una gran distancia.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Y un \"*ollazo*\" terminó en un mal despeje de Muñoz y en una derecha furibunda de Ramírez que dejó la Copa Libertadores de América sin equipos chilenos en los octavos de final.",
+                    "author": null,
+                    "title": "En los descuentos...",
+                    "source": "Renacer Angol@",
+                    "date": "2006-04-20",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "olleta",
+            "root": "olleta",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["f"],
+                "remission": null,
+                "meaning": "Olla redondeada de metal, greda u otro material resistente, provista de tres o cuatro patas, que sirve para cocinar directamente sobre las brasas o suspendida sobre el fuego.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Entonces compraron ropa para el invierno, una *olleta* grande, una vaca y un burro.",
+                    "author": "Brunet",
+                    "title": null,
+                    "source": "Marisol",
+                    "date": null,
+                    "page": 25
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "olmueíno,-a",
+            "root": "olmueíno,-a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["adj/sust"],
+                "remission": null,
+                "meaning": "De Olmué, comuna de la V Región de Valparaíso.",
+                "styles": [],
+                "observation": null,
+                "example": [],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "olorosar",
+            "root": "olorosar",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["tr"],
+                "remission": null,
+                "meaning": "Oler, percibir el olor de *algo*.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Ahora mi duda es ¿estás seguro que hay olor a amor en el Peda? ¿No será que te confundiste y accidentalmente te *olorosaste* otra cosa?",
+                    "author": null,
+                    "title": "Se huele...",
+                    "source": "bananacorp.cl",
+                    "date": "2006-07-12",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "oro blanco",
+            "root": "oro blanco",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["loc", "sust"],
+                "meaning": "Salitre, mezcla de nitrato de sodio y nitrato de potasio que se encuentra naturalmente  en  partes  del  norte de Chile y que constituyó el principal sustento de la riqueza del  país  entre  fines  del  s.  XIX  y comienzos del s. XX.",
+                "styles": ["esm"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Los tocopillanos  no  apelamos  a  los  hechos históricos que hicieron de este puerto la alcancía de Chile en la época del apogeo del  oro  blanco.",
+                    "author": null,
+                    "title": "Voy a participar...",
+                    "source": "El mercurio",
+                    "date": "2000-03-29",
+                    "page": "p. A2 [cit. en DECh]"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "oro y cielo",
+            "root": "oro y cielo",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["loc", "sust"],
+                "meaning": "Jugador o  hincha  del  equipo  de  fútbol  de Everton.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "La  página  que ha  marcado  pauta  en  la  hinchada  *oro  y cielo*, ha sido Everton Chile.cl con cómics en contra de sus archirrivales y ahora asumiendo la bandera de lucha por todos los equipos de provincia.",
+                    "title": "Everton tocó...",
+                    "source": "Triunfo@",
+                    "date": "2008-06-03",
+                    "page": null
+                  }
+                ]
+              },
+              {
+                "number": 2,
+                "origin": null,
+                "remission": null,
+                "categories": ["loc", "adj"],
+                "meaning": "Relativo  al  equipo  de fútbol  de  Everton.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Parecía  injusto  que  los \"*oro y  cielo*\" se  fueran  al  descanso  sin  anotar. Pero recién iniciado el segundo lapso comenzó la ilusión.",
+                    "title": "Hinchas oro..",
+                    "source": "Triunfo@",
+                    "date": "2008-05-26",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "a toda orquesta",
+            "root": "orquesta",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["loc", "adv", "adj"],
+                "meaning": "Con mucha intensidad.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Estaba con una de esas bronconeumonías *a toda orquesta*.",
+                    "author": "Barrenechea",
+                    "title": "Frutos",
+                    "source": null,
+                    "date": null,
+                    "page": 10
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "orto",
+            "root": "orto",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Ano.",
+                "styles": ["vulgar"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Besaba de los dioses, así empezamos muchos juegos hasta que él me quiso tocar el *orto*",
+                    "author": null,
+                    "title": null,
+                    "source": "tusecretro.cl",
+                    "date": "2006-12-19",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "como el orto",
+            "root": "orto",
+            "values": [
+              {
+                "number": 1,
+                "categories": ["loc", "adv", "adj"],
+                "meaning": "Muy mal.",
+                "styles": ["vulgar"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "En  un  momento donde  hay  mucha  plata  en  la  calle,  fue una  caricatura  de  nuestro  avance:  buses nuevos que funcionan como el orto, el Metro  con  guardias  que  llevaban  sables láser  al  estilo  Skywalke.",
+                    "author": null,
+                    "title": "El año...",
+                    "source": "La Nación@",
+                    "date": "2007-12-30",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "oruga",
+            "root": "oruga",
+            "values": [
+              {
+                "number": 1,
+                "categories": ["m", "f"],
+                "meaning": "Bus  de  transporte público urbano de gran capacidad, compuesto por dos secciones unidas por un segmento de material flexible.",
+                "styles": [],
+                "observation": "Frecuentemente en aposición con \"bus\".",
+                "example": [
+                  {
+                    "value": "No les paraban y los asientos de los *orugas* ponían a prueba el equilibrio.",
+                    "author": null,
+                    "title": "No pensaron ...",
+                    "source": "La Cuarta@",
+                    "date": "2007-12-02",
+                    "page": null
+                  },
+                  {
+                    "value": "Hay recorridos desde 1921 hasta las *orugas* del Transantiago.",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2009-01-05",
+                    "page": 15
+                  },
+                  {
+                    "value": "Egoísta,  que  no  piensa  que  en  un bus  *oruga*  caben  100  pasajeros  contra  la mitad que lleva un bus pullman.",
+                    "author": null,
+                    "title": null,
+                    "source": null,
+                    "date": "2008-01-10",
+                    "page": 8
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "oscurón, -a",
+            "root": "oscurón, -a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["adj"],
+                "meaning": "Medianamente oscuro",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Con  esa  ropa  tan  rara, medio *oscurona*, en bicicleta y con un burro al lado que iba tan campante.",
+                    "author": "De la parra",
+                    "title": "Éxitos",
+                    "source": null,
+                    "date": null,
+                    "page": 185
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "osito",
+            "root": "osito",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Prenda  de  vestir  para niños pequeños, de una sola pieza, que cubre todo el cuerpo.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "*Osito* de algodón  con  un  bordado  de  conejito  en el  bolsillo  y  broches  diagonales,  que  le otorgan  un  particular  diseño  en  4  tonos, celeste, rosado, amarillo y verde, talla 2.",
+                    "author": null,
+                    "title": "Aprovecha la...",
+                    "source": "mercadolibre.cl",
+                    "date": "2007-10-29",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "osnaburgo",
+            "root": "osnaburgo",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Tela delgada y de  color  crudo,  generalmente  de lino  o  algodón,  que  se  utiliza  para confeccionar paños de cocina, sacos  o  prendas  ligeras.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Es  posible que  Neruda  usara  prendas  interiores  de *osnaburgo*, como se llama técnicamente la tela  con  que  se  confeccionaban  los  sacos de  harina  cruda.",
+                    "author": null,
+                    "title": "De osnaburgo",
+                    "source": "Estrella Arica@",
+                    "date": "2004-06-01",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "osobuco",
+            "root": "osobuco",
+            "values": [
+              {
+                "number": 1,
+                "origin": "italiano",
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Corte de carne de vacuno de forma redonda,  con  hueso  en  el  centro, que se saca de la parte inferior de los cuartos del animal.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Un kilo de cazuela de  vacuno,  de  *osobuco*  o  de  espinazo  de cordero.",
+                    "author": "Huneeus",
+                    "title": "De osnaburgo",
+                    "source": "Manual [CREA]",
+                    "date": null,
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "osornino, -a",
+            "root": "osornino, -a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["adj", "sust"],
+                "meaning": "De Osorno, comuna de la X Región de Los Lagos.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": null,
+                    "author": null,
+                    "title": null,
+                    "source": null,
+                    "date": null,
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "ossobuco",
+            "root": "ossobuco",
+            "values": [
+              {
+                "number": 1,
+                "origin": "italiano",
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "**osobuco**",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Con el mismo fanatismo busca  en  el  cabernet  sauvignon  toda  la potencia de los taninos, para darle fuerza a  su  caldo  de  *ossobuco*",
+                    "author": null,
+                    "title": "Cocinae con...",
+                    "source": "Qué Pasa@",
+                    "date": "2006-05-13",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "otorgación",
+            "root": "otorgación",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["f"],
+                "meaning": "Otorgamiento, concesión, entrega de algún beneficio.",
+                "styles": ["p. us."],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "En estos momentos somos el patio trasero en le *otorgación* de fondos por parte del Estado, prueba de ello es que cerca del sesenta por ciento de los fondos de desarrollo regional se queda en tres comunas.",
+                    "author": null,
+                    "title": "Munis se sienten...",
+                    "source": "La Cuarta@",
+                    "date": "2003-02-03",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "outlet",
+            "root": "outlet",
+            "values": [
+              {
+                "number": 1,
+                "origin": "inglés",
+                "remission": null,
+                "categories": ["adj/sust"],
+                "meaning": "*Referido a una venta*, que ofrece productos sobrantes o de otras temporadas que están en almacén a menor precio del habitual.",
+                "styles": [],
+                "observation": "Se pronuncia [áutlet]",
+                "example": [
+                  {
+                    "value": "Y como la idea es ahorrar, sobre todo en tiempos de crisis, las ventas de *outlet* y de bodega pueden ser una buena alternativa para pasar el mes más complejo.",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2009-02-13",
+                    "page": 17
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              },
+              {
+                "number": 2,
+                "origin": "inglés",
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Establecimiento en el que se realiza la venta de productos sobrantes o de otras temporadas que están en almacén.",
+                "styles": [],
+                "observation": "Se pronuncia [áutlet]",
+                "example": [
+                  {
+                    "value": "Venta se desarrollará en el *outlet* de Quilicura hasta el 24 de diciembre.",
+                    "author": null,
+                    "title": null,
+                    "source": "LUN",
+                    "date": "2008-12-12",
+                    "page": 17
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ovallino, -a",
+            "root": "ovallino, -a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["adj/sust"],
+                "meaning": "De Ovalle, comuna de la IV Región de Coquimbo.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": null,
+                    "author": null,
+                    "title": null,
+                    "source": null,
+                    "date": null,
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ovejería",
+            "root": "ovejería",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["f"],
+                "meaning": "Crianza de ganado ovino.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "En Chile se pueden reconocer dos zonas para la *ovejería*. La austral, con Aisén y Magallanes, que tienen toda una tradición en el rubro y que por clima están destinadas aser ovejeras, sobre todo la XI Región. Y la zona centro sur que tiene dos sectores marcados, pero que por ahora no tienen una masa ganadera apropiada.",
+                    "author": null,
+                    "title": "Los ovinos...",
+                    "source": "chilepotencialalimentaria.cl",
+                    "date": "2007-12-18",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              },
+              {
+                "number": 2,
+                "origin": null,
+                "remission": null,
+                "categories": ["f"],
+                "meaning": "Lugar donde se crían o guardan ovejas.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "\"Además, que ocupan menos mano de obra y es un rubro que en Europa, por ejemplo, se están cambiando *ovejerías* por lecherías por la reducción de los subsidios y eso que la lechería está en su apogeo\", señala L. G.",
+                    "author": null,
+                    "title": "Los ovinos...",
+                    "source": "chilepotencialalimentaria.cl",
+                    "date": "2007-12-18",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "overlista",
+            "root": "overlista",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m-f"],
+                "meaning": "Experto en costura de overlock, cierta máquina de coser que remata las junturas de las prendas.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Necesito singerista, *overlista*, botonera, experiencia, buen trato [...].",
+                    "author": null,
+                    "title": null,
+                    "source": "El Rastro",
+                    "date": "1999-03-26",
+                    "page": 20
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "overo, -a",
+            "root": "overo, -a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["adj/sust"],
+                "meaning": "*Referido al ganado mayor, especialmente aun caballo*, de color claro, generalmente blanco, y con manchas más o menos extensas de otro color más oscuro.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Durante un Rodeo Zonal en la medialuna de La Unión, un grupo de asistentes a la tribuna y muy chistosos, al ver que montaba un caballo *overo*, no vacilaron en gritale \"indio\". De inmediato, el jinete les respondió desde la pista \"Sí, pero yo me bajo y se me quita\".",
+                    "author": null,
+                    "title": "La picardía...",
+                    "source": "caballoyrodeo.cl",
+                    "date": "2007-09-28",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ovoide",
+            "root": "ovoide",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Paquete con forma de huevo en el que se contrabandea droga.",
+                "styles": ["esm"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "En prisión preventiva en la Cárcel de Acha quedó ciudadano peruano, quien fue detenido por transportar 95 *ovoides* con clorhidrato de cocaína, en el Complejo Fronterizo Chacalluta.",
+                    "author": null,
+                    "title": null,
+                    "source": "Estrella Arica@",
+                    "date": "2007-07-05",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "oxigenista",
+            "root": "oxigenista",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m-f"],
+                "meaning": "Persona especializada en realizar soldaduras con oxígeno.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Hola, yo tengo 38 años, he trabajado en B. y en otras constructoras, yo he sido jefe, soldador, pintor, *oxigenista*, etc.",
+                    "author": null,
+                    "title": "Owtro trabajo...",
+                    "source": "talcahuano.oxl.cl",
+                    "date": "2009-05-23",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "oxtail",
+            "root": "oxtail",
+            "values": [
+              {
+                "number": 1,
+                "origin": "inglés",
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Sopa de cola de buey.",
+                "styles": [],
+                "observation": "Se pronuncia [óxteil]",
+                "example": [
+                  {
+                    "value": "*Oxtail* con tallarines alemanes hechos en casa.",
+                    "author": null,
+                    "title": "Hay que...",
+                    "source": "Mercurio Calama@",
+                    "date": "2004-09-16",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "omelet",
+            "root": "omelet",
+            "values": [
+              {
+                "number": 1,
+                "origin": "francés",
+                "categories": ["m o f"],
+                "remission": "omelette",
+                "meaning": "",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "La quinta comida puede ser un *omelet* de espárragos con 6 a 8 claras de huevo.",
+                    "author": null,
+                    "title": "Recomendaciones...",
+                    "source": "totalnutricion.cl",
+                    "date": "2007-08-03",
+                    "page": null
+                  },
+                  {
+                    "value": "Lo único que le importa a la gente es el precio, no les preocupa si les sirves un trago o un *omelet* caliente.",
+                    "author": null,
+                    "title": "Viajes aéreos...",
+                    "source": "businesschile.cl",
+                    "date": "2007-08-03",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "omelette",
+            "root": "omelette",
+            "values": [
+              {
+                "number": 1,
+                "origin": "francés",
+                "categories": ["m o f"],
+                "remission": null,
+                "meaning": "Tortilla hecha con huevo batido y rellena con algún otro ingrediente como queso, jamón o vegetales.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Agregue los champiñones, doble el *omelette* y deslice al centro del sartén.",
+                    "author": null,
+                    "title": "Omelette de...",
+                    "source": "martita.cl",
+                    "date": "2007-08-03",
+                    "page": null
+                  },
+                  {
+                    "value": "Prepare la otra *omelette* de igual forma.",
+                    "author": null,
+                    "title": "Omelette de...",
+                    "source": "nestle.cl",
+                    "date": "2007-08-03",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ona",
+            "root": "ona",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m-f"],
+                "remission": "ona",
+                "meaning": "Individuo de un pueblo indígena amerindio que habitó parte del extremo austral de Sudamérica (Isla Grande de Tierra del Fuego), de costumbres nómadas terrestres, y que vivía de la caza y la recolección de alimentos.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Me ha hablado de la inexplorada Tierra del Fuego donde están los yaganes y los *onas*.",
+                    "author": "Campos",
+                    "title": null,
+                    "source": "Pioneros",
+                    "date": null,
+                    "page": 17
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              },
+              {
+                "number": 2,
+                "origin": null,
+                "categories": ["m"],
+                "remission": null,
+                "meaning": "Lengua hablada por los **onas**.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Así, solamente en nuestro siglo se han extinguido tres lenguas indoamericanas chilenas: el kunza o atacameño del Gran Salar de Atacama, el *ona* o selk'nam de Tierra del Fuego, y el yámana o yagán de los canales Australes.",
+                    "author": null,
+                    "title": "Variación sociocultural...",
+                    "source": "rmm.cl",
+                    "date": null,
+                    "page": 17
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              },
+              {
+                "number": 3,
+                "origin": null,
+                "categories": ["adj"],
+                "remission": null,
+                "meaning": "Relativo a los **onas**.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Esta realidad y el destino de los pueblos originarios de Tierra del Fuego preocupó a los integrantes de esta expedición y en especial a Väinö Auer quien le dedicó a la cultura *ona* un crítico y extenso capítulo en su libro \"Un pueblo moribundo\".",
+                    "author": null,
+                    "title": "Polémica en Magallanes...",
+                    "source": "La Nación@",
+                    "date": "2007-06-26",
+                    "page": 17
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "once",
+            "root": "once",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["f"],
+                "remission": null,
+                "meaning": "Comida principal de la tarde, que se toma entre el almuerzo y la cena, que consiste generalmente en una bebida caliente acompañada de pan.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "AL almuerzo te servían tres platos, en la tarde, *once* y comida.",
+                    "author": "Montecino",
+                    "title": null,
+                    "source": "Voces",
+                    "date": null,
+                    "page": 100
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "oncecomida",
+            "root": "oncecomida",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["f"],
+                "remission": null,
+                "meaning": "Comida que se toma en lugar de la **once** y la cena a la vez.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Excelente habitación en casa independiente, desayuno almuerzo y *oncecomida*.",
+                    "author": null,
+                    "title": null,
+                    "source": "vivastreet.cl",
+                    "date": "2007-06-18",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "onda",
+            "root": "onda",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["marc", "disc"],
+                "remission": null,
+                "meaning": "*Especialmente entre los jóvenes*, se usa para indicar que lo que se dirá a continuación es una explicación o una reformulación de lo dicho inmediatamente antes.",
+                "styles": ["espon."],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Señalaron que NN sería “bodeguera”, *onda* que guardaba droga.",
+                    "author": null,
+                    "title": "Galán de...",
+                    "source": "La Cuarta@",
+                    "date": "2007-02-15",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "buena onda",
+            "root": "onda",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "adj/sust"],
+                "remission": null,
+                "meaning": "*Referido a una persona*, de carácter simpático.",
+                "styles": ["espon."],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Solo busco una mina *buena onda* que quiera pasarlo bien, carrete, salir, etc.",
+                    "author": null,
+                    "title": "Busco mina",
+                    "source": "adoos.cl",
+                    "date": "2008-03-18",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "¿qué onda?",
+            "root": "onda",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["fórm"],
+                "remission": null,
+                "meaning": "*Especialmente entre, los jóvenes*, se usa para instar al interlocutor a informar al hablante sobre algo.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Oye, ¿qué *onda* con el Máquina Miranda ese?",
+                    "author": null,
+                    "title": "XS, la peor talla",
+                    "source": null,
+                    "date": "18:39",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "onderismo",
+            "root": "onderismo",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["m"],
+                "remission": null,
+                "meaning": "Actitud de constante seguimiento de las modas más recientes y prestigiosas.",
+                "styles": ["p", "us"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "No me quiero dar [sic] de masajista ni mucho menos porque me da arcadas el *onderismo* con las sesiones de masajes.",
+                    "author": "Errázuriz",
+                    "title": "Carne",
+                    "source": null,
+                    "date": null,
+                    "page": 49
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "ondero, -a",
+            "root": "ondero, -a",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["adj/sust"],
+                "meaning": "Que le gusta seguir las modas más recientes y prestigiosas.",
+                "styles": ["espon"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Para los más *onderos*, el dato es partir a Cacano (frente a la plaza principal).",
+                    "author": "Domingo",
+                    "title": null,
+                    "source": "El Mercurio",
+                    "date": "2006-09-06",
+                    "page": 9
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "lemma": "ondulín",
+            "root": "ondulín",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["m"],
+                "meaning": "Tubo pequeño utilizado para ondular el cabello.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Compra tubos (*ondulines* [...] y afírmalos bien en las puntas no más, no enrolles el pelo entero al tubo porque te va a quedar un rulo en vez de la curvita.",
+                    "author": "Pelucas",
+                    "title": "Pelucas...",
+                    "source": "cosplayelite.cl",
+                    "date": "2008-01-12",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          },
+          {
+            "lemma": "onofre",
+            "root": "onofre",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "remission": null,
+                "categories": ["fórm"],
+                "meaning": "Se usa para buscar la aprobación del interlocutor frente a algo que se ha dicho.",
+                "styles": ["espon", "fest"],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "El hombre demostró que siendo vendedor ambulante también se puede derrotar la pobreza y ser alguien en esta perra vida, ¿*onofre*?",
+                    "author": "La Cuarta@",
+                    "title": "Conejo Martínez...",
+                    "source": null,
+                    "date": "2006-12-10",
+                    "page": null
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "letter": "v",
+        "values": [
+          {
+            "lemma": "viejo del saco",
+            "root": "viejo del saco",
+            "values": [
+              {
+                "number": 1,
+                "origin": null,
+                "categories": ["loc", "sust"],
+                "remission": null,
+                "meaning": "*En la mitología popular*, anciano que recorre  las  calles  de  la  ciudad  con un saco, en el que se lleva a los niños que se portan mal.",
+                "styles": [],
+                "observation": null,
+                "example": [
+                  {
+                    "value": "Si te portas mal, te va a llevar el *viejo del saco*",
+                    "author": null,
+                    "title": "El viejo...",
+                    "source": "jes.cl",
+                    "date": "2007-10-12",
+                    "page": null
+                  }
+                ],
+                "variant": null,
+                "expressions": []
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 ]

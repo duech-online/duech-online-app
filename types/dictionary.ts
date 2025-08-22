@@ -52,22 +52,22 @@ export interface SearchResult {
 export const GRAMMATICAL_CATEGORIES: Record<string, string> = {
   m: 'Masculino',
   f: 'Femenino',
-  'adj': 'Adjetivo',
+  adj: 'Adjetivo',
   'adj/sust': 'Adjetivo/Sustantivo',
   'adj/adv': 'Adjetivo/Adverbio',
-  'sust': 'Sustantivo',
-  'tr': 'Transitivo',
-  'intr': 'Intransitivo',
-  'interj': 'Interjección',
-  'loc': 'Locución',
+  sust: 'Sustantivo',
+  tr: 'Transitivo',
+  intr: 'Intransitivo',
+  interj: 'Interjección',
+  loc: 'Locución',
   'loc sust': 'Locución sustantiva',
   'loc adv': 'Locución adverbial',
   'loc adj': 'Locución adjetiva',
-  'fórm': 'Fórmula',
-  'marc': 'Marcador',
-  'disc': 'Discursivo',
+  fórm: 'Fórmula',
+  marc: 'Marcador',
+  disc: 'Discursivo',
   'm-f': 'Masculino-Femenino',
-  'pron': 'Pronombre',
+  pron: 'Pronombre',
   'm o f': 'Masculino o Femenino',
 };
 
@@ -79,8 +79,8 @@ export const USAGE_STYLES: Record<string, string> = {
   hist: 'Histórico',
   esm: 'Esmerado',
   'p. us.': 'Poco usado',
-  'p': 'Poco usado',
-  'us': 'Usado',
+  p: 'Poco usado',
+  us: 'Usado',
 };
 
 // Regional markers

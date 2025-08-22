@@ -11,26 +11,17 @@ export async function GET(request: NextRequest) {
 
     // Input validation
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Query parameter is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 });
     }
 
     // Prevent excessively long queries
     if (query.length > 100) {
-      return NextResponse.json(
-        { error: 'Query too long' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Query too long' }, { status: 400 });
     }
 
     // Validate pagination parameters
     if (page < 1 || limit < 1) {
-      return NextResponse.json(
-        { error: 'Invalid pagination parameters' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid pagination parameters' }, { status: 400 });
     }
 
     const normalizedQuery = query.toLowerCase().trim();
@@ -38,9 +29,9 @@ export async function GET(request: NextRequest) {
     const results: SearchResult[] = [];
 
     // Search logic (same as before but with server-side processing)
-    dictionaries.forEach(dict => {
-      dict.value.forEach(letterGroup => {
-        letterGroup.values.forEach(word => {
+    dictionaries.forEach((dict) => {
+      dict.value.forEach((letterGroup) => {
+        letterGroup.values.forEach((word) => {
           // Exact match
           if (word.lemma.toLowerCase() === normalizedQuery) {
             results.push({
@@ -59,7 +50,7 @@ export async function GET(request: NextRequest) {
           }
           // Search in definitions
           else {
-            const hasDefinitionMatch = word.values.some(def =>
+            const hasDefinitionMatch = word.values.some((def) =>
               def.meaning.toLowerCase().includes(normalizedQuery)
             );
             if (hasDefinitionMatch) {
@@ -96,16 +87,12 @@ export async function GET(request: NextRequest) {
           total: sortedResults.length,
           totalPages: Math.ceil(sortedResults.length / limit),
           hasNext: endIndex < sortedResults.length,
-          hasPrev: page > 1
-        }
-      }
+          hasPrev: page > 1,
+        },
+      },
     });
-
   } catch (error) {
     console.error('Error in search API:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

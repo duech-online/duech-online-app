@@ -3,11 +3,11 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
-import { 
-  advancedSearch, 
-  getAvailableCategories, 
+import {
+  advancedSearch,
+  getAvailableCategories,
   getAvailableStyles,
-  getAvailableOrigins 
+  getAvailableOrigins,
 } from '@/lib/dictionary';
 import { SearchResult } from '@/types/dictionary';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
@@ -18,11 +18,11 @@ export default function AdvancedSearchPage() {
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [selectedOrigin, setSelectedOrigin] = useState('');
   const [selectedLetter, setSelectedLetter] = useState('');
-  
+
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [availableStyles, setAvailableStyles] = useState<string[]>([]);
   const [availableOrigins, setAvailableOrigins] = useState<string[]>([]);
-  
+
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
@@ -32,7 +32,7 @@ export default function AdvancedSearchPage() {
     total: 0,
     totalPages: 0,
     hasNext: false,
-    hasPrev: false
+    hasPrev: false,
   });
 
   const alphabet = 'abcdefghijklmnopqrstuvwxyz'.split('');
@@ -42,7 +42,7 @@ export default function AdvancedSearchPage() {
       const [cats, styles, origins] = await Promise.all([
         getAvailableCategories(),
         getAvailableStyles(),
-        getAvailableOrigins()
+        getAvailableOrigins(),
       ]);
       setAvailableCategories(cats);
       setAvailableStyles(styles);
@@ -54,14 +54,14 @@ export default function AdvancedSearchPage() {
   const handleSearch = async () => {
     setLoading(true);
     setHasSearched(true);
-    
+
     try {
       const searchData = await advancedSearch({
         query: query.trim(),
         categories: selectedCategories,
         styles: selectedStyles,
         origin: selectedOrigin,
-        letter: selectedLetter
+        letter: selectedLetter,
       });
       setResults(searchData.results);
       setPagination(searchData.pagination);
@@ -73,18 +73,14 @@ export default function AdvancedSearchPage() {
   };
 
   const handleCategoryToggle = (category: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(category)
-        ? prev.filter(c => c !== category)
-        : [...prev, category]
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
     );
   };
 
   const handleStyleToggle = (style: string) => {
-    setSelectedStyles(prev =>
-      prev.includes(style)
-        ? prev.filter(s => s !== style)
-        : [...prev, style]
+    setSelectedStyles((prev) =>
+      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
     );
   };
 
@@ -99,17 +95,17 @@ export default function AdvancedSearchPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold text-duech-blue mb-10">Búsqueda Avanzada</h1>
+    <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <h1 className="text-duech-blue mb-10 text-4xl font-bold">Búsqueda Avanzada</h1>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-1">
-          <div className="bg-white rounded-xl shadow-lg p-8 sticky top-4 border-t-4 border-duech-gold">
-            <h2 className="text-2xl font-bold text-duech-blue mb-6">Filtros</h2>
-            
+          <div className="border-duech-gold sticky top-4 rounded-xl border-t-4 bg-white p-8 shadow-lg">
+            <h2 className="text-duech-blue mb-6 text-2xl font-bold">Filtros</h2>
+
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   Término de búsqueda
                 </label>
                 <input
@@ -117,21 +113,21 @@ export default function AdvancedSearchPage() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Buscar en lemmas y definiciones..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   Letra inicial
                 </label>
                 <select
                   value={selectedLetter}
                   onChange={(e) => setSelectedLetter(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">Todas las letras</option>
-                  {alphabet.map(letter => (
+                  {alphabet.map((letter) => (
                     <option key={letter} value={letter}>
                       {letter.toUpperCase()}
                     </option>
@@ -140,17 +136,17 @@ export default function AdvancedSearchPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   Categorías gramaticales
                 </label>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {availableCategories.map(category => (
+                <div className="max-h-48 space-y-2 overflow-y-auto">
+                  {availableCategories.map((category) => (
                     <label key={category} className="flex items-center">
                       <input
                         type="checkbox"
                         checked={selectedCategories.includes(category)}
                         onChange={() => handleCategoryToggle(category)}
-                        className="mr-2 text-blue-600 rounded focus:ring-blue-500"
+                        className="mr-2 rounded text-blue-600 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">
                         {GRAMMATICAL_CATEGORIES[category] || category}
@@ -161,37 +157,33 @@ export default function AdvancedSearchPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="mb-2 block text-sm font-medium text-gray-700">
                   Estilos de uso
                 </label>
-                <div className="space-y-2 max-h-48 overflow-y-auto">
-                  {availableStyles.map(style => (
+                <div className="max-h-48 space-y-2 overflow-y-auto">
+                  {availableStyles.map((style) => (
                     <label key={style} className="flex items-center">
                       <input
                         type="checkbox"
                         checked={selectedStyles.includes(style)}
                         onChange={() => handleStyleToggle(style)}
-                        className="mr-2 text-blue-600 rounded focus:ring-blue-500"
+                        className="mr-2 rounded text-blue-600 focus:ring-blue-500"
                       />
-                      <span className="text-sm text-gray-700">
-                        {USAGE_STYLES[style] || style}
-                      </span>
+                      <span className="text-sm text-gray-700">{USAGE_STYLES[style] || style}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Origen
-                </label>
+                <label className="mb-2 block text-sm font-medium text-gray-700">Origen</label>
                 <select
                   value={selectedOrigin}
                   onChange={(e) => setSelectedOrigin(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none"
                 >
                   <option value="">Todos los orígenes</option>
-                  {availableOrigins.map(origin => (
+                  {availableOrigins.map((origin) => (
                     <option key={origin} value={origin}>
                       {origin}
                     </option>
@@ -202,13 +194,13 @@ export default function AdvancedSearchPage() {
               <div className="flex gap-2">
                 <button
                   onClick={handleSearch}
-                  className="flex-1 px-6 py-3 bg-duech-blue text-white font-semibold text-lg rounded-lg hover:bg-blue-800 transition-all duration-200 shadow-lg"
+                  className="bg-duech-blue flex-1 rounded-lg px-6 py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-800"
                 >
                   Buscar
                 </button>
                 <button
                   onClick={clearFilters}
-                  className="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 transition-colors"
+                  className="rounded-lg bg-gray-200 px-6 py-3 font-semibold text-gray-800 transition-colors hover:bg-gray-300"
                 >
                   Limpiar
                 </button>
@@ -221,44 +213,45 @@ export default function AdvancedSearchPage() {
           {loading ? (
             <div className="space-y-4">
               {[...Array(3)].map((_, i) => (
-                <div key={i} className="bg-white rounded-lg shadow p-6 animate-pulse">
-                  <div className="h-6 bg-gray-200 rounded w-1/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                <div key={i} className="animate-pulse rounded-lg bg-white p-6 shadow">
+                  <div className="mb-2 h-6 w-1/4 rounded bg-gray-200"></div>
+                  <div className="mb-2 h-4 w-3/4 rounded bg-gray-200"></div>
+                  <div className="h-4 w-1/2 rounded bg-gray-200"></div>
                 </div>
               ))}
             </div>
           ) : hasSearched ? (
             results.length > 0 ? (
               <>
-                <p className="text-gray-600 mb-4">
+                <p className="mb-4 text-gray-600">
                   Se encontraron {results.length} resultado{results.length !== 1 ? 's' : ''}
                 </p>
                 <div className="space-y-4">
                   {results.map((result, index) => {
                     const firstDefinition = result.word.values[0];
-                    const truncatedMeaning = firstDefinition.meaning.length > 200
-                      ? firstDefinition.meaning.substring(0, 200) + '...'
-                      : firstDefinition.meaning;
+                    const truncatedMeaning =
+                      firstDefinition.meaning.length > 200
+                        ? firstDefinition.meaning.substring(0, 200) + '...'
+                        : firstDefinition.meaning;
 
                     return (
                       <Link
                         key={`${result.word.lemma}-${index}`}
                         href={`/palabra/${encodeURIComponent(result.word.lemma)}`}
-                        className="block bg-white rounded-lg shadow hover:shadow-md transition-shadow p-6"
+                        className="block rounded-lg bg-white p-6 shadow transition-shadow hover:shadow-md"
                       >
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">
+                            <h3 className="mb-2 text-xl font-bold text-gray-900">
                               {result.word.lemma}
                             </h3>
-                            
+
                             {firstDefinition.categories.length > 0 && (
-                              <div className="flex flex-wrap gap-1 mb-3">
+                              <div className="mb-3 flex flex-wrap gap-1">
                                 {firstDefinition.categories.map((cat, catIndex) => (
                                   <span
                                     key={catIndex}
-                                    className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-700 rounded"
+                                    className="inline-block rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
                                   >
                                     {cat}
                                   </span>
@@ -266,7 +259,7 @@ export default function AdvancedSearchPage() {
                               </div>
                             )}
 
-                            <div className="text-gray-700 mb-2">
+                            <div className="mb-2 text-gray-700">
                               <MarkdownRenderer content={truncatedMeaning} />
                             </div>
 
@@ -276,9 +269,9 @@ export default function AdvancedSearchPage() {
                               </p>
                             )}
                           </div>
-                          
+
                           <svg
-                            className="w-5 h-5 text-gray-400 ml-4 flex-shrink-0"
+                            className="ml-4 h-5 w-5 flex-shrink-0 text-gray-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -297,9 +290,9 @@ export default function AdvancedSearchPage() {
                 </div>
               </>
             ) : (
-              <div className="bg-white rounded-lg shadow p-8 text-center">
+              <div className="rounded-lg bg-white p-8 text-center shadow">
                 <svg
-                  className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                  className="mx-auto mb-4 h-16 w-16 text-gray-400"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -311,18 +304,16 @@ export default function AdvancedSearchPage() {
                     d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                <h3 className="mb-2 text-lg font-medium text-gray-900">
                   No se encontraron resultados
                 </h3>
-                <p className="text-gray-600">
-                  Intenta ajustar los filtros de búsqueda
-                </p>
+                <p className="text-gray-600">Intenta ajustar los filtros de búsqueda</p>
               </div>
             )
           ) : (
-            <div className="bg-gray-50 rounded-lg p-8 text-center">
+            <div className="rounded-lg bg-gray-50 p-8 text-center">
               <svg
-                className="w-16 h-16 text-gray-400 mx-auto mb-4"
+                className="mx-auto mb-4 h-16 w-16 text-gray-400"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -334,9 +325,7 @@ export default function AdvancedSearchPage() {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Búsqueda avanzada
-              </h3>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">Búsqueda avanzada</h3>
               <p className="text-gray-600">
                 Utiliza los filtros de la izquierda para buscar palabras específicas
               </p>

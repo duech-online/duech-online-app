@@ -29,17 +29,19 @@ export async function loadDictionaryServer(): Promise<Dictionary[]> {
 /**
  * Get word by lemma (server-side)
  */
-export async function getWordByLemmaServer(lemma: string): Promise<{ word: Word; letter: string } | null> {
+export async function getWordByLemmaServer(
+  lemma: string
+): Promise<{ word: Word; letter: string } | null> {
   const dictionaries = await loadDictionaryServer();
-  
+
   for (const dict of dictionaries) {
     for (const letterGroup of dict.value) {
-      const word = letterGroup.values.find(w => w.lemma === lemma);
+      const word = letterGroup.values.find((w) => w.lemma === lemma);
       if (word) {
         return { word, letter: letterGroup.letter };
       }
     }
   }
-  
+
   return null;
 }

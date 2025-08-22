@@ -2,7 +2,7 @@ name: Check format and build
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   workflow_dispatch:
 
 jobs:
@@ -33,7 +33,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
       - name: Install dependencies
@@ -46,7 +46,6 @@ jobs:
           else
             npm run format -- --check
           fi
-
 
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
