@@ -1,106 +1,125 @@
-# DUECh Online - Diccionario del Español de Chile
+# DUECh Online - Dictionary of Chilean Spanish
 
-MVP de aplicación web para el Diccionario del uso del español de Chile (DUECh).
+MVP web application for the Dictionary of Chilean Spanish Usage (DUECh).
 
-## Descripción
+## Description
 
-Esta aplicación web permite explorar y buscar palabras del español chileno, incluyendo chilenismos, modismos y expresiones propias del país. El proyecto está diseñado con una arquitectura modular para facilitar la futura integración con Neo4j.
+This web application allows exploring and searching words from Chilean Spanish, including chileanisms, idioms, and expressions typical of the country. The project is designed with a modular architecture to facilitate future integration with Neo4j.
 
-## Características
+## Features
 
-- **Búsqueda rápida**: Busca palabras por lemma o contenido en las definiciones
-- **Lotería de palabras**: Descubre una palabra aleatoria cada vez que visitas la página principal
-- **Búsqueda avanzada**: Filtra por categorías gramaticales, estilos de uso, origen y letra inicial
-- **Visualización detallada**: Explora definiciones completas con ejemplos, variantes y expresiones relacionadas
-- **Diseño responsivo**: Interfaz optimizada para dispositivos móviles y escritorio
+- **Quick search**: Search words by lemma or content in definitions
+- **Word lottery**: Discover a random word every time you visit the main page
+- **Advanced search**: Filter by grammatical categories, usage styles, origin, and initial letter
+- **Detailed visualization**: Explore complete definitions with examples, variants, and related expressions
+- **Responsive design**: Interface optimized for mobile and desktop devices
 
-## Tecnologías
+## Technologies
 
-- **Next.js 14** con App Router
-- **TypeScript** para tipado estático
-- **TailwindCSS** para estilos
-- **ESLint y Prettier** para calidad de código
+- **Next.js 15** with App Router and Turbopack
+- **React 19** for UI components
+- **TypeScript** for static typing
+- **TailwindCSS v4** for styling
+- **ESLint and Prettier** for code quality
+- **React Markdown** for content rendering
 
-## Instalación
+## Installation
 
-1. Asegúrate de tener Node.js 18+ instalado
+1. Make sure you have Node.js 18+ installed
 
-2. Instala las dependencias:
+2. Install dependencies:
 
 ```bash
 npm install
 ```
 
-## Ejecución
+## Running the Application
 
-### Modo desarrollo
+### Development mode
 
 ```bash
 npm run dev
 ```
 
-La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
+The application will be available at [http://localhost:3000](http://localhost:3000)
 
-### Modo producción
+### Production mode
 
 ```bash
 npm run build
 npm run start
 ```
 
-## Estructura del proyecto
+## Project Structure
 
 ```
 duech-online-app/
-├── app/                    # Páginas y rutas (App Router)
-│   ├── page.tsx           # Página principal
-│   ├── search/            # Página de resultados de búsqueda
-│   ├── palabra/[id]/      # Página de detalle de palabra
-│   ├── busqueda-avanzada/ # Página de búsqueda avanzada
-│   ├── recursos/          # Página de recursos
-│   └── acerca/            # Página acerca del proyecto
-├── components/            # Componentes reutilizables
-│   ├── SearchBar.tsx     # Barra de búsqueda
-│   └── WordOfTheDay.tsx  # Componente de palabra aleatoria
-├── lib/                   # Utilidades y lógica de negocio
-│   └── dictionary.ts     # Funciones para manejo de datos
-├── types/                 # Definiciones de TypeScript
-│   └── dictionary.ts     # Tipos para el diccionario
-└── public/
-    └── data/
-        └── example.json  # Datos del diccionario (mock)
+├── app/                     # Pages and routes (App Router)
+│   ├── page.tsx            # Main page
+│   ├── api/                # API routes
+│   │   ├── metadata/       # Metadata API endpoint
+│   │   ├── search/         # Search API endpoints
+│   │   └── words/          # Words API endpoints
+│   ├── search/             # Search results page
+│   ├── palabra/[id]/       # Word detail page
+│   ├── busqueda-avanzada/  # Advanced search page
+│   ├── recursos/           # Resources page
+│   └── acerca/             # About page
+├── components/             # Reusable components
+│   ├── SearchBar.tsx      # Search bar component
+│   ├── WordOfTheDay.tsx   # Random word component
+│   └── MarkdownRenderer.tsx # Markdown rendering component
+├── lib/                    # Utilities and business logic
+│   ├── dictionary.ts      # Client-side dictionary functions
+│   └── dictionary-server.ts # Server-side dictionary functions
+├── types/                  # TypeScript definitions
+│   └── dictionary.ts      # Dictionary types
+├── data/                   # Data files
+│   └── example.json       # Dictionary data
+└── public/                 # Static assets
+    └── [various SVG icons and images]
 ```
 
-## Datos
+## Data
 
-Actualmente la aplicación utiliza el archivo `example.json` del repositorio `duech-online-parsing` como fuente de datos. Este archivo contiene una muestra de entradas del diccionario con su estructura completa.
+The application currently uses the `example.json` file from the `duech-online-parsing` repository as its data source. This file contains a sample of dictionary entries with their complete structure.
 
-## Desarrollo futuro
+## API Endpoints
 
-- Integración con base de datos Neo4j para relaciones semánticas
-- API REST para acceso programático
-- Sistema de contribuciones de usuarios
-- Visualizaciones de relaciones entre palabras
-- Exportación de datos en diferentes formatos
+The application includes several API endpoints:
 
-## Scripts disponibles
+- `/api/search` - Basic text search
+- `/api/search/advanced` - Advanced search with filters
+- `/api/words/[lemma]` - Get specific word by lemma
+- `/api/words/random` - Get random word
+- `/api/metadata` - Get dictionary metadata
 
-- `npm run dev` - Inicia el servidor de desarrollo
-- `npm run build` - Construye la aplicación para producción
-- `npm run start` - Inicia el servidor de producción
-- `npm run lint` - Ejecuta el linter
-- `npm run format` - Formatea el código con Prettier
+## Future Development
 
-## Contribuir
+- Integration with Neo4j database for semantic relationships
+- REST API for programmatic access
+- User contribution system
+- Word relationship visualizations
+- Data export in different formats
 
-Este es un MVP en desarrollo activo. Para contribuir:
+## Available Scripts
 
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build application for production with Turbopack
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run format` - Format code with Prettier
 
-## Licencia
+## Contributing
 
-Este proyecto está en desarrollo como parte de un esfuerzo de digitalización del patrimonio lingüístico chileno.
+This is an MVP in active development. To contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## License
+
+This project is in development as part of an effort to digitize Chilean linguistic heritage.
