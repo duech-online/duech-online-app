@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50); // Max 50 results per page
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 1000); // Max 50 results per page
 
     // Input validation
     if (!query || typeof query !== 'string' || query.trim().length === 0) {

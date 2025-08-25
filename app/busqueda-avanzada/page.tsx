@@ -28,7 +28,7 @@ export default function AdvancedSearchPage() {
   const [hasSearched, setHasSearched] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 20,
+    limit: 1000,
     total: 0,
     totalPages: 0,
     hasNext: false,

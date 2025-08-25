@@ -23,7 +23,7 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
 
     return examples.map((ex, index) => (
       <div key={index} className="rounded-lg border-l-4 border-blue-400 bg-gray-50 p-4">
-        <div className="mb-2 text-gray-700 italic">
+        <div className="mb-2 text-gray-700">
           <MarkdownRenderer content={ex.value} />
         </div>
         <div className="text-sm text-gray-600">

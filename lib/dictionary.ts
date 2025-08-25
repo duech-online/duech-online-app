@@ -10,7 +10,7 @@ import { SearchResult, Word } from '@/types/dictionary';
 export async function searchWords(
   query: string,
   page: number = 1,
-  limit: number = 20
+  limit: number = 1000
 ): Promise<{
   results: SearchResult[];
   pagination: {
@@ -106,7 +106,7 @@ export interface AdvancedSearchFilters {
 export async function advancedSearch(
   filters: AdvancedSearchFilters,
   page: number = 1,
-  limit: number = 20
+  limit: number = 1000
 ): Promise<{
   results: SearchResult[];
   pagination: {

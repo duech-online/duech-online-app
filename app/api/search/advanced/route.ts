@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     const origin = searchParams.get('origin') || '';
     const letter = searchParams.get('letter') || '';
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 50);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 1000);
 
     // Input validation
     if (query.length > 100) {
