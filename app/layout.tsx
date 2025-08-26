@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import Image from 'next/image';
 import './globals.css';
+import HeaderAuth from '@/components/HeaderAuth';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -72,6 +73,7 @@ export default function RootLayout({
                 >
                   <span className="hover:text-yellow-300">Acerca</span>
                 </Link>
+                <HeaderAuth />
               </div>
             </div>
           </nav>

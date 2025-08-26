@@ -37,7 +37,16 @@ export default function WordOfTheDay() {
   }
 
   if (!word) {
-    return null;
+    return (
+      <div className="rounded-lg bg-white p-6 text-center shadow-md">
+        <p className="text-gray-700">
+          Inicia sesión para ver la Lotería de palabras.
+        </p>
+        <a href="/login?callbackUrl=/" className="mt-3 inline-block rounded-md bg-duech-blue px-4 py-2 font-semibold text-white hover:bg-blue-800">
+          Iniciar sesión
+        </a>
+      </div>
+    );
   }
 
   const firstDefinition = word.word.values[0];

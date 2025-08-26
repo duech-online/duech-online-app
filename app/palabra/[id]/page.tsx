@@ -1,11 +1,17 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { getWordByLemmaServer } from '@/lib/dictionary-server';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
 import { Example } from '@/types/dictionary';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 
+import { getSessionUser } from '@/app/lib/auth';
+
 export default async function WordDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const user = await getSessionUser();
+  if (!user) {
+    redirect(`/login?callbackUrl=${encodeURIComponent(`/palabra/${(await params).id}`)}`);
+  }
   const { id } = await params;
   const decodedLemma = decodeURIComponent(id);
 

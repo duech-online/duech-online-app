@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadDictionaryServer } from '@/lib/dictionary-server';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/app/lib/auth';
 import { SearchResult } from '@/types/dictionary';
 
 interface AdvancedSearchFilters {
@@ -12,6 +14,11 @@ interface AdvancedSearchFilters {
 
 export async function GET(request: NextRequest) {
   try {
+    // Auth check
+    const token = (await cookies()).get('duech_session')?.value;
+    if (!token || !verifyToken(token)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const { searchParams } = new URL(request.url);
 
     // Parse parameters
