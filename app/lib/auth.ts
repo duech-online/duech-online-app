@@ -91,3 +91,9 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const { id, email, name } = payload;
   return { id, email, name };
 }
+
+export async function getSession(): Promise<boolean> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  return !!token && !!verifyToken(token);
+}

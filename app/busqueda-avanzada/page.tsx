@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import MarkdownRenderer from '@/components/MarkdownRenderer';
 import {
   advancedSearch,
@@ -13,6 +14,9 @@ import { SearchResult } from '@/types/dictionary';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
 
 export default function AdvancedSearchPage() {
+  const router = useRouter();
+  // Auth is enforced by middleware; no server-only imports here.
+
   const [query, setQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);

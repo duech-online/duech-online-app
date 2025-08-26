@@ -41,6 +41,7 @@ export const config = {
   matcher: [
     '/palabra/:path*',
     '/search',
+  '/busqueda-avanzada',
     '/api/words/:path*',
     '/api/search',
     '/api/search/advanced',
