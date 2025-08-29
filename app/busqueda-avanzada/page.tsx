@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import {
   advancedSearch,
   getAvailableCategories,
   getAvailableStyles,
   getAvailableOrigins,
-} from '@/lib/dictionary';
-import { SearchResult } from '@/types/dictionary';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
+} from '@/app/lib/dictionary';
+import { SearchResult } from '@/app/lib/types';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/types';
 
 export default function AdvancedSearchPage() {
   const [query, setQuery] = useState('');

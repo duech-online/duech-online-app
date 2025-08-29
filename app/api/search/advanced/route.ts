@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { loadDictionaryServer } from '@/lib/dictionary-server';
-import { SearchResult } from '@/types/dictionary';
+import { loadDictionaryServer } from '@/app/lib/dictionary-server';
+import { SearchResult } from '@/app/lib/types';
 
 interface AdvancedSearchFilters {
   query?: string;

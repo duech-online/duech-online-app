@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getWordByLemmaServer } from '@/lib/dictionary-server';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
-import { Example } from '@/types/dictionary';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/types';
+import { Example } from '@/app/lib/types';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
 
 export default async function WordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

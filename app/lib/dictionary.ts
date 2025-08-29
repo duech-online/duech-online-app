@@ -2,7 +2,7 @@
  * Client-side dictionary API functions
  */
 
-import { SearchResult, Word } from '@/types/dictionary';
+import { SearchResult, Word } from '@/app/lib/types';
 
 /**
  * Search words using API

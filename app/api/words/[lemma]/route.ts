@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWordByLemmaServer } from '@/lib/dictionary-server';
+import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
 
 export async function GET(
   request: NextRequest,
