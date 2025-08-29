@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
-import { getWordByLemmaServer } from '@/lib/dictionary-server';
+import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
 
 export async function GET(
   request: NextRequest,

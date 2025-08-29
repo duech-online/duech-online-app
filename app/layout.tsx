@@ -1,11 +1,10 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import Image from 'next/image';
-import './globals.css';
-import HeaderAuth from '@/components/HeaderAuth';
+import HeaderAuth from '@/app/ui/HeaderAuth';
 
-const inter = Inter({ subsets: ['latin'] });
+import '@/app/globals.css';
+import { inter } from '@/app/ui/fonts';
 
 export const metadata: Metadata = {
   title: 'Diccionario del Español de Chile',

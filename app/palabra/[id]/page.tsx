@@ -1,9 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getWordByLemmaServer } from '@/lib/dictionary-server';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
-import { Example } from '@/types/dictionary';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
+import { Example } from '@/app/lib/definitions';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
 
 import { getSessionUser } from '@/app/lib/auth';
 

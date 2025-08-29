@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import {
   advancedSearch,
   getAvailableCategories,
   getAvailableStyles,
   getAvailableOrigins,
-} from '@/lib/dictionary';
-import { SearchResult } from '@/types/dictionary';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
+} from '@/app/lib/dictionary';
+import { SearchResult } from '@/app/lib/definitions';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 
 export default function AdvancedSearchPage() {
   const router = useRouter();
