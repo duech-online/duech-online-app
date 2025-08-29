@@ -48,12 +48,7 @@ export async function register(_: unknown, formData: FormData): Promise<string |
     return 'Please provide name, email, and a password of at least 6 characters';
   }
 
-  try {
-    const user = await createUser(name, email, password);
-    await setSessionCookie({ id: user.id, email: user.email, name: user.name });
-    redirect(redirectTo);
-  } catch (e: any) {
-    if (e?.message?.includes('already')) return 'Email is already registered';
-    return 'Registration failed';
-  }
+  const user = await createUser(name, email, password);
+  await setSessionCookie({ id: user.id, email: user.email, name: user.name });
+  redirect(redirectTo);
 }
