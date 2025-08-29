@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import HeaderAuth from '@/app/ui/HeaderAuth';
+import HeaderAuth from '@/app/ui/header-auth';
 
 import '@/app/globals.css';
 import { inter } from '@/app/ui/fonts';
