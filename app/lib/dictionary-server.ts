@@ -4,7 +4,7 @@
  */
 
 import { Dictionary, Word, SearchResult } from '@/app/lib/definitions';
-import { dictionaries } from "@/app/lib/placeholder-data";
+import { dictionaries } from '@/app/lib/placeholder-data';
 import { promises as fs } from 'fs';
 import path from 'path';
 
@@ -18,7 +18,6 @@ export function loadDictionaryServer(): Promise<Dictionary[]> {
 export async function getWordByLemmaServer(
   lemma: string
 ): Promise<{ word: Word; letter: string } | null> {
-
   for (const dict of dictionaries) {
     for (const letterGroup of dict.value) {
       const word = letterGroup.values.find((w) => w.lemma === lemma);
