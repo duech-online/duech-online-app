@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getRandomWord } from '@/app/lib/dictionary';
-import { Word } from '@/types/dictionary';
+import { Word } from '@/app/lib/types';
 import MarkdownRenderer from './markdown-renderer';
 
 export default function WordOfTheDay() {

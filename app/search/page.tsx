@@ -6,7 +6,7 @@ import Link from 'next/link';
 import SearchBar from '@/app/ui/search-bar';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import { searchWords } from '@/app/lib/dictionary';
-import { SearchResult } from '@/types/dictionary';
+import { SearchResult } from '@/app/lib/types';
 
 function SearchResults() {
   const searchParams = useSearchParams();

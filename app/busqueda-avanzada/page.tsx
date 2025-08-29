@@ -9,8 +9,8 @@ import {
   getAvailableStyles,
   getAvailableOrigins,
 } from '@/app/lib/dictionary';
-import { SearchResult } from '@/types/dictionary';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
+import { SearchResult } from '@/app/lib/types';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/types';
 
 export default function AdvancedSearchPage() {
   const [query, setQuery] = useState('');
