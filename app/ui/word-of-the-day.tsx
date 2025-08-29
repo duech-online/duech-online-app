@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getRandomWord } from '@/lib/dictionary';
+import { getRandomWord } from '@/app/lib/dictionary';
 import { Word } from '@/types/dictionary';
-import MarkdownRenderer from './MarkdownRenderer';
+import MarkdownRenderer from './markdown-renderer';
 
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);

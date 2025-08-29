@@ -3,9 +3,9 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
-import SearchBar from '@/components/SearchBar';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
-import { searchWords } from '@/lib/dictionary';
+import SearchBar from '@/app/ui/search-bar';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
+import { searchWords } from '@/app/lib/dictionary';
 import { SearchResult } from '@/types/dictionary';
 
 function SearchResults() {

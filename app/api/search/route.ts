@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { loadDictionaryServer } from '@/lib/dictionary-server';
+import { loadDictionaryServer } from '@/app/lib/dictionary-server';
 import { SearchResult } from '@/types/dictionary';
 
 export async function GET(request: NextRequest) {
