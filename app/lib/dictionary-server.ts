@@ -3,7 +3,7 @@
  * This file contains functions that only run on the server
  */
 
-import { Dictionary, Word, SearchResult } from '@/app/lib/types';
+import { Dictionary, Word, SearchResult } from '@/app/lib/definitions';
 import { dictionaries } from "@/app/lib/placeholder-data";
 import { promises as fs } from 'fs';
 import path from 'path';
