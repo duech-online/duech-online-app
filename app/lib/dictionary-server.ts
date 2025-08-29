@@ -4,26 +4,12 @@
  */
 
 import { Dictionary, Word, SearchResult } from '@/app/lib/types';
+import { dictionaries } from "@/app/lib/placeholder-data";
 import { promises as fs } from 'fs';
 import path from 'path';
 
-let cachedData: Dictionary[] | null = null;
-
-/**
- * Load dictionary data from JSON file (server-side only)
- */
-export async function loadDictionaryServer(): Promise<Dictionary[]> {
-  if (cachedData) return cachedData;
-
-  try {
-    const filePath = path.join(process.cwd(), 'data', 'example.json');
-    const fileContent = await fs.readFile(filePath, 'utf-8');
-    cachedData = JSON.parse(fileContent);
-    return cachedData || [];
-  } catch (error) {
-    console.error('Error loading dictionary:', error);
-    return [];
-  }
+export function loadDictionaryServer(): Promise<Dictionary[]> {
+  return Promise.resolve(dictionaries);
 }
 
 /**
@@ -32,7 +18,6 @@ export async function loadDictionaryServer(): Promise<Dictionary[]> {
 export async function getWordByLemmaServer(
   lemma: string
 ): Promise<{ word: Word; letter: string } | null> {
-  const dictionaries = await loadDictionaryServer();
 
   for (const dict of dictionaries) {
     for (const letterGroup of dict.value) {

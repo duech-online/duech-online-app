@@ -1,4 +1,4 @@
-[
+export const dictionaries = [
   {
     "name": "duech",
     "description": "Diccionario del uso del español de Chile",
