@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import Image from 'next/image';
 import '@/app/globals.css';
+<<<<<<< Updated upstream
 
 const inter = Inter({ subsets: ['latin'] });
+=======
+import { inter } from '@/app/ui/fonts';
+>>>>>>> Stashed changes
 
 export const metadata: Metadata = {
   title: 'Diccionario del Español de Chile',
