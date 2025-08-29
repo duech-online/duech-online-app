@@ -1,4 +1,4 @@
-"use server";
+'use server';
 
 import { redirect } from 'next/navigation';
 import { setSessionCookie, clearSessionCookie, type SessionUser } from '@/app/lib/auth';
@@ -13,7 +13,9 @@ const DEMO_USER: SessionUser = {
 const DEMO_PASSWORD = process.env.DEMO_USER_PASSWORD || 'admin123';
 
 export async function authenticate(_: unknown, formData: FormData): Promise<string | undefined> {
-  const email = String(formData.get('email') || '').trim().toLowerCase();
+  const email = String(formData.get('email') || '')
+    .trim()
+    .toLowerCase();
   const password = String(formData.get('password') || '');
   const redirectTo = String(formData.get('redirectTo') || '/');
 
@@ -40,7 +42,9 @@ export async function logout() {
 
 export async function register(_: unknown, formData: FormData): Promise<string | undefined> {
   const name = String(formData.get('name') || '').trim();
-  const email = String(formData.get('email') || '').trim().toLowerCase();
+  const email = String(formData.get('email') || '')
+    .trim()
+    .toLowerCase();
   const password = String(formData.get('password') || '');
   const redirectTo = String(formData.get('redirectTo') || '/');
 

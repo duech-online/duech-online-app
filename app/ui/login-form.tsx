@@ -2,32 +2,52 @@
 
 import { lusitana } from './fonts';
 function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M16 12a4 4 0 10-8 0 4 4 0 008 0v-1a1 1 0 112 0v1a6 6 0 11-6-6" />
-        </svg>
-    );
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <path
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M16 12a4 4 0 10-8 0 4 4 0 008 0v-1a1 1 0 112 0v1a6 6 0 11-6-6"
+      />
+    </svg>
+  );
 }
 function KeyIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M15 7a4 4 0 11-4 4l-6 6v-3h-3v-3h3v-3h3l3-3a4 4 0 014-1z" />
-        </svg>
-    );
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <path
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 7a4 4 0 11-4 4l-6 6v-3h-3v-3h3v-3h3l3-3a4 4 0 014-1z"
+      />
+    </svg>
+  );
 }
 function ExclamationCircleIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
-        </svg>
-    );
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <path
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 9v4m0 4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+      />
+    </svg>
+  );
 }
 function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
-    return (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
-            <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-7-7l7 7-7 7" />
-        </svg>
-    );
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
+      <path
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M5 12h14m-7-7l7 7-7 7"
+      />
+    </svg>
+  );
 }
 import { Button } from './button';
 import { useActionState } from 'react';
@@ -35,77 +55,62 @@ import { authenticate } from '../lib/actions';
 import { useSearchParams } from 'next/navigation';
 
 export default function LoginForm() {
-    const searchParams = useSearchParams();
-    const callbackUrl = searchParams.get('callbackUrl') || '/';
-    const [errorMessage, formAction, isPending] = useActionState(
-        authenticate,
-        undefined,
-    );
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
 
-    return (
-        <form action={formAction} className="space-y-3">
-            <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-                <h1 className={`${lusitana.className} mb-3 text-2xl`}>
-                    Inicia sesión para continuar
-                </h1>
-                <div className="w-full">
-                    <div>
-                        <label
-                            className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                            htmlFor="email"
-                        >
-                            Email
-                        </label>
-                        <div className="relative">
-                            <input
-                                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                id="email"
-                                type="email"
-                                name="email"
-                                placeholder="Enter your email address"
-                                required
-                            />
-                            <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                        </div>
-                    </div>
-                    <div className="mt-4">
-                        <label
-                            className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                            htmlFor="password"
-                        >
-                            Password
-                        </label>
-                        <div className="relative">
-                            <input
-                                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                id="password"
-                                type="password"
-                                name="password"
-                                placeholder="Enter password"
-                                required
-                                minLength={6}
-                            />
-                            <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
-                        </div>
-                    </div>
-                </div>
-                <input type="hidden" name="redirectTo" value={callbackUrl} />
-                <Button className="mt-4 w-full" aria-disabled={isPending}>
-                    Entrar <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-                </Button>
-                <div
-                    className="flex h-8 items-end space-x-1"
-                    aria-live="polite"
-                    aria-atomic="true"
-                >
-                    {errorMessage && (
-                        <>
-                            <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                            <p className="text-sm text-red-500">{errorMessage}</p>
-                        </>
-                    )}
-                </div>
+  return (
+    <form action={formAction} className="space-y-3">
+      <div className="flex-1 rounded-lg bg-gray-50 px-6 pt-8 pb-4">
+        <h1 className={`${lusitana.className} mb-3 text-2xl`}>Inicia sesión para continuar</h1>
+        <div className="w-full">
+          <div>
+            <label className="mt-5 mb-3 block text-xs font-medium text-gray-900" htmlFor="email">
+              Email
+            </label>
+            <div className="relative">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="email"
+                type="email"
+                name="email"
+                placeholder="Enter your email address"
+                required
+              />
+              <AtSymbolIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
-        </form>
-    );
+          </div>
+          <div className="mt-4">
+            <label className="mt-5 mb-3 block text-xs font-medium text-gray-900" htmlFor="password">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                id="password"
+                type="password"
+                name="password"
+                placeholder="Enter password"
+                required
+                minLength={6}
+              />
+              <KeyIcon className="pointer-events-none absolute top-1/2 left-3 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+          </div>
+        </div>
+        <input type="hidden" name="redirectTo" value={callbackUrl} />
+        <Button className="mt-4 w-full" aria-disabled={isPending}>
+          Entrar <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+        <div className="flex h-8 items-end space-x-1" aria-live="polite" aria-atomic="true">
+          {errorMessage && (
+            <>
+              <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+              <p className="text-sm text-red-500">{errorMessage}</p>
+            </>
+          )}
+        </div>
+      </div>
+    </form>
+  );
 }

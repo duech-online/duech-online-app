@@ -17,11 +17,7 @@ function getSecret() {
 
 function base64url(input: Buffer | string) {
   const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
-  return buf
-    .toString('base64')
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+  return buf.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 function sign(data: string, secret: string) {
@@ -52,7 +48,10 @@ export function verifyToken(token: string): TokenPayload | null {
     if (!encodedHeader || !encodedPayload || !signature) return null;
     const expected = sign(`${encodedHeader}.${encodedPayload}`, getSecret());
     if (expected !== signature) return null;
-    const json = Buffer.from(encodedPayload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
+    const json = Buffer.from(
+      encodedPayload.replace(/-/g, '+').replace(/_/g, '/'),
+      'base64'
+    ).toString('utf8');
     const payload = JSON.parse(json) as TokenPayload;
     if (payload.exp < Math.floor(Date.now() / 1000)) return null;
     return payload;

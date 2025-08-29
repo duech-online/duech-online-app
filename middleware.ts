@@ -8,12 +8,7 @@ export function middleware(req: NextRequest) {
   const isRegister = pathname.startsWith('/register');
 
   // Public paths we allow
-  const publicPaths = [
-    '/',
-    '/acerca',
-    '/recursos',
-    '/favicon.ico',
-  ];
+  const publicPaths = ['/', '/acerca', '/recursos', '/favicon.ico'];
 
   const isPublic = publicPaths.includes(pathname) || isLogin || isRegister;
 
@@ -41,7 +36,7 @@ export const config = {
   matcher: [
     '/palabra/:path*',
     '/search',
-  '/busqueda-avanzada',
+    '/busqueda-avanzada',
     '/api/words/:path*',
     '/api/search',
     '/api/search/advanced',
