@@ -259,9 +259,9 @@ export default function AdvancedSearchPage() {
                               </div>
                             )}
 
-                            <div className="mb-2 text-gray-700">
+                            {/* <div className="mb-2 text-gray-700">
                               <MarkdownRenderer content={truncatedMeaning} />
-                            </div>
+                            </div> */}
 
                             {result.word.values.length > 1 && (
                               <p className="text-sm text-gray-500">
