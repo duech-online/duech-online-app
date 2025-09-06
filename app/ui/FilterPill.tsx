@@ -15,23 +15,30 @@ const variantStyles = {
   letter: 'bg-orange-100 text-orange-800 border-orange-300',
 };
 
-export default function FilterPill({ 
-  label, 
-  value, 
-  onRemove, 
-  variant = 'default' 
+export default function FilterPill({
+  label,
+  value,
+  onRemove,
+  variant = 'default',
 }: FilterPillProps) {
   return (
-    <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium border transition-colors ${variantStyles[variant]}`}>
+    <span
+      className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium transition-colors ${variantStyles[variant]}`}
+    >
       {label}
       <button
         type="button"
         onClick={() => onRemove(value)}
-        className="ml-1 hover:bg-black hover:bg-opacity-20 rounded-full p-0.5 transition-colors"
+        className="hover:bg-opacity-20 ml-1 rounded-full p-0.5 transition-colors hover:bg-black"
         aria-label={`Remover filtro ${label}`}
       >
-        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </button>
     </span>

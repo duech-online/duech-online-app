@@ -49,13 +49,13 @@ export default function AdvancedSearchPage() {
   // Function to update URL with current filter state
   const updateURL = () => {
     const params = new URLSearchParams();
-    
+
     if (query) params.set('q', query);
     if (selectedCategories.length) params.set('categories', selectedCategories.join(','));
     if (selectedStyles.length) params.set('styles', selectedStyles.join(','));
     if (selectedOrigins.length) params.set('origins', selectedOrigins.join(','));
     if (selectedLetters.length) params.set('letters', selectedLetters.join(','));
-    
+
     const newUrl = params.toString() ? `?${params.toString()}` : '/busqueda-avanzada';
     window.history.replaceState({}, '', newUrl);
   };
@@ -67,7 +67,7 @@ export default function AdvancedSearchPage() {
     const styles = searchParams.get('styles')?.split(',').filter(Boolean) || [];
     const origins = searchParams.get('origins')?.split(',').filter(Boolean) || [];
     const letters = searchParams.get('letters')?.split(',').filter(Boolean) || [];
-    
+
     setQuery(q);
     setSelectedCategories(categories);
     setSelectedStyles(styles);
@@ -86,7 +86,7 @@ export default function AdvancedSearchPage() {
       setAvailableCategories(cats);
       setAvailableStyles(styles);
       setAvailableOrigins(origins);
-      
+
       // Restore state from URL after options are loaded
       restoreFromURL();
     };
@@ -145,53 +145,58 @@ export default function AdvancedSearchPage() {
     window.history.replaceState({}, '', '/busqueda-avanzada');
   };
 
-  const categoryOptions = availableCategories.map(cat => ({
+  const categoryOptions = availableCategories.map((cat) => ({
     value: cat,
-    label: GRAMMATICAL_CATEGORIES[cat] || cat
+    label: GRAMMATICAL_CATEGORIES[cat] || cat,
   }));
 
-  const styleOptions = availableStyles.map(style => ({
+  const styleOptions = availableStyles.map((style) => ({
     value: style,
-    label: USAGE_STYLES[style] || style
+    label: USAGE_STYLES[style] || style,
   }));
 
-  const originOptions = availableOrigins.map(origin => ({
+  const originOptions = availableOrigins.map((origin) => ({
     value: origin,
-    label: origin
+    label: origin,
   }));
 
-  const letterOptions = alphabet.map(letter => ({
+  const letterOptions = alphabet.map((letter) => ({
     value: letter,
-    label: letter.toUpperCase()
+    label: letter.toUpperCase(),
   }));
 
   const removeCategoryFilter = (category: string) => {
-    setSelectedCategories(prev => prev.filter(c => c !== category));
+    setSelectedCategories((prev) => prev.filter((c) => c !== category));
   };
 
   const removeStyleFilter = (style: string) => {
-    setSelectedStyles(prev => prev.filter(s => s !== style));
+    setSelectedStyles((prev) => prev.filter((s) => s !== style));
   };
 
   const removeOriginFilter = (origin: string) => {
-    setSelectedOrigins(prev => prev.filter(o => o !== origin));
+    setSelectedOrigins((prev) => prev.filter((o) => o !== origin));
   };
 
   const removeLetterFilter = (letter: string) => {
-    setSelectedLetters(prev => prev.filter(l => l !== letter));
+    setSelectedLetters((prev) => prev.filter((l) => l !== letter));
   };
 
-  const hasActiveFilters = selectedCategories.length > 0 || selectedStyles.length > 0 || selectedOrigins.length > 0 || selectedLetters.length > 0 || query;
+  const hasActiveFilters =
+    selectedCategories.length > 0 ||
+    selectedStyles.length > 0 ||
+    selectedOrigins.length > 0 ||
+    selectedLetters.length > 0 ||
+    query;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <h1 className="text-duech-blue mb-8 text-4xl font-bold">Búsqueda Avanzada</h1>
 
       {/* Main Search Section */}
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+      <div className="mb-8 rounded-xl bg-white p-6 shadow-lg">
         {/* Primary Search Input */}
         <div className="mb-6">
-          <label className="block text-lg font-semibold text-gray-900 mb-3">
+          <label className="mb-3 block text-lg font-semibold text-gray-900">
             Término de búsqueda
           </label>
           <input
@@ -199,12 +204,12 @@ export default function AdvancedSearchPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Buscar en lemmas y definiciones..."
-            className="w-full text-lg rounded-lg border-2 border-gray-300 px-4 py-3 focus:border-duech-blue focus:outline-none transition-colors"
+            className="focus:border-duech-blue w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-lg transition-colors focus:outline-none"
           />
         </div>
 
         {/* Quick Filters Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <MultiSelectDropdown
             label="Letras"
             options={letterOptions}
@@ -241,17 +246,14 @@ export default function AdvancedSearchPage() {
         {/* Active Filters Pills */}
         {hasActiveFilters && (
           <div className="mb-6">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <span className="text-sm font-medium text-gray-700">Filtros activos:</span>
-              <button
-                onClick={clearFilters}
-                className="text-sm text-duech-blue hover:underline"
-              >
+              <button onClick={clearFilters} className="text-duech-blue text-sm hover:underline">
                 Limpiar todos
               </button>
             </div>
             <div className="flex flex-wrap gap-2">
-              {selectedLetters.map(letter => (
+              {selectedLetters.map((letter) => (
                 <FilterPill
                   key={letter}
                   label={letter.toUpperCase()}
@@ -260,7 +262,7 @@ export default function AdvancedSearchPage() {
                   variant="letter"
                 />
               ))}
-              {selectedOrigins.map(origin => (
+              {selectedOrigins.map((origin) => (
                 <FilterPill
                   key={origin}
                   label={origin}
@@ -269,7 +271,7 @@ export default function AdvancedSearchPage() {
                   variant="origin"
                 />
               ))}
-              {selectedCategories.map(category => (
+              {selectedCategories.map((category) => (
                 <FilterPill
                   key={category}
                   label={GRAMMATICAL_CATEGORIES[category] || category}
@@ -278,7 +280,7 @@ export default function AdvancedSearchPage() {
                   variant="category"
                 />
               ))}
-              {selectedStyles.map(style => (
+              {selectedStyles.map((style) => (
                 <FilterPill
                   key={style}
                   label={USAGE_STYLES[style] || style}
@@ -296,7 +298,7 @@ export default function AdvancedSearchPage() {
           <button
             onClick={handleSearch}
             disabled={loading}
-            className="bg-duech-blue flex-1 md:flex-none md:px-8 rounded-lg py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-800 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="bg-duech-blue flex-1 rounded-lg py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60 md:flex-none md:px-8"
           >
             {loading ? 'Buscando...' : 'Buscar'}
           </button>
@@ -311,106 +313,86 @@ export default function AdvancedSearchPage() {
 
       {/* Results Section */}
       <div>
-          {loading ? (
-            <div className="space-y-4">
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="animate-pulse rounded-xl bg-white p-8 shadow-lg">
-                  <div className="mb-2 h-6 w-1/4 rounded bg-gray-200"></div>
-                  <div className="mb-2 h-4 w-3/4 rounded bg-gray-200"></div>
-                  <div className="h-4 w-1/2 rounded bg-gray-200"></div>
-                </div>
-              ))}
-            </div>
-          ) : hasSearched ? (
-            results.length > 0 ? (
-              <>
-                <p className="mb-4 text-gray-600">
-                  Se encontraron {results.length} resultado{results.length !== 1 ? 's' : ''}
-                </p>
-                <div className="space-y-4">
-                  {results.map((result, index) => {
-                    const firstDefinition = result.word.values[0];
-                    const truncatedMeaning =
-                      firstDefinition.meaning.length > 200
-                        ? firstDefinition.meaning.substring(0, 200) + '...'
-                        : firstDefinition.meaning;
+        {loading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="animate-pulse rounded-xl bg-white p-8 shadow-lg">
+                <div className="mb-2 h-6 w-1/4 rounded bg-gray-200"></div>
+                <div className="mb-2 h-4 w-3/4 rounded bg-gray-200"></div>
+                <div className="h-4 w-1/2 rounded bg-gray-200"></div>
+              </div>
+            ))}
+          </div>
+        ) : hasSearched ? (
+          results.length > 0 ? (
+            <>
+              <p className="mb-4 text-gray-600">
+                Se encontraron {results.length} resultado{results.length !== 1 ? 's' : ''}
+              </p>
+              <div className="space-y-4">
+                {results.map((result, index) => {
+                  const firstDefinition = result.word.values[0];
+                  const truncatedMeaning =
+                    firstDefinition.meaning.length > 200
+                      ? firstDefinition.meaning.substring(0, 200) + '...'
+                      : firstDefinition.meaning;
 
-                    return (
-                      <Link
-                        key={`${result.word.lemma}-${index}`}
-                        href={`/palabra/${encodeURIComponent(result.word.lemma)}`}
-                        className="card-hover block rounded-xl border-l-4 border-duech-gold bg-white p-6 shadow-lg transition-all duration-200 hover:shadow-xl"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="mb-2 text-2xl font-bold text-duech-blue">
-                              {result.word.lemma}
-                            </h3>
+                  return (
+                    <Link
+                      key={`${result.word.lemma}-${index}`}
+                      href={`/palabra/${encodeURIComponent(result.word.lemma)}`}
+                      className="card-hover border-duech-gold block rounded-xl border-l-4 bg-white p-6 shadow-lg transition-all duration-200 hover:shadow-xl"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h3 className="text-duech-blue mb-2 text-2xl font-bold">
+                            {result.word.lemma}
+                          </h3>
 
-                            {firstDefinition.categories.length > 0 && (
-                              <div className="mb-3 flex flex-wrap gap-1">
-                                {firstDefinition.categories.map((cat, catIndex) => (
-                                  <span
-                                    key={catIndex}
-                                    className="inline-block rounded-full bg-duech-blue px-3 py-1 text-sm font-semibold text-white"
-                                  >
-                                    {cat}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
-
-                            <div className="mb-3 text-lg leading-relaxed text-gray-800">
-                              <MarkdownRenderer content={truncatedMeaning} />
+                          {firstDefinition.categories.length > 0 && (
+                            <div className="mb-3 flex flex-wrap gap-1">
+                              {firstDefinition.categories.map((cat, catIndex) => (
+                                <span
+                                  key={catIndex}
+                                  className="bg-duech-blue inline-block rounded-full px-3 py-1 text-sm font-semibold text-white"
+                                >
+                                  {cat}
+                                </span>
+                              ))}
                             </div>
+                          )}
 
-                            {result.word.values.length > 1 && (
-                              <p className="text-duech-blue text-sm font-medium">
-                                {result.word.values.length} definicion{result.word.values.length > 1 ? 'es' : ''}
-                              </p>
-                            )}
+                          <div className="mb-3 text-lg leading-relaxed text-gray-800">
+                            <MarkdownRenderer content={truncatedMeaning} />
                           </div>
 
-                          <svg
-                            className="text-duech-gold ml-6 h-6 w-6 flex-shrink-0"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
+                          {result.word.values.length > 1 && (
+                            <p className="text-duech-blue text-sm font-medium">
+                              {result.word.values.length} definicion
+                              {result.word.values.length > 1 ? 'es' : ''}
+                            </p>
+                          )}
                         </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </>
-            ) : (
-              <div className="rounded-xl bg-white p-8 text-center shadow-lg">
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <h3 className="mb-2 text-lg font-medium text-gray-900">
-                  No se encontraron resultados
-                </h3>
-                <p className="text-gray-600">Intenta ajustar los filtros de búsqueda</p>
+
+                        <svg
+                          className="text-duech-gold ml-6 h-6 w-6 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
-            )
+            </>
           ) : (
             <div className="rounded-xl bg-white p-8 text-center shadow-lg">
               <svg
@@ -423,15 +405,37 @@ export default function AdvancedSearchPage() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <h3 className="mb-2 text-xl font-semibold text-duech-blue">Búsqueda avanzada</h3>
-              <p className="text-gray-600">
-                Configura los filtros arriba y haz clic en "Buscar" para encontrar palabras específicas
-              </p>
+              <h3 className="mb-2 text-lg font-medium text-gray-900">
+                No se encontraron resultados
+              </h3>
+              <p className="text-gray-600">Intenta ajustar los filtros de búsqueda</p>
             </div>
-          )}
+          )
+        ) : (
+          <div className="rounded-xl bg-white p-8 text-center shadow-lg">
+            <svg
+              className="mx-auto mb-4 h-16 w-16 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+            <h3 className="text-duech-blue mb-2 text-xl font-semibold">Búsqueda avanzada</h3>
+            <p className="text-gray-600">
+              Configura los filtros arriba y haz clic en &ldquo;Buscar&rdquo; para encontrar
+              palabras específicas
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

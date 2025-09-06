@@ -21,30 +21,32 @@ export default function MultiSelectDropdown({
   options,
   selectedValues,
   onChange,
-  placeholder = "Seleccionar...",
+  placeholder = 'Seleccionar...',
   maxDisplay = 3,
 }: MultiSelectDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const filteredOptions = options.filter(option =>
+  const filteredOptions = options.filter((option) =>
     option.label.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedOptions = options.filter(option => 
-    selectedValues.includes(option.value)
-  );
+  const selectedOptions = options.filter((option) => selectedValues.includes(option.value));
 
-  const displayText = selectedOptions.length === 0 
-    ? placeholder
-    : selectedOptions.length <= maxDisplay
-      ? selectedOptions.map(opt => opt.label).join(', ')
-      : `${selectedOptions.slice(0, maxDisplay).map(opt => opt.label).join(', ')} +${selectedOptions.length - maxDisplay} más`;
+  const displayText =
+    selectedOptions.length === 0
+      ? placeholder
+      : selectedOptions.length <= maxDisplay
+        ? selectedOptions.map((opt) => opt.label).join(', ')
+        : `${selectedOptions
+            .slice(0, maxDisplay)
+            .map((opt) => opt.label)
+            .join(', ')} +${selectedOptions.length - maxDisplay} más`;
 
   const handleToggle = (value: string) => {
     const newValues = selectedValues.includes(value)
-      ? selectedValues.filter(v => v !== value)
+      ? selectedValues.filter((v) => v !== value)
       : [...selectedValues, value];
     onChange(newValues);
   };
@@ -53,7 +55,7 @@ export default function MultiSelectDropdown({
     if (selectedValues.length === options.length) {
       onChange([]);
     } else {
-      onChange(options.map(opt => opt.value));
+      onChange(options.map((opt) => opt.value));
     }
   };
 
@@ -71,56 +73,63 @@ export default function MultiSelectDropdown({
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <label className="block text-sm font-medium text-gray-700 mb-1">
-        {label}
-      </label>
-      
+      <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
+
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-left focus:border-duech-blue focus:outline-none transition-colors"
+        className="focus:border-duech-blue w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left transition-colors focus:outline-none"
       >
         <div className="flex items-center justify-between">
-          <span className={`truncate ${selectedValues.length === 0 ? 'text-gray-500' : 'text-gray-900'}`}>
+          <span
+            className={`truncate ${selectedValues.length === 0 ? 'text-gray-500' : 'text-gray-900'}`}
+          >
             {displayText}
           </span>
           <div className="flex items-center gap-2">
             {selectedValues.length > 0 && (
-              <span className="bg-duech-blue text-white text-xs px-2 py-1 rounded-full">
+              <span className="bg-duech-blue rounded-full px-2 py-1 text-xs text-white">
                 {selectedValues.length}
               </span>
             )}
             <svg
-              className={`w-5 h-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+              className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </div>
         </div>
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-64 overflow-hidden">
-          <div className="p-2 border-b border-gray-200">
+        <div className="absolute z-10 mt-1 max-h-64 w-full overflow-hidden rounded-lg border border-gray-300 bg-white shadow-lg">
+          <div className="border-b border-gray-200 p-2">
             <input
               type="text"
               placeholder="Buscar..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-1 border border-gray-300 rounded focus:border-duech-blue focus:outline-none text-sm"
+              className="focus:border-duech-blue w-full rounded border border-gray-300 px-3 py-1 text-sm focus:outline-none"
             />
           </div>
-          
-          <div className="p-2 border-b border-gray-200">
+
+          <div className="border-b border-gray-200 p-2">
             <button
               type="button"
               onClick={handleSelectAll}
-              className="text-sm text-duech-blue hover:underline"
+              className="text-duech-blue text-sm hover:underline"
             >
-              {selectedValues.length === options.length ? 'Deseleccionar todos' : 'Seleccionar todos'}
+              {selectedValues.length === options.length
+                ? 'Deseleccionar todos'
+                : 'Seleccionar todos'}
             </button>
           </div>
 
@@ -128,21 +137,19 @@ export default function MultiSelectDropdown({
             {filteredOptions.map((option) => (
               <label
                 key={option.value}
-                className="flex items-center px-3 py-2 hover:bg-gray-50 cursor-pointer"
+                className="flex cursor-pointer items-center px-3 py-2 hover:bg-gray-50"
               >
                 <input
                   type="checkbox"
                   checked={selectedValues.includes(option.value)}
                   onChange={() => handleToggle(option.value)}
-                  className="mr-3 rounded text-duech-blue focus:ring-duech-blue"
+                  className="text-duech-blue focus:ring-duech-blue mr-3 rounded"
                 />
                 <span className="text-sm text-gray-700">{option.label}</span>
               </label>
             ))}
             {filteredOptions.length === 0 && (
-              <div className="px-3 py-2 text-sm text-gray-500">
-                No se encontraron opciones
-              </div>
+              <div className="px-3 py-2 text-sm text-gray-500">No se encontraron opciones</div>
             )}
           </div>
         </div>
