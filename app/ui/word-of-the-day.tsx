@@ -10,7 +10,6 @@ import MarkdownRenderer from '@/app/ui/markdown-renderer';
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const pathname = usePathname();
 
@@ -24,19 +23,14 @@ export default function WordOfTheDay() {
       const authenticated = authResponse.ok;
 
       if (authenticated) {
-        const userData = await authResponse.json();
-        setUser(userData.user);
-
         // Load random word
         const randomWord = await getRandomWord();
         setWord(randomWord);
       } else {
-        setUser(null);
         setWord(null);
       }
     } catch (error) {
       console.error('Error loading random word:', error);
-      setUser(null);
       setWord(null);
     } finally {
       setLoading(false);

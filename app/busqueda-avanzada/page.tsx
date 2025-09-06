@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import MultiSelectDropdown from '@/app/ui/MultiSelectDropdown';
 import FilterPill from '@/app/ui/FilterPill';
-import CollapsibleSection from '@/app/ui/CollapsibleSection';
 import {
   advancedSearch,
   getAvailableCategories,
@@ -17,7 +16,6 @@ import { SearchResult } from '@/app/lib/definitions';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 
 export default function AdvancedSearchPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   // Auth is enforced by middleware; no server-only imports here.
 
@@ -35,19 +33,11 @@ export default function AdvancedSearchPage() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 1000,
-    total: 0,
-    totalPages: 0,
-    hasNext: false,
-    hasPrev: false,
-  });
 
   const alphabet = 'abcdefghijklmnñopqrstuvwxyz'.split('');
 
   // Function to update URL with current filter state
-  const updateURL = () => {
+  const updateURL = useCallback(() => {
     const params = new URLSearchParams();
 
     if (query) params.set('q', query);
@@ -58,10 +48,10 @@ export default function AdvancedSearchPage() {
 
     const newUrl = params.toString() ? `?${params.toString()}` : '/busqueda-avanzada';
     window.history.replaceState({}, '', newUrl);
-  };
+  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters]);
 
   // Function to restore state from URL parameters
-  const restoreFromURL = () => {
+  const restoreFromURL = useCallback(() => {
     const q = searchParams.get('q') || '';
     const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
     const styles = searchParams.get('styles')?.split(',').filter(Boolean) || [];
@@ -74,7 +64,7 @@ export default function AdvancedSearchPage() {
     setSelectedOrigins(origins);
     setSelectedLetters(letters);
     setIsInitialized(true);
-  };
+  }, [searchParams]);
 
   useEffect(() => {
     const loadFilterOptions = async () => {
@@ -91,14 +81,14 @@ export default function AdvancedSearchPage() {
       restoreFromURL();
     };
     loadFilterOptions();
-  }, []);
+  }, [restoreFromURL]);
 
   // Update URL whenever filter state changes (after initialization)
   useEffect(() => {
     if (isInitialized) {
       updateURL();
     }
-  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters, isInitialized]);
+  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters, isInitialized, updateURL]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -113,7 +103,6 @@ export default function AdvancedSearchPage() {
         letters: selectedLetters,
       });
       setResults(searchData.results);
-      setPagination(searchData.pagination);
     } catch (error) {
       console.error('Error in advanced search:', error);
     } finally {
@@ -121,17 +110,7 @@ export default function AdvancedSearchPage() {
     }
   };
 
-  const handleCategoryToggle = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
-    );
-  };
 
-  const handleStyleToggle = (style: string) => {
-    setSelectedStyles((prev) =>
-      prev.includes(style) ? prev.filter((s) => s !== style) : [...prev, style]
-    );
-  };
 
   const clearFilters = () => {
     setQuery('');
