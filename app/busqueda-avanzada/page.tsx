@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
@@ -15,7 +15,7 @@ import {
 import { SearchResult } from '@/app/lib/definitions';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 
-export default function AdvancedSearchPage() {
+function AdvancedSearchContent() {
   const searchParams = useSearchParams();
   // Auth is enforced by middleware; no server-only imports here.
 
@@ -417,5 +417,22 @@ export default function AdvancedSearchPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AdvancedSearchPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-duech-blue/5 to-duech-gold/5 p-6">
+        <div className="container mx-auto max-w-6xl">
+          <div className="mb-8">
+            <h1 className="text-duech-blue mb-4 text-3xl font-bold">Búsqueda Avanzada</h1>
+            <p className="text-gray-600">Cargando...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <AdvancedSearchContent />
+    </Suspense>
   );
 }
