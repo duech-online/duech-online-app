@@ -1,5 +1,5 @@
-import SearchBar from '@/components/SearchBar';
-import WordOfTheDay from '@/components/WordOfTheDay';
+import SearchBar from '@/app/ui/search-bar';
+import WordOfTheDay from '@/app/ui/word-of-the-day';
 
 export default function Home() {
   return (

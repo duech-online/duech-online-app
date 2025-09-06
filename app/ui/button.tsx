@@ -32,10 +32,12 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function Button({ children, className = '', loading = false, ...rest }: Props) {
+  const disabled = loading || rest.disabled || rest['aria-disabled'];
+  
   return (
     <button
       {...rest}
-      disabled={loading || rest.disabled}
+      disabled={disabled}
       className={`bg-duech-blue rounded-md px-4 py-2 font-medium text-white hover:bg-blue-800 disabled:opacity-60 ${className}`}
     >
       <div className="flex items-center justify-center">

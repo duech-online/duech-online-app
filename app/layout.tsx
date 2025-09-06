@@ -1,12 +1,10 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Link from 'next/link';
 import Image from 'next/image';
-import './globals.css';
-import HeaderAuth from '@/components/HeaderAuth';
-import { AuthProvider } from '@/providers/AuthProvider';
+import HeaderAuth from '@/app/ui/header-auth';
 
-const inter = Inter({ subsets: ['latin'] });
+import '@/app/globals.css';
+import { inter } from '@/app/ui/fonts';
 
 export const metadata: Metadata = {
   title: 'Diccionario del Español de Chile',
@@ -21,7 +19,6 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${inter.className}`} style={{ backgroundColor: 'var(--background)' }}>
-        <AuthProvider>
           <header className="bg-duech-blue shadow-lg">
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="flex h-20 items-center justify-between">
@@ -85,7 +82,6 @@ export default function RootLayout({
               </div>
             </div>
           </footer>
-        </AuthProvider>
       </body>
     </html>
   );

@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export default function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const session = req.cookies.get('duech_session')?.value;
   
@@ -29,5 +29,8 @@ export const config = {
     '/palabra/:path*',
     '/search',
     '/busqueda-avanzada',
+    '/api/words/:path*',
+    '/api/search',
+    '/api/search/advanced',
   ],
 };

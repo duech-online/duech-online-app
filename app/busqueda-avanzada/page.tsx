@@ -3,18 +3,18 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import MarkdownRenderer from '@/components/MarkdownRenderer';
-import MultiSelectDropdown from '@/components/MultiSelectDropdown';
-import FilterPill from '@/components/FilterPill';
-import CollapsibleSection from '@/components/CollapsibleSection';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
+import MultiSelectDropdown from '@/app/ui/MultiSelectDropdown';
+import FilterPill from '@/app/ui/FilterPill';
+import CollapsibleSection from '@/app/ui/CollapsibleSection';
 import {
   advancedSearch,
   getAvailableCategories,
   getAvailableStyles,
   getAvailableOrigins,
-} from '@/lib/dictionary';
-import { SearchResult } from '@/types/dictionary';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/types/dictionary';
+} from '@/app/lib/dictionary';
+import { SearchResult } from '@/app/lib/definitions';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 
 export default function AdvancedSearchPage() {
   const router = useRouter();

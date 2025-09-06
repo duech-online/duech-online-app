@@ -43,7 +43,7 @@ export default function RegisterPage() {
             />
           </label>
           <input type="hidden" name="redirectTo" value={callbackUrl} />
-          <Button className="mt-2 w-full" loading={isPending}>
+          <Button className="mt-2 w-full" aria-disabled={isPending}>
             {isPending ? 'Creando cuenta...' : 'Registrarme'}
           </Button>
           {errorMessage && <p className="text-sm text-red-600">{errorMessage}</p>}

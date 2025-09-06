@@ -1,6 +1,11 @@
 'use client';
 
 import { lusitana } from './fonts';
+import { Button } from './button';
+import { useActionState } from 'react';
+import { authenticate } from '@/app/lib/actions';
+import { useSearchParams } from 'next/navigation';
+
 function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -13,6 +18,7 @@ function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 function KeyIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -25,6 +31,7 @@ function KeyIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 function ExclamationCircleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -37,6 +44,7 @@ function ExclamationCircleIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
 function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>
@@ -49,40 +57,14 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-import { Button } from './button';
-import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { useSearchParams, useRouter } from 'next/navigation';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
-  const router = useRouter();
-  const { login } = useAuth();
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  const [isPending, setIsPending] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsPending(true);
-    setErrorMessage(undefined);
-
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-
-    try {
-      await login(email, password);
-      router.push(callbackUrl);
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : 'Invalid email or password');
-    } finally {
-      setIsPending(false);
-    }
-  };
+  const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form action={formAction} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pt-8 pb-4">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>Inicia sesión para continuar</h1>
         <div className="w-full">
@@ -120,7 +102,8 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-5 w-full" loading={isPending} type="submit">
+        <input type="hidden" name="redirectTo" value={callbackUrl} />
+        <Button className="mt-5 w-full" aria-disabled={isPending} type="submit">
           {isPending ? 'Iniciando sesión...' : (
             <>
               Entrar <ArrowRightIcon className="ml-2 h-5 w-5 text-gray-50" />

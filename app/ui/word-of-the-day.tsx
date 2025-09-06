@@ -2,43 +2,51 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getRandomWord } from '@/lib/dictionary';
-import { Word } from '@/types/dictionary';
-import { useAuth } from '@/hooks/useAuth';
-import MarkdownRenderer from './MarkdownRenderer';
+import { usePathname } from 'next/navigation';
+import { getRandomWord } from '@/app/lib/dictionary';
+import { Word } from '@/app/lib/definitions';
+import MarkdownRenderer from '@/app/ui/markdown-renderer';
 
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
   const [loading, setLoading] = useState(true);
-  const { user, isLoading: authLoading } = useAuth();
+  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const loadRandomWord = async () => {
-      // Don't load if auth is still loading
-      if (authLoading) return;
-
-      // If user is not authenticated, clear word and stop loading
-      if (!user) {
-        setWord(null);
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
+  const checkAuthAndLoadWord = async () => {
+    try {
+      setLoading(true);
+      setAuthLoading(true);
+      
+      // Check auth status first
+      const authResponse = await fetch('/api/me', { cache: 'no-store' });
+      const authenticated = authResponse.ok;
+      
+      if (authenticated) {
+        const userData = await authResponse.json();
+        setUser(userData.user);
+        
+        // Load random word
         const randomWord = await getRandomWord();
         setWord(randomWord);
-      } catch (error) {
-        console.error('Error loading random word:', error);
-        // If error occurred, clear the word (likely auth-related)
+      } else {
+        setUser(null);
         setWord(null);
-      } finally {
-        setLoading(false);
       }
-    };
+    } catch (error) {
+      console.error('Error loading random word:', error);
+      setUser(null);
+      setWord(null);
+    } finally {
+      setLoading(false);
+      setAuthLoading(false);
+    }
+  };
 
-    loadRandomWord();
-  }, [user, authLoading]); // Re-run when auth state changes
+  useEffect(() => {
+    checkAuthAndLoadWord();
+  }, [pathname]); // Re-check when pathname changes
 
   if (loading || authLoading) {
     return (

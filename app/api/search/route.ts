@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { loadDictionaryServer } from '@/lib/dictionary-server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
-import { SearchResult } from '@/types/dictionary';
+import { loadDictionaryServer } from '@/app/lib/dictionary-server';
+import { SearchResult } from '@/app/lib/definitions';
 
 export async function GET(request: NextRequest) {
   try {
