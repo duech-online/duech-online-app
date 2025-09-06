@@ -35,7 +35,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Query too long' }, { status: 400 });
     }
 
-    if (categories.length > 10 || styles.length > 10 || origins.length > 10 || letters.length > 10) {
+    if (
+      categories.length > 10 ||
+      styles.length > 10 ||
+      origins.length > 10 ||
+      letters.length > 10
+    ) {
       return NextResponse.json({ error: 'Too many filter options' }, { status: 400 });
     }
 
@@ -48,8 +53,8 @@ export async function GET(request: NextRequest) {
       query: query.trim(),
       categories,
       styles,
-      origins: origins.map(o => o.trim()).filter(Boolean),
-      letters: letters.map(l => l.trim()).filter(Boolean),
+      origins: origins.map((o) => o.trim()).filter(Boolean),
+      letters: letters.map((l) => l.trim()).filter(Boolean),
     };
 
     const dictionaries = await loadDictionaryServer();
@@ -58,7 +63,12 @@ export async function GET(request: NextRequest) {
     dictionaries.forEach((dict) => {
       dict.value.forEach((letterGroup) => {
         // Filter by letters if specified
-        if (filters.letters && filters.letters.length > 0 && !filters.letters.includes(letterGroup.letter)) return;
+        if (
+          filters.letters &&
+          filters.letters.length > 0 &&
+          !filters.letters.includes(letterGroup.letter)
+        )
+          return;
 
         letterGroup.values.forEach((word) => {
           let matches = true;
@@ -89,10 +99,12 @@ export async function GET(request: NextRequest) {
 
           // Check origins
           if (matches && filters.origins && filters.origins.length > 0) {
-            matches = word.values.some((def) =>
-              def.origin && filters.origins!.some(origin => 
-                def.origin!.toLowerCase().includes(origin.toLowerCase())
-              )
+            matches = word.values.some(
+              (def) =>
+                def.origin &&
+                filters.origins!.some((origin) =>
+                  def.origin!.toLowerCase().includes(origin.toLowerCase())
+                )
             );
           }
 

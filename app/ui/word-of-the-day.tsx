@@ -18,15 +18,15 @@ export default function WordOfTheDay() {
     try {
       setLoading(true);
       setAuthLoading(true);
-      
+
       // Check auth status first
       const authResponse = await fetch('/api/me', { cache: 'no-store' });
       const authenticated = authResponse.ok;
-      
+
       if (authenticated) {
         const userData = await authResponse.json();
         setUser(userData.user);
-        
+
         // Load random word
         const randomWord = await getRandomWord();
         setWord(randomWord);

@@ -104,7 +104,9 @@ export default function LoginForm() {
         </div>
         <input type="hidden" name="redirectTo" value={callbackUrl} />
         <Button className="mt-5 w-full" aria-disabled={isPending} type="submit">
-          {isPending ? 'Iniciando sesión...' : (
+          {isPending ? (
+            'Iniciando sesión...'
+          ) : (
             <>
               Entrar <ArrowRightIcon className="ml-2 h-5 w-5 text-gray-50" />
             </>

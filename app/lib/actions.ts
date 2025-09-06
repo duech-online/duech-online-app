@@ -55,14 +55,14 @@ export async function register(_: unknown, formData: FormData): Promise<string |
   try {
     // Create the user
     const newUser = await createUser(name, email, password);
-    
+
     // Set session cookie
     await setSessionCookie({
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
     });
-    
+
     redirect(redirectTo);
   } catch (error) {
     if (error instanceof Error && error.message === 'Email already registered') {

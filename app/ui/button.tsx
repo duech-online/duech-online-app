@@ -9,14 +9,7 @@ function Spinner({ className = '' }: { className?: string }) {
       fill="none"
       viewBox="0 0 24 24"
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -26,14 +19,14 @@ function Spinner({ className = '' }: { className?: string }) {
   );
 }
 
-type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & { 
+type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
   loading?: boolean;
 };
 
 export function Button({ children, className = '', loading = false, ...rest }: Props) {
   const disabled = loading || rest.disabled || rest['aria-disabled'];
-  
+
   return (
     <button
       {...rest}
