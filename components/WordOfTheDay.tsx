@@ -4,28 +4,43 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getRandomWord } from '@/lib/dictionary';
 import { Word } from '@/types/dictionary';
+import { useAuth } from '@/hooks/useAuth';
 import MarkdownRenderer from './MarkdownRenderer';
 
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const { user, isLoading: authLoading } = useAuth();
 
   useEffect(() => {
     const loadRandomWord = async () => {
+      // Don't load if auth is still loading
+      if (authLoading) return;
+
+      // If user is not authenticated, clear word and stop loading
+      if (!user) {
+        setWord(null);
+        setLoading(false);
+        return;
+      }
+
       try {
+        setLoading(true);
         const randomWord = await getRandomWord();
         setWord(randomWord);
       } catch (error) {
         console.error('Error loading random word:', error);
+        // If error occurred, clear the word (likely auth-related)
+        setWord(null);
       } finally {
         setLoading(false);
       }
     };
 
     loadRandomWord();
-  }, []);
+  }, [user, authLoading]); // Re-run when auth state changes
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="animate-pulse rounded-lg bg-white p-6 shadow-md">
         <div className="mb-4 h-6 w-1/3 rounded bg-gray-200"></div>
@@ -39,10 +54,11 @@ export default function WordOfTheDay() {
   if (!word) {
     return (
       <div className="rounded-lg bg-white p-6 text-center shadow-md">
-        <p className="text-gray-700">
-          Inicia sesión para ver la Lotería de palabras.
-        </p>
-        <a href="/login?callbackUrl=/" className="mt-3 inline-block rounded-md bg-duech-blue px-4 py-2 font-semibold text-white hover:bg-blue-800">
+        <p className="text-gray-700">Inicia sesión para ver la Lotería de palabras.</p>
+        <a
+          href="/login?callbackUrl=/"
+          className="bg-duech-blue mt-3 inline-block rounded-md px-4 py-2 font-semibold text-white hover:bg-blue-800"
+        >
           Iniciar sesión
         </a>
       </div>

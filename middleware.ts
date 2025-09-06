@@ -1,39 +1,26 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-export function middleware(req: NextRequest) {
-  const { pathname, search } = req.nextUrl;
-  const isApi = pathname.startsWith('/api');
-  const isLogin = pathname.startsWith('/login');
-  const isRegister = pathname.startsWith('/register');
-
-  // Public paths we allow
-  const publicPaths = [
-    '/',
-    '/acerca',
-    '/recursos',
-    '/favicon.ico',
-  ];
-
-  const isPublic = publicPaths.includes(pathname) || isLogin || isRegister;
-
-  // Only protect defined matchers below; for additional safety check cookie for all non-public matchers here
+export default function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
   const session = req.cookies.get('duech_session')?.value;
-  const unauthenticated = !session;
-
-  if (unauthenticated && !isPublic) {
-    if (isApi) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'content-type': 'application/json' },
-      });
-    }
+  
+  // Protected paths
+  const protectedPaths = [
+    '/palabra',
+    '/search', 
+    '/busqueda-avanzada',
+  ];
+  
+  const isProtectedPath = protectedPaths.some(path => pathname.startsWith(path));
+  
+  if (isProtectedPath && !session) {
     const url = req.nextUrl.clone();
     url.pathname = '/login';
-    url.search = `callbackUrl=${encodeURIComponent(pathname + search)}`;
+    url.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(url);
   }
-
+  
   return NextResponse.next();
 }
 
@@ -41,9 +28,6 @@ export const config = {
   matcher: [
     '/palabra/:path*',
     '/search',
-  '/busqueda-avanzada',
-    '/api/words/:path*',
-    '/api/search',
-    '/api/search/advanced',
+    '/busqueda-avanzada',
   ],
 };

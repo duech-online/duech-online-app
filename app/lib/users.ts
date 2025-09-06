@@ -43,7 +43,11 @@ export async function findUserByEmail(email: string): Promise<StoredUser | undef
   return users.find((u) => u.email.toLowerCase() === email.toLowerCase());
 }
 
-export async function createUser(name: string, email: string, password: string): Promise<StoredUser> {
+export async function createUser(
+  name: string,
+  email: string,
+  password: string
+): Promise<StoredUser> {
   const users = await readUsers();
   const exists = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
   if (exists) throw new Error('Email already registered');

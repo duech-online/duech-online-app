@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\hooks/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\api\\auth\\login/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\api\\auth\\logout/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\api\\auth\\me/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\lib/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\components/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\ui/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\register/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\lib/**)",
+      "WebFetch(domain:authjs.dev)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\login/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\api\\auth/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\api\\words\\random/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\register/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\search/**)",
+      "Read(/C:\\Users\\fmarq\\DCC\\proyecto_software\\martin\\duech-online-app\\app\\search/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -5,6 +5,7 @@ export type SessionUser = {
   id: string;
   email: string;
   name?: string;
+  role?: string;
 };
 
 const SESSION_COOKIE = 'duech_session';
@@ -17,18 +18,14 @@ function getSecret() {
 
 function base64url(input: Buffer | string) {
   const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
-  return buf
-    .toString('base64')
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+  return buf.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 function sign(data: string, secret: string) {
   return base64url(crypto.createHmac('sha256', secret).update(data).digest());
 }
 
-export type TokenPayload = SessionUser & { iat: number; exp: number };
+export type TokenPayload = SessionUser & { iat: number; exp: number; role?: string };
 
 export function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
   const header = { alg: 'HS256', typ: 'JWT' };
@@ -37,6 +34,7 @@ export function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECON
     id: user.id,
     email: user.email,
     name: user.name,
+    role: user.role,
     iat: now,
     exp: now + maxAgeSeconds,
   };
@@ -52,7 +50,10 @@ export function verifyToken(token: string): TokenPayload | null {
     if (!encodedHeader || !encodedPayload || !signature) return null;
     const expected = sign(`${encodedHeader}.${encodedPayload}`, getSecret());
     if (expected !== signature) return null;
-    const json = Buffer.from(encodedPayload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
+    const json = Buffer.from(
+      encodedPayload.replace(/-/g, '+').replace(/_/g, '/'),
+      'base64'
+    ).toString('utf8');
     const payload = JSON.parse(json) as TokenPayload;
     if (payload.exp < Math.floor(Date.now() / 1000)) return null;
     return payload;
@@ -88,8 +89,8 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   if (!token) return null;
   const payload = verifyToken(token);
   if (!payload) return null;
-  const { id, email, name } = payload;
-  return { id, email, name };
+  const { id, email, name, role } = payload;
+  return { id, email, name, role };
 }
 
 export async function getSession(): Promise<boolean> {

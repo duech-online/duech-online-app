@@ -115,8 +115,8 @@ The application includes several API endpoints:
 This repo includes a minimal cookie-based login:
 
 - Visit `/login` to authenticate. Default credentials:
-    - Email: `admin@example.com` (configurable via `DEMO_USER_EMAIL`)
-    - Password: `admin123` (configurable via `DEMO_USER_PASSWORD`)
+  - Email: `admin@example.com` (configurable via `DEMO_USER_EMAIL`)
+  - Password: `admin123` (configurable via `DEMO_USER_PASSWORD`)
 - After login, a signed session cookie is set for 7 days.
 - Logout via the header button or POST `/api/logout`.
 
