@@ -45,8 +45,11 @@ export default function HeaderAuth() {
   return (
     <div className="flex items-center gap-3">
       <span className="text-sm text-white/80">{user.name || user.email}</span>
-      <form action={`/api/logout?redirect=${encodeURIComponent(pathname)}`} method="post">
-        <button className="rounded-md bg-white/10 px-4 py-2 text-white hover:bg-white/20">
+      <form action={`/api/logout?redirect=${encodeURIComponent(pathname)}`} method="POST">
+        <button
+          type="submit"
+          className="rounded-md bg-white/10 px-4 py-2 text-white hover:bg-white/20"
+        >
           Cerrar sesión
         </button>
       </form>

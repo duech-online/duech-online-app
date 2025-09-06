@@ -25,7 +25,8 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function Button({ children, className = '', loading = false, ...rest }: Props) {
-  const disabled = loading || rest.disabled || rest['aria-disabled'] === true || rest['aria-disabled'] === 'true';
+  const disabled =
+    loading || rest.disabled || rest['aria-disabled'] === true || rest['aria-disabled'] === 'true';
 
   return (
     <button
