@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/app/lib/auth';
 import { loadDictionaryServer } from '@/app/lib/dictionary-server';
 import { SearchResult } from '@/app/lib/definitions';
 
@@ -6,20 +8,25 @@ interface AdvancedSearchFilters {
   query?: string;
   categories?: string[];
   styles?: string[];
-  origin?: string;
-  letter?: string;
+  origins?: string[];
+  letters?: string[];
 }
 
 export async function GET(request: NextRequest) {
   try {
+    // Auth check
+    const token = (await cookies()).get('duech_session')?.value;
+    if (!token || !verifyToken(token)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const { searchParams } = new URL(request.url);
 
     // Parse parameters
     const query = searchParams.get('q') || '';
     const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
     const styles = searchParams.get('styles')?.split(',').filter(Boolean) || [];
-    const origin = searchParams.get('origin') || '';
-    const letter = searchParams.get('letter') || '';
+    const origins = searchParams.get('origins')?.split(',').filter(Boolean) || [];
+    const letters = searchParams.get('letters')?.split(',').filter(Boolean) || [];
     const page = parseInt(searchParams.get('page') || '1');
     const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 1000);
 
@@ -28,7 +35,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Query too long' }, { status: 400 });
     }
 
-    if (categories.length > 10 || styles.length > 10) {
+    if (categories.length > 10 || styles.length > 10 || origins.length > 10 || letters.length > 10) {
       return NextResponse.json({ error: 'Too many filter options' }, { status: 400 });
     }
 
@@ -41,8 +48,8 @@ export async function GET(request: NextRequest) {
       query: query.trim(),
       categories,
       styles,
-      origin: origin.trim(),
-      letter: letter.trim(),
+      origins: origins.map(o => o.trim()).filter(Boolean),
+      letters: letters.map(l => l.trim()).filter(Boolean),
     };
 
     const dictionaries = await loadDictionaryServer();
@@ -50,8 +57,8 @@ export async function GET(request: NextRequest) {
 
     dictionaries.forEach((dict) => {
       dict.value.forEach((letterGroup) => {
-        // Filter by letter if specified
-        if (filters.letter && letterGroup.letter !== filters.letter) return;
+        // Filter by letters if specified
+        if (filters.letters && filters.letters.length > 0 && !filters.letters.includes(letterGroup.letter)) return;
 
         letterGroup.values.forEach((word) => {
           let matches = true;
@@ -80,11 +87,12 @@ export async function GET(request: NextRequest) {
             );
           }
 
-          // Check origin
-          if (matches && filters.origin) {
-            matches = word.values.some(
-              (def) =>
-                def.origin && def.origin.toLowerCase().includes(filters.origin!.toLowerCase())
+          // Check origins
+          if (matches && filters.origins && filters.origins.length > 0) {
+            matches = word.values.some((def) =>
+              def.origin && filters.origins!.some(origin => 
+                def.origin!.toLowerCase().includes(origin.toLowerCase())
+              )
             );
           }
 

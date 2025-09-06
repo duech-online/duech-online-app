@@ -99,8 +99,8 @@ export interface AdvancedSearchFilters {
   query?: string;
   categories?: string[];
   styles?: string[];
-  origin?: string;
-  letter?: string;
+  origins?: string[];
+  letters?: string[];
 }
 
 export async function advancedSearch(
@@ -124,8 +124,8 @@ export async function advancedSearch(
     if (filters.query) params.append('q', filters.query);
     if (filters.categories?.length) params.append('categories', filters.categories.join(','));
     if (filters.styles?.length) params.append('styles', filters.styles.join(','));
-    if (filters.origin) params.append('origin', filters.origin);
-    if (filters.letter) params.append('letter', filters.letter);
+    if (filters.origins?.length) params.append('origins', filters.origins.join(','));
+    if (filters.letters?.length) params.append('letters', filters.letters.join(','));
     params.append('page', page.toString());
     params.append('limit', limit.toString());
 

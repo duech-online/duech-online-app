@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { getRandomWord } from '@/app/lib/dictionary';
 import { Word } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
@@ -9,23 +10,45 @@ import MarkdownRenderer from '@/app/ui/markdown-renderer';
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const loadRandomWord = async () => {
-      try {
+  const checkAuthAndLoadWord = async () => {
+    try {
+      setLoading(true);
+      setAuthLoading(true);
+      
+      // Check auth status first
+      const authResponse = await fetch('/api/me', { cache: 'no-store' });
+      const authenticated = authResponse.ok;
+      
+      if (authenticated) {
+        const userData = await authResponse.json();
+        setUser(userData.user);
+        
+        // Load random word
         const randomWord = await getRandomWord();
         setWord(randomWord);
-      } catch (error) {
-        console.error('Error loading random word:', error);
-      } finally {
-        setLoading(false);
+      } else {
+        setUser(null);
+        setWord(null);
       }
-    };
+    } catch (error) {
+      console.error('Error loading random word:', error);
+      setUser(null);
+      setWord(null);
+    } finally {
+      setLoading(false);
+      setAuthLoading(false);
+    }
+  };
 
-    loadRandomWord();
-  }, []);
+  useEffect(() => {
+    checkAuthAndLoadWord();
+  }, [pathname]); // Re-check when pathname changes
 
-  if (loading) {
+  if (loading || authLoading) {
     return (
       <div className="animate-pulse rounded-lg bg-white p-6 shadow-md">
         <div className="mb-4 h-6 w-1/3 rounded bg-gray-200"></div>
@@ -37,7 +60,17 @@ export default function WordOfTheDay() {
   }
 
   if (!word) {
-    return null;
+    return (
+      <div className="rounded-lg bg-white p-6 text-center shadow-md">
+        <p className="text-gray-700">Inicia sesión para ver la Lotería de palabras.</p>
+        <a
+          href="/login?callbackUrl=/"
+          className="bg-duech-blue mt-3 inline-block rounded-md px-4 py-2 font-semibold text-white hover:bg-blue-800"
+        >
+          Iniciar sesión
+        </a>
+      </div>
+    );
   }
 
   const firstDefinition = word.word.values[0];
