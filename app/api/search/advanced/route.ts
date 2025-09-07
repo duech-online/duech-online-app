@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { loadDictionaryServer } from '@/app/lib/dictionary-server';
 import { SearchResult } from '@/app/lib/definitions';
+import { applyRateLimit } from '@/app/lib/rate-limiting';
 
 interface AdvancedSearchFilters {
   query?: string;
@@ -11,6 +12,13 @@ interface AdvancedSearchFilters {
 }
 
 export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = await applyRateLimit(request);
+  if (!rateLimitResult.success) {
+    const response = new NextResponse('Too Many Requests', { status: 429 });
+    return response;
+  }
+
   try {
     const { searchParams } = new URL(request.url);
 

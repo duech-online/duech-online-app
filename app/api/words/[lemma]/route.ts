@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { applyRateLimit } from '@/app/lib/rate-limiting';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ lemma: string }> }
 ) {
+  // Apply rate limiting
+  const rateLimitResult = await applyRateLimit(request);
+  if (!rateLimitResult.success) {
+    const response = new NextResponse('Too Many Requests', { status: 429 });
+    return response;
+  }
+
   try {
     const { lemma } = await params;
 
