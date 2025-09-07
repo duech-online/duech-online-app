@@ -105,17 +105,6 @@ body {
   outline-offset: 2px;
 }
 
-/* Better link contrast */
-a {
-  color: var(--color-primary-700);
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--color-primary-600);
-  text-decoration: underline;
-}
-
 /* Navigation link overrides */
 .nav-link {
   color: #ffffff !important;

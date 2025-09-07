@@ -110,6 +110,26 @@ The application includes several API endpoints:
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 
+## Authentication (MVP)
+
+This repo includes a minimal cookie-based login:
+
+- Visit `/login` to authenticate. Default credentials:
+  - Email: `admin@example.com` (configurable via `DEMO_USER_EMAIL`)
+  - Password: `admin123` (configurable via `DEMO_USER_PASSWORD`)
+- After login, a signed session cookie is set for 7 days.
+- Logout via the header button or POST `/api/logout`.
+
+Environment variables (optional):
+
+```
+AUTH_SECRET=your-long-random-secret
+DEMO_USER_EMAIL=admin@example.com
+DEMO_USER_PASSWORD=admin123
+```
+
+For production, replace the demo validation in `app/lib/actions.ts` with a proper user store and hashed passwords.
+
 ## Contributing
 
 This is an MVP in active development. To contribute:

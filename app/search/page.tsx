@@ -13,14 +13,6 @@ function SearchResults() {
   const query = searchParams.get('q') || '';
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({
-    page: 1,
-    limit: 20,
-    total: 0,
-    totalPages: 0,
-    hasNext: false,
-    hasPrev: false,
-  });
 
   useEffect(() => {
     const performSearch = async () => {
@@ -29,7 +21,6 @@ function SearchResults() {
         try {
           const searchData = await searchWords(query);
           setResults(searchData.results);
-          setPagination(searchData.pagination);
         } catch (error) {
           console.error('Error searching:', error);
         } finally {

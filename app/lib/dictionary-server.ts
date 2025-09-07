@@ -3,13 +3,11 @@
  * This file contains functions that only run on the server
  */
 
-import { Dictionary, Word, SearchResult } from '@/app/lib/definitions';
+import { Dictionary, Word } from '@/app/lib/definitions';
 import { dictionaries } from '@/app/lib/placeholder-data';
-import { promises as fs } from 'fs';
-import path from 'path';
 
 export function loadDictionaryServer(): Promise<Dictionary[]> {
-  return Promise.resolve(dictionaries);
+  return Promise.resolve(dictionaries as Dictionary[]);
 }
 
 /**
@@ -18,7 +16,8 @@ export function loadDictionaryServer(): Promise<Dictionary[]> {
 export async function getWordByLemmaServer(
   lemma: string
 ): Promise<{ word: Word; letter: string } | null> {
-  for (const dict of dictionaries) {
+  const dicts = dictionaries as Dictionary[];
+  for (const dict of dicts) {
     for (const letterGroup of dict.value) {
       const word = letterGroup.values.find((w) => w.lemma === lemma);
       if (word) {

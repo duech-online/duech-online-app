@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/app/lib/auth';
 import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
 
@@ -14,6 +16,11 @@ export async function GET(
   }
 
   try {
+    // Auth check
+    const token = (await cookies()).get('duech_session')?.value;
+    if (!token || !verifyToken(token)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     const { lemma } = await params;
 
     // Input validation
