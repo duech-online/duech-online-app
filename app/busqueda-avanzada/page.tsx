@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import MultiSelectDropdown from '@/app/ui/MultiSelectDropdown';
 import FilterPill from '@/app/ui/FilterPill';
@@ -14,9 +13,14 @@ import {
 } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
+import {
+  setAdvancedSearchFilters,
+  getAdvancedSearchFilters,
+  clearAdvancedSearchFilters,
+  type AdvancedSearchFilters,
+} from '@/app/lib/cookies';
 
 function AdvancedSearchContent() {
-  const searchParams = useSearchParams();
   // Auth is enforced by middleware; no server-only imports here.
 
   const [query, setQuery] = useState('');
@@ -36,35 +40,28 @@ function AdvancedSearchContent() {
 
   const alphabet = 'abcdefghijklmnñopqrstuvwxyz'.split('');
 
-  // Function to update URL with current filter state
-  const updateURL = useCallback(() => {
-    const params = new URLSearchParams();
+  // Function to save current filter state to cookies
+  const saveFiltersToCache = () => {
+    const filters: AdvancedSearchFilters = {
+      query,
+      selectedCategories,
+      selectedStyles,
+      selectedOrigins,
+      selectedLetters,
+    };
+    setAdvancedSearchFilters(filters);
+  };
 
-    if (query) params.set('q', query);
-    if (selectedCategories.length) params.set('categories', selectedCategories.join(','));
-    if (selectedStyles.length) params.set('styles', selectedStyles.join(','));
-    if (selectedOrigins.length) params.set('origins', selectedOrigins.join(','));
-    if (selectedLetters.length) params.set('letters', selectedLetters.join(','));
-
-    const newUrl = params.toString() ? `?${params.toString()}` : '/busqueda-avanzada';
-    window.history.replaceState({}, '', newUrl);
-  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters]);
-
-  // Function to restore state from URL parameters
-  const restoreFromURL = useCallback(() => {
-    const q = searchParams.get('q') || '';
-    const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
-    const styles = searchParams.get('styles')?.split(',').filter(Boolean) || [];
-    const origins = searchParams.get('origins')?.split(',').filter(Boolean) || [];
-    const letters = searchParams.get('letters')?.split(',').filter(Boolean) || [];
-
-    setQuery(q);
-    setSelectedCategories(categories);
-    setSelectedStyles(styles);
-    setSelectedOrigins(origins);
-    setSelectedLetters(letters);
+  // Function to restore state from cookies
+  const restoreFromCache = () => {
+    const savedFilters = getAdvancedSearchFilters();
+    setQuery(savedFilters.query);
+    setSelectedCategories(savedFilters.selectedCategories);
+    setSelectedStyles(savedFilters.selectedStyles);
+    setSelectedOrigins(savedFilters.selectedOrigins);
+    setSelectedLetters(savedFilters.selectedLetters);
     setIsInitialized(true);
-  }, [searchParams]);
+  };
 
   useEffect(() => {
     const loadFilterOptions = async () => {
@@ -77,16 +74,16 @@ function AdvancedSearchContent() {
       setAvailableStyles(styles);
       setAvailableOrigins(origins);
 
-      // Restore state from URL after options are loaded
-      restoreFromURL();
+      // Restore state from cookies after options are loaded
+      restoreFromCache();
     };
     loadFilterOptions();
-  }, [restoreFromURL]);
+  }, []);
 
-  // Update URL whenever filter state changes (after initialization)
+  // Save filters to cookies whenever filter state changes (after initialization)
   useEffect(() => {
     if (isInitialized) {
-      updateURL();
+      saveFiltersToCache();
     }
   }, [
     query,
@@ -95,7 +92,6 @@ function AdvancedSearchContent() {
     selectedOrigins,
     selectedLetters,
     isInitialized,
-    updateURL,
   ]);
 
   const handleSearch = async () => {
@@ -126,8 +122,8 @@ function AdvancedSearchContent() {
     setSelectedLetters([]);
     setResults([]);
     setHasSearched(false);
-    // Clear URL parameters
-    window.history.replaceState({}, '', '/busqueda-avanzada');
+    // Clear cookies
+    clearAdvancedSearchFilters();
   };
 
   const categoryOptions = availableCategories.map((cat) => ({
