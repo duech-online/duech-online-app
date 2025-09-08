@@ -340,10 +340,10 @@ function AdvancedSearchContent() {
                               ))}
                             </div>
                           )}
-
-                          <div className="mb-3 text-lg leading-relaxed text-gray-800">
-                            <MarkdownRenderer content={truncatedMeaning} />
-                          </div>
+                          
+                          {/* <div className="mb-2 text-gray-700">
+                              <MarkdownRenderer content={truncatedMeaning} />
+                          </div> */}
 
                           {result.word.values.length > 1 && (
                             <p className="text-duech-blue text-sm font-medium">
