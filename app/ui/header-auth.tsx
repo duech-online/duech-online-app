@@ -29,14 +29,14 @@ export default function HeaderAuth() {
     try {
       const currentPath = window.location.pathname;
       const logoutUrl = `/api/logout?redirect=${encodeURIComponent(currentPath)}`;
-      
+
       const response = await fetch(logoutUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         if (data.success && data.redirectTo) {

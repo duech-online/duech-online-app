@@ -8,9 +8,9 @@ export async function POST(request: Request) {
     const redirectTo = searchParams.get('redirect') || '/';
 
     // Always return JSON response for consistency
-    const response = NextResponse.json({ 
-      success: true, 
-      redirectTo: redirectTo 
+    const response = NextResponse.json({
+      success: true,
+      redirectTo: redirectTo,
     });
 
     // Ensure the cookie is cleared in the response as well
@@ -19,14 +19,17 @@ export async function POST(request: Request) {
     return response;
   } catch (error) {
     console.error('Logout error:', error);
-    
+
     // Return JSON error response
-    const response = NextResponse.json({ 
-      success: false, 
-      redirectTo: '/',
-      error: 'Logout failed'
-    }, { status: 500 });
-    
+    const response = NextResponse.json(
+      {
+        success: false,
+        redirectTo: '/',
+        error: 'Logout failed',
+      },
+      { status: 500 }
+    );
+
     response.cookies.delete('duech_session');
     return response;
   }

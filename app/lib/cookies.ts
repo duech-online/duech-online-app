@@ -35,9 +35,7 @@ export function getAdvancedSearchFilters(): AdvancedSearchFilters {
     }
 
     const cookies = document.cookie.split(';');
-    const filterCookie = cookies.find((cookie) =>
-      cookie.trim().startsWith(`${COOKIE_NAME}=`)
-    );
+    const filterCookie = cookies.find((cookie) => cookie.trim().startsWith(`${COOKIE_NAME}=`));
 
     if (!filterCookie) {
       return defaultFilters;
