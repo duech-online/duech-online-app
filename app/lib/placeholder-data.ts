@@ -383,16 +383,7 @@ export const dictionaries = [
                 meaning: 'De Puerto Octay, comuna de la X Región de Los Lagos.',
                 styles: [],
                 observation: null,
-                example: [
-                  {
-                    value: '',
-                    author: null,
-                    title: null,
-                    source: null,
-                    date: null,
-                    page: null,
-                  },
-                ],
+                example: [],
                 variant: null,
                 expressions: [],
               },
