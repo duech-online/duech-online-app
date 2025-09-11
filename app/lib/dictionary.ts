@@ -56,7 +56,7 @@ export async function getRandomWord(): Promise<{ word: Word; letter: string } | 
   try {
     const response = await fetch('/api/words/random');
 
-    if (!response.ok) {
+    if (!response.ok && response.status !== 404) {
       throw new Error('Failed to get random word');
     }
 
