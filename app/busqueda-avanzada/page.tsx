@@ -3,8 +3,8 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import MultiSelectDropdown from '@/app/ui/MultiSelectDropdown';
-import FilterPill from '@/app/ui/FilterPill';
+import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
+import FilterPill from '@/app/ui/filter-pill';
 import {
   advancedSearch,
   getAvailableCategories,
