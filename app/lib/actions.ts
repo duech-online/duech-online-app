@@ -35,11 +35,6 @@ export async function authenticate(_: unknown, formData: FormData): Promise<stri
   return 'Invalid email or password';
 }
 
-export async function logout() {
-  await clearSessionCookie();
-  redirect('/');
-}
-
 export async function register(_: unknown, formData: FormData): Promise<string | undefined> {
   const name = String(formData.get('name') || '').trim();
   const email = String(formData.get('email') || '')
