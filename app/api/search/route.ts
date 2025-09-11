@@ -3,8 +3,16 @@ import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
 import { loadDictionaryServer } from '@/app/lib/dictionary-server';
 import { SearchResult } from '@/app/lib/definitions';
+import { applyRateLimit } from '@/app/lib/rate-limiting';
 
 export async function GET(request: NextRequest) {
+  // Apply rate limiting
+  const rateLimitResult = await applyRateLimit(request);
+  if (!rateLimitResult.success) {
+    const response = new NextResponse('Too Many Requests', { status: 429 });
+    return response;
+  }
+
   try {
     // Auth check
     const token = (await cookies()).get('duech_session')?.value;
