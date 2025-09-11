@@ -18,7 +18,6 @@ import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 function AdvancedSearchContent() {
   const searchParams = useSearchParams();
   // Auth is enforced by middleware; no server-only imports here.
-
   const [query, setQuery] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
