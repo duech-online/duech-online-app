@@ -88,7 +88,15 @@ function AdvancedSearchContent() {
     if (isInitialized) {
       updateURL();
     }
-  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters, isInitialized, updateURL]);
+  }, [
+    query,
+    selectedCategories,
+    selectedStyles,
+    selectedOrigins,
+    selectedLetters,
+    isInitialized,
+    updateURL,
+  ]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -109,8 +117,6 @@ function AdvancedSearchContent() {
       setLoading(false);
     }
   };
-
-
 
   const clearFilters = () => {
     setQuery('');
@@ -422,16 +428,18 @@ function AdvancedSearchContent() {
 
 export default function AdvancedSearchPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-duech-blue/5 to-duech-gold/5 p-6">
-        <div className="container mx-auto max-w-6xl">
-          <div className="mb-8">
-            <h1 className="text-duech-blue mb-4 text-3xl font-bold">Búsqueda Avanzada</h1>
-            <p className="text-gray-600">Cargando...</p>
+    <Suspense
+      fallback={
+        <div className="from-duech-blue/5 to-duech-gold/5 min-h-screen bg-gradient-to-br p-6">
+          <div className="container mx-auto max-w-6xl">
+            <div className="mb-8">
+              <h1 className="text-duech-blue mb-4 text-3xl font-bold">Búsqueda Avanzada</h1>
+              <p className="text-gray-600">Cargando...</p>
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <AdvancedSearchContent />
     </Suspense>
   );
