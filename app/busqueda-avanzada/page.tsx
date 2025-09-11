@@ -84,15 +84,7 @@ function AdvancedSearchContent() {
     if (isInitialized) {
       saveFiltersToCache();
     }
-  }, [
-    query,
-    selectedCategories,
-    selectedStyles,
-    selectedOrigins,
-    selectedLetters,
-    isInitialized,
-  ]);
-
+  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters, isInitialized]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -342,7 +334,7 @@ function AdvancedSearchContent() {
                               ))}
                             </div>
                           )}
-                          
+
                           {/* <div className="mb-2 text-gray-700">
                               <MarkdownRenderer content={truncatedMeaning} />
                           </div> */}
