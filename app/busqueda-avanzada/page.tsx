@@ -91,7 +91,6 @@ function AdvancedSearchContent() {
     selectedOrigins,
     selectedLetters,
     isInitialized,
-    updateURL,
   ]);
 
 
