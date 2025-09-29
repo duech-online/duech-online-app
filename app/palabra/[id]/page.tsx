@@ -201,10 +201,10 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
             </Link>
 
             <Link
-              href="/busqueda-avanzada"
+              href="/search"
               className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
             >
-              Búsqueda avanzada
+              Opciones avanzadas
               <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"

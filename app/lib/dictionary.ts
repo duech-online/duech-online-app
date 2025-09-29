@@ -22,31 +22,21 @@ export async function searchWords(
     hasPrev: boolean;
   };
 }> {
-  if (!query || query.trim().length === 0) {
+  const trimmedQuery = query?.trim();
+
+  if (!trimmedQuery) {
     return {
       results: [],
       pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
     };
   }
 
-  try {
-    const response = await fetch(
-      `/api/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
-    );
+  const params = new URLSearchParams();
+  params.append('q', trimmedQuery);
+  params.append('page', page.toString());
+  params.append('limit', limit.toString());
 
-    if (!response.ok) {
-      throw new Error('Search failed');
-    }
-
-    const result = await response.json();
-    return result.data;
-  } catch (error) {
-    console.error('Error searching words:', error);
-    return {
-      results: [],
-      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
-    };
-  }
+  return fetchSearchResults(params, page, limit, 'Error searching words:');
 }
 
 /**
@@ -119,24 +109,11 @@ export async function advancedSearch(
   };
 }> {
   try {
-    const params = new URLSearchParams();
-
-    if (filters.query) params.append('q', filters.query);
-    if (filters.categories?.length) params.append('categories', filters.categories.join(','));
-    if (filters.styles?.length) params.append('styles', filters.styles.join(','));
-    if (filters.origins?.length) params.append('origins', filters.origins.join(','));
-    if (filters.letters?.length) params.append('letters', filters.letters.join(','));
+    const params = buildFilterParams(filters);
     params.append('page', page.toString());
     params.append('limit', limit.toString());
 
-    const response = await fetch(`/api/search/advanced?${params}`);
-
-    if (!response.ok) {
-      throw new Error('Advanced search failed');
-    }
-
-    const result = await response.json();
-    return result.data;
+    return await fetchSearchResults(params, page, limit, 'Error in advanced search:');
   } catch (error) {
     console.error('Error in advanced search:', error);
     return {
@@ -191,4 +168,49 @@ export async function getAvailableStyles(): Promise<string[]> {
 export async function getAvailableOrigins(): Promise<string[]> {
   const metadata = await getMetadata();
   return metadata.origins;
+}
+
+function buildFilterParams(filters: AdvancedSearchFilters): URLSearchParams {
+  const params = new URLSearchParams();
+
+  const query = filters.query?.trim();
+  if (query) params.append('q', query);
+  if (filters.categories?.length) params.append('categories', filters.categories.join(','));
+  if (filters.styles?.length) params.append('styles', filters.styles.join(','));
+  if (filters.origins?.length) params.append('origins', filters.origins.join(','));
+  if (filters.letters?.length) params.append('letters', filters.letters.join(','));
+
+  return params;
+}
+
+async function fetchSearchResults(
+  params: URLSearchParams,
+  page: number,
+  limit: number,
+  errorLabel: string
+) {
+  try {
+    const queryString = params.toString();
+    const response = await fetch(`/api/search${queryString ? `?${queryString}` : ''}`);
+
+    if (!response.ok) {
+      throw new Error('Search failed');
+    }
+
+    const result = await response.json();
+    return result.data;
+  } catch (error) {
+    console.error(errorLabel, error);
+    return {
+      results: [],
+      pagination: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0,
+        hasNext: false,
+        hasPrev: page > 1,
+      },
+    };
+  }
 }

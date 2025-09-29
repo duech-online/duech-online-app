@@ -95,14 +95,14 @@ export default function Home() {
       <div className="rounded-xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-12 text-center">
         <h2 className="text-duech-blue mb-6 text-3xl font-bold">Explora el diccionario</h2>
         <p className="mx-auto mb-8 max-w-2xl text-xl leading-relaxed text-gray-700">
-          Utiliza nuestra búsqueda avanzada para encontrar palabras específicas por categoría,
-          estilo de uso o origen etimológico
+          Personaliza tus búsquedas con filtros por categoría, estilo de uso, origen o letra inicial
+          directamente desde la barra de búsqueda.
         </p>
         <a
-          href="/busqueda-avanzada"
+          href="/search"
           className="bg-duech-blue inline-flex transform items-center rounded-lg px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-800"
         >
-          Ir a Búsqueda Avanzada
+          Abrir buscador
           <svg className="ml-3 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
