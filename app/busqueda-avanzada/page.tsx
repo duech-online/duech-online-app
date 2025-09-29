@@ -335,7 +335,7 @@ function AdvancedSearchContent() {
                               ))}
                             </div>
                           )}
-                          
+
                           {/* <div className="mb-2 text-gray-700">
                               <MarkdownRenderer content={truncatedMeaning} />
                           </div> */}
