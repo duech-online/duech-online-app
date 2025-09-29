@@ -19,6 +19,7 @@ interface ParseSuccess {
   filters: SearchFilters;
   page: number;
   limit: number;
+  metaOnly: boolean;
 }
 
 interface ParseError {
@@ -48,18 +49,36 @@ export async function GET(request: NextRequest) {
       return parsed.errorResponse;
     }
 
-    const { filters, page, limit } = parsed;
+    const { filters, page, limit, metaOnly } = parsed;
 
     const dictionaries = await loadDictionaryServer();
     const results: SearchResult[] = [];
+    const categories = new Set<string>();
+    const styles = new Set<string>();
+    const origins = new Set<string>();
 
     dictionaries.forEach((dict) => {
       dict.value.forEach((letterGroup) => {
-        if (filters.letters.length > 0 && !filters.letters.includes(letterGroup.letter)) {
-          return;
-        }
+        const letterIncluded =
+          filters.letters.length === 0 || filters.letters.includes(letterGroup.letter);
 
         letterGroup.values.forEach((word) => {
+          word.values.forEach((definition) => {
+            definition.categories.forEach((category) => categories.add(category));
+
+            if (Array.isArray(definition.styles)) {
+              definition.styles.forEach((style) => styles.add(style));
+            }
+
+            if (definition.origin) {
+              origins.add(definition.origin);
+            }
+          });
+
+          if (metaOnly || !letterIncluded) {
+            return;
+          }
+
           const evaluation = evaluateWord(word, filters);
 
           if (!evaluation.matches) {
@@ -75,26 +94,47 @@ export async function GET(request: NextRequest) {
       });
     });
 
-    const sortedResults = results.sort(
-      (a, b) => MATCH_ORDER[a.matchType] - MATCH_ORDER[b.matchType]
-    );
+    const metadata = {
+      categories: Array.from(categories).sort((a, b) => a.localeCompare(b, 'es')),
+      styles: Array.from(styles).sort((a, b) => a.localeCompare(b, 'es')),
+      origins: Array.from(origins).sort((a, b) => a.localeCompare(b, 'es')),
+    };
 
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedResults = sortedResults.slice(startIndex, endIndex);
+    let paginatedResults: SearchResult[] = [];
+    let pagination = {
+      page: 1,
+      limit,
+      total: 0,
+      totalPages: 0,
+      hasNext: false,
+      hasPrev: false,
+    };
+
+    if (!metaOnly) {
+      const sortedResults = results.sort(
+        (a, b) => MATCH_ORDER[a.matchType] - MATCH_ORDER[b.matchType]
+      );
+
+      const startIndex = (page - 1) * limit;
+      const endIndex = startIndex + limit;
+      paginatedResults = sortedResults.slice(startIndex, endIndex);
+
+      pagination = {
+        page,
+        limit,
+        total: sortedResults.length,
+        totalPages: Math.ceil(sortedResults.length / limit),
+        hasNext: endIndex < sortedResults.length,
+        hasPrev: page > 1,
+      };
+    }
 
     return NextResponse.json({
       success: true,
       data: {
         results: paginatedResults,
-        pagination: {
-          page,
-          limit,
-          total: sortedResults.length,
-          totalPages: Math.ceil(sortedResults.length / limit),
-          hasNext: endIndex < sortedResults.length,
-          hasPrev: page > 1,
-        },
+        metadata,
+        pagination,
       },
     });
   } catch (error) {
@@ -129,6 +169,9 @@ function parseSearchParams(searchParams: URLSearchParams): ParseResult {
     };
   }
 
+  const metaOnlyParam = searchParams.get('metaOnly');
+  const metaOnly = metaOnlyParam === 'true' || metaOnlyParam === '1';
+
   const page = Math.max(parseInteger(searchParams.get('page'), 1), 1);
   const limit = Math.max(Math.min(parseInteger(searchParams.get('limit'), 20), MAX_LIMIT), 1);
 
@@ -146,7 +189,7 @@ function parseSearchParams(searchParams: URLSearchParams): ParseResult {
     letters,
   };
 
-  return { filters, page, limit };
+  return { filters, page, limit, metaOnly };
 }
 
 function parseList(value: string | null): string[] {

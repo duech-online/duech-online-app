@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getRandomWord } from '@/app/lib/dictionary';
+import { getWordOfTheDay } from '@/app/lib/dictionary';
 import { Word } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 
@@ -18,7 +18,7 @@ export default function WordOfTheDay() {
       setLoading(true);
       setError(null);
       try {
-        const randomWord = await getRandomWord();
+        const randomWord = await getWordOfTheDay();
         if (!active) return;
         if (randomWord) {
           setWord(randomWord);
