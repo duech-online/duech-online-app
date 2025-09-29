@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { verifyToken } from '@/app/lib/auth';
 import { loadDictionaryServer } from '@/app/lib/dictionary-server';
 import { SearchResult } from '@/app/lib/definitions';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
@@ -22,11 +20,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    // Auth check
-    const token = (await cookies()).get('duech_session')?.value;
-    if (!token || !verifyToken(token)) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
     const { searchParams } = new URL(request.url);
 
     // Parse parameters
