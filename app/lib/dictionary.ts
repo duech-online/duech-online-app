@@ -179,7 +179,10 @@ function buildFilterParams(filters: SearchFilters): URLSearchParams {
 
 function hasFilterValues(filters: SearchFilters): boolean {
   return Boolean(
-    filters.categories?.length || filters.styles?.length || filters.origins?.length || filters.letters?.length
+    filters.categories?.length ||
+      filters.styles?.length ||
+      filters.origins?.length ||
+      filters.letters?.length
   );
 }
 

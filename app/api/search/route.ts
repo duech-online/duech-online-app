@@ -75,7 +75,9 @@ export async function GET(request: NextRequest) {
       });
     });
 
-    const sortedResults = results.sort((a, b) => MATCH_ORDER[a.matchType] - MATCH_ORDER[b.matchType]);
+    const sortedResults = results.sort(
+      (a, b) => MATCH_ORDER[a.matchType] - MATCH_ORDER[b.matchType]
+    );
 
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
@@ -202,8 +204,9 @@ function evaluateWord(
   }
 
   if (filters.styles.length > 0) {
-    const hasStyle = word.values.some((def) =>
-      Array.isArray(def.styles) && def.styles.some((style) => filters.styles.includes(style))
+    const hasStyle = word.values.some(
+      (def) =>
+        Array.isArray(def.styles) && def.styles.some((style) => filters.styles.includes(style))
     );
 
     if (!hasStyle) {

@@ -216,35 +216,32 @@ export default function SearchBar({
     if (trimmedQuery) params.set('q', trimmedQuery);
     if (selectedFilters.categories.length)
       params.set('categories', selectedFilters.categories.join(','));
-    if (selectedFilters.styles.length)
-      params.set('styles', selectedFilters.styles.join(','));
-    if (selectedFilters.origins.length)
-      params.set('origins', selectedFilters.origins.join(','));
-    if (selectedFilters.letters.length)
-      params.set('letters', selectedFilters.letters.join(','));
+    if (selectedFilters.styles.length) params.set('styles', selectedFilters.styles.join(','));
+    if (selectedFilters.origins.length) params.set('origins', selectedFilters.origins.join(','));
+    if (selectedFilters.letters.length) params.set('letters', selectedFilters.letters.join(','));
 
     const searchPath = params.toString();
     router.push(`/search${searchPath ? `?${searchPath}` : ''}`);
   };
 
-  const updateFilters = useCallback(<K extends keyof SearchFiltersState>(key: K, values: string[]) => {
-    setSelectedFilters((prev) => ({ ...prev, [key]: values }));
-  }, []);
+  const updateFilters = useCallback(
+    <K extends keyof SearchFiltersState>(key: K, values: string[]) => {
+      setSelectedFilters((prev) => ({ ...prev, [key]: values }));
+    },
+    []
+  );
 
   const handleClearFilters = useCallback(() => {
     setSelectedFilters(createEmptyFilters());
     clearAdvancedSearchFilters();
   }, []);
 
-  const removeFilterValue = useCallback(
-    (key: keyof SearchFiltersState, value: string) => {
-      setSelectedFilters((prev) => ({
-        ...prev,
-        [key]: prev[key].filter((item) => item !== value),
-      }));
-    },
-    []
-  );
+  const removeFilterValue = useCallback((key: keyof SearchFiltersState, value: string) => {
+    setSelectedFilters((prev) => ({
+      ...prev,
+      [key]: prev[key].filter((item) => item !== value),
+    }));
+  }, []);
 
   const renderFilterPills = () => {
     const pills: Array<{
@@ -324,7 +321,9 @@ export default function SearchBar({
             type="button"
             onClick={toggleAdvanced}
             className="hover:text-duech-blue rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
-            aria-label={isAdvancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'}
+            aria-label={
+              isAdvancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'
+            }
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -333,7 +332,12 @@ export default function SearchBar({
                 strokeWidth={2}
                 d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.89 3.31.877 2.42 2.42a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.89 1.543-.877 3.31-2.42 2.42a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.89-3.31-.877-2.42-2.42a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.89-1.543.877-3.31 2.42-2.42.996.575 2.275.126 2.572-1.065z"
               />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
           </button>
           <button
@@ -342,7 +346,12 @@ export default function SearchBar({
             aria-label="Buscar"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
             </svg>
           </button>
         </div>
