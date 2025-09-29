@@ -20,17 +20,13 @@ export default function WordOfTheDay() {
       try {
         const randomWord = await getWordOfTheDay();
         if (!active) return;
-        if (randomWord) {
-          setWord(randomWord);
-        } else {
-          setWord(null);
-          setError('No pudimos cargar una palabra aleatoria.');
-        }
+        setWord(randomWord);
       } catch (err) {
-        console.error('Error loading random word:', err);
+        console.error('WordOfTheDay load error:', err);
         if (!active) return;
+        const message = err instanceof Error ? err.message : 'No pudimos cargar una palabra aleatoria.';
         setWord(null);
-        setError('No pudimos cargar una palabra aleatoria.');
+        setError(message);
       } finally {
         if (active) {
           setLoading(false);

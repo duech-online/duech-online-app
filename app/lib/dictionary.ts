@@ -4,6 +4,9 @@
 
 import { SearchResult, Word } from '@/app/lib/definitions';
 
+const LETTERS = 'abcdefghijklmnñopqrstuvwxyz'.split('');
+const wordOfTheDayCache = new Map<string, { word: Word; letter: string }>();
+
 /**
  * Search words using API
  */
@@ -18,37 +21,56 @@ export async function searchWords(
 /**
  * Get a random word for "Lotería de palabras"
  */
-export async function getWordOfTheDay(date: Date = new Date()): Promise<{ word: Word; letter: string } | null> {
+export async function getWordOfTheDay(
+  date: Date = new Date()
+): Promise<{ word: Word; letter: string } | null> {
   try {
     const seed = date.toISOString().slice(0, 10); // YYYY-MM-DD (UTC based)
-    const letter = pickLetterFromSeed(seed);
+    if (wordOfTheDayCache.has(seed)) {
+      return wordOfTheDayCache.get(seed)!;
+    }
+    const startIndex = hashSeed(seed) % LETTERS.length;
 
-    let searchResult = await searchDictionary({ letters: [letter] }, 1, 1000);
+    let searchResult: SearchResponse | null = null;
+    let selectedLetter = LETTERS[startIndex];
 
-    if (searchResult.results.length === 0) {
-      // Fallback to entire dictionary if a letter has no entries
+    for (let offset = 0; offset < LETTERS.length; offset += 1) {
+      const idx = (startIndex + offset) % LETTERS.length;
+      const candidateLetter = LETTERS[idx];
+      const candidateResult = await searchDictionary({ letters: [candidateLetter] }, 1, 1000);
+
+      if (candidateResult.results.length > 0) {
+        searchResult = candidateResult;
+        selectedLetter = candidateLetter;
+        break;
+      }
+    }
+
+    if (!searchResult || searchResult.results.length === 0) {
       searchResult = await searchDictionary({}, 1, 1000);
+      selectedLetter = 'all';
     }
 
     const pool = [...searchResult.results].sort((a, b) =>
       a.word.lemma.localeCompare(b.word.lemma, 'es')
     );
     if (pool.length === 0) {
-      return null;
+      throw new Error(
+        `No se encontraron palabras para la fecha ${seed}. (letra=${selectedLetter}, filtros vacíos)`
+      );
     }
 
-    const index = hashSeed(`${seed}:${letter}`) % pool.length;
+    const index = hashSeed(`${seed}:${selectedLetter}`) % pool.length;
     const chosen = pool[index];
     const detailed = await getWordByLemma(chosen.word.lemma);
 
-    if (detailed) {
-      return detailed;
-    }
+    const fallbackWord = detailed ?? { word: chosen.word, letter: chosen.letter };
 
-    return { word: chosen.word, letter: chosen.letter };
+    wordOfTheDayCache.set(seed, fallbackWord);
+    return fallbackWord;
   } catch (error) {
     console.error('Error getting word of the day:', error);
-    return null;
+    throw error;
   }
 }
 
@@ -188,12 +210,6 @@ async function fetchSearchResults(
       },
     };
   }
-}
-
-function pickLetterFromSeed(seed: string): string {
-  const letters = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
-  const index = hashSeed(seed) % letters.length;
-  return letters[index];
 }
 
 function hashSeed(seed: string): number {
