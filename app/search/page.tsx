@@ -4,7 +4,7 @@ import { useMemo, useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import SearchBar from '@/app/ui/search-bar';
-import { advancedSearch } from '@/app/lib/dictionary';
+import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
 
 function SearchResults() {
@@ -49,7 +49,7 @@ function SearchResults() {
       }
 
       try {
-        const searchData = await advancedSearch(
+        const searchData = await searchDictionary(
           {
             query: query.trim(),
             categories,

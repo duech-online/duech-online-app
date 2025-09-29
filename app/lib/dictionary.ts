@@ -22,21 +22,7 @@ export async function searchWords(
     hasPrev: boolean;
   };
 }> {
-  const trimmedQuery = query?.trim();
-
-  if (!trimmedQuery) {
-    return {
-      results: [],
-      pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
-    };
-  }
-
-  const params = new URLSearchParams();
-  params.append('q', trimmedQuery);
-  params.append('page', page.toString());
-  params.append('limit', limit.toString());
-
-  return fetchSearchResults(params, page, limit, 'Error searching words:');
+  return searchDictionary({ query }, page, limit);
 }
 
 /**
@@ -85,7 +71,7 @@ export async function getWordByLemma(
 /**
  * Advanced search with filters
  */
-export interface AdvancedSearchFilters {
+export interface SearchFilters {
   query?: string;
   categories?: string[];
   styles?: string[];
@@ -93,8 +79,8 @@ export interface AdvancedSearchFilters {
   letters?: string[];
 }
 
-export async function advancedSearch(
-  filters: AdvancedSearchFilters,
+export async function searchDictionary(
+  filters: SearchFilters,
   page: number = 1,
   limit: number = 1000
 ): Promise<{
@@ -110,12 +96,20 @@ export async function advancedSearch(
 }> {
   try {
     const params = buildFilterParams(filters);
+
+    if (!params.has('q') && !hasFilterValues(filters)) {
+      return {
+        results: [],
+        pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
+      };
+    }
+
     params.append('page', page.toString());
     params.append('limit', limit.toString());
 
-    return await fetchSearchResults(params, page, limit, 'Error in advanced search:');
+    return await fetchSearchResults(params, page, limit, 'Error searching dictionary:');
   } catch (error) {
-    console.error('Error in advanced search:', error);
+    console.error('Error searching dictionary:', error);
     return {
       results: [],
       pagination: { page: 1, limit, total: 0, totalPages: 0, hasNext: false, hasPrev: false },
@@ -170,7 +164,7 @@ export async function getAvailableOrigins(): Promise<string[]> {
   return metadata.origins;
 }
 
-function buildFilterParams(filters: AdvancedSearchFilters): URLSearchParams {
+function buildFilterParams(filters: SearchFilters): URLSearchParams {
   const params = new URLSearchParams();
 
   const query = filters.query?.trim();
@@ -181,6 +175,12 @@ function buildFilterParams(filters: AdvancedSearchFilters): URLSearchParams {
   if (filters.letters?.length) params.append('letters', filters.letters.join(','));
 
   return params;
+}
+
+function hasFilterValues(filters: SearchFilters): boolean {
+  return Boolean(
+    filters.categories?.length || filters.styles?.length || filters.origins?.length || filters.letters?.length
+  );
 }
 
 async function fetchSearchResults(
