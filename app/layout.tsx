@@ -51,11 +51,25 @@ export default function RootLayout({
                   <span className="hover:text-yellow-300">Inicio</span>
                 </Link>
                 <Link
-                  href="/busqueda-avanzada"
+                  href="/search"
                   className="text-lg font-medium transition-colors"
                   style={{ color: '#ffffff' }}
                 >
-                  <span className="hover:text-yellow-300">Búsqueda Avanzada</span>
+                  <span className="hover:text-yellow-300">Buscar</span>
+                </Link>
+                <Link
+                  href="/recursos"
+                  className="text-lg font-medium transition-colors"
+                  style={{ color: '#ffffff' }}
+                >
+                  <span className="hover:text-yellow-300">Recursos</span>
+                </Link>
+                <Link
+                  href="/acerca"
+                  className="text-lg font-medium transition-colors"
+                  style={{ color: '#ffffff' }}
+                >
+                  <span className="hover:text-yellow-300">Acerca</span>
                 </Link>
               </div>
             </div>

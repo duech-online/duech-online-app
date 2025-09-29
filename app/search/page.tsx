@@ -1,45 +1,107 @@
 'use client';
 
+import { useMemo, useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import SearchBar from '@/app/ui/search-bar';
-import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import { searchWords } from '@/app/lib/dictionary';
+import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
 
 function SearchResults() {
   const searchParams = useSearchParams();
   const query = searchParams.get('q') || '';
+  const rawCategories = searchParams.get('categories');
+  const rawStyles = searchParams.get('styles');
+  const rawOrigins = searchParams.get('origins');
+  const rawLetters = searchParams.get('letters');
+
+  const categories = useMemo(() => parseListParam(rawCategories), [rawCategories]);
+  const styles = useMemo(() => parseListParam(rawStyles), [rawStyles]);
+  const origins = useMemo(() => parseListParam(rawOrigins), [rawOrigins]);
+  const letters = useMemo(() => parseListParam(rawLetters), [rawLetters]);
+
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalResults, setTotalResults] = useState(0);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const performSearch = async () => {
-      if (query) {
-        setLoading(true);
-        try {
-          const searchData = await searchWords(query);
-          setResults(searchData.results);
-        } catch (error) {
-          console.error('Error searching:', error);
-        } finally {
+      const hasCriteria =
+        Boolean(query.trim()) ||
+        categories.length > 0 ||
+        styles.length > 0 ||
+        origins.length > 0 ||
+        letters.length > 0;
+
+      if (!hasCriteria) {
+        if (!isCancelled) {
+          setResults([]);
+          setTotalResults(0);
           setLoading(false);
         }
-      } else {
-        setResults([]);
-        setLoading(false);
+        return;
+      }
+
+      if (!isCancelled) {
+        setLoading(true);
+      }
+
+      try {
+        const searchData = await searchDictionary(
+          {
+            query: query.trim(),
+            categories,
+            styles,
+            origins,
+            letters,
+          },
+          1,
+          1000
+        );
+
+        if (!isCancelled) {
+          setResults(searchData.results);
+          setTotalResults(searchData.pagination.total);
+        }
+      } catch (error) {
+        console.error('Error searching:', error);
+        if (!isCancelled) {
+          setResults([]);
+          setTotalResults(0);
+        }
+      } finally {
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     performSearch();
-  }, [query]);
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [query, categories, styles, origins, letters]);
+
+  const initialFilters = useMemo(
+    () => ({ categories, styles, origins, letters }),
+    [categories, styles, origins, letters]
+  );
+
+  const hasAnyCriteria =
+    Boolean(query.trim()) ||
+    categories.length > 0 ||
+    styles.length > 0 ||
+    origins.length > 0 ||
+    letters.length > 0;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       <div className="mb-10">
         <h1 className="text-duech-blue mb-6 text-4xl font-bold">Resultados de búsqueda</h1>
-        <SearchBar initialValue={query} className="max-w-3xl" />
+        <SearchBar initialValue={query} initialFilters={initialFilters} className="max-w-3xl" />
       </div>
 
       {loading ? (
@@ -54,11 +116,12 @@ function SearchResults() {
         </div>
       ) : (
         <>
-          {query && (
+          {hasAnyCriteria && (
             <p className="mb-6 text-gray-600">
-              {results.length > 0
-                ? `Se encontraron ${results.length} resultado${results.length !== 1 ? 's' : ''} para "${query}"`
-                : `No se encontraron resultados para "${query}"`}
+              {totalResults > 0
+                ? `Se encontraron ${totalResults} resultado${totalResults !== 1 ? 's' : ''}`
+                : 'No se encontraron resultados con los criterios seleccionados'}
+              {query && totalResults > 0 ? ` para "${query}"` : ''}
             </p>
           )}
 
@@ -66,10 +129,6 @@ function SearchResults() {
             <div className="space-y-4">
               {results.map((result, index) => {
                 const firstDefinition = result.word.values[0];
-                const truncatedMeaning =
-                  firstDefinition.meaning.length > 200
-                    ? firstDefinition.meaning.substring(0, 200) + '...'
-                    : firstDefinition.meaning;
 
                 return (
                   <Link
@@ -102,11 +161,6 @@ function SearchResults() {
                             ))}
                           </div>
                         )}
-
-                        {/* <div className="mb-3 text-lg leading-relaxed text-gray-800">
-                          <MarkdownRenderer content={truncatedMeaning} />
-                        </div> */}
-
                         {result.word.values.length > 1 && (
                           <p className="text-duech-blue text-sm font-medium">
                             {result.word.values.length} definicion
@@ -133,7 +187,7 @@ function SearchResults() {
                 );
               })}
             </div>
-          ) : query ? (
+          ) : hasAnyCriteria ? (
             <div className="rounded-lg bg-white p-8 text-center shadow">
               <svg
                 className="mx-auto mb-4 h-16 w-16 text-gray-400"
@@ -151,27 +205,15 @@ function SearchResults() {
               <h3 className="mb-2 text-lg font-medium text-gray-900">
                 No se encontraron resultados
               </h3>
-              <p className="mb-4 text-gray-600">
-                Intenta con otra palabra o utiliza la búsqueda avanzada
+              <p className="text-gray-600">
+                Ajusta tu término de búsqueda o modifica las opciones avanzadas
               </p>
-              <Link
-                href="/busqueda-avanzada"
-                className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
-              >
-                Ir a búsqueda avanzada
-                <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </Link>
             </div>
           ) : (
             <div className="rounded-lg bg-white p-8 text-center shadow">
-              <p className="text-gray-600">Ingresa un término para comenzar la búsqueda</p>
+              <p className="text-gray-600">
+                Ingresa un término o abre las opciones avanzadas para comenzar la búsqueda
+              </p>
             </div>
           )}
         </>
@@ -195,4 +237,12 @@ export default function SearchPage() {
       <SearchResults />
     </Suspense>
   );
+}
+
+function parseListParam(value: string | null): string[] {
+  if (!value) return [];
+  return value
+    .split(',')
+    .map((entry) => entry.trim())
+    .filter(Boolean);
 }

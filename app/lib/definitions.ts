@@ -45,7 +45,7 @@ export interface Dictionary {
 export interface SearchResult {
   word: Word;
   letter: string;
-  matchType: 'exact' | 'partial' | 'definition';
+  matchType: 'exact' | 'partial' | 'definition' | 'filter';
 }
 
 // Categories mapping for advanced search
