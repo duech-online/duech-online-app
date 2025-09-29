@@ -199,21 +199,6 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
               </svg>
               Volver a búsqueda
             </Link>
-
-            <Link
-              href="/search"
-              className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
-            >
-              Opciones avanzadas
-              <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </Link>
           </div>
         </div>
       </div>

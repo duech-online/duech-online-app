@@ -65,6 +65,10 @@ export default function SearchBar({
   const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
 
+  const toggleAdvanced = useCallback(() => {
+    setIsAdvancedOpen((prev) => !prev);
+  }, []);
+
   const hasActiveFilters = useMemo(
     () =>
       selectedFilters.categories.length > 0 ||
@@ -313,45 +317,35 @@ export default function SearchBar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="focus:border-duech-blue w-full rounded-xl border-2 border-gray-300 bg-white px-6 py-4 pr-16 text-lg text-gray-900 shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200 focus:outline-none"
+          className="focus:border-duech-blue w-full rounded-xl border-2 border-gray-300 bg-white px-6 py-4 pr-28 text-lg text-gray-900 shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200 focus:outline-none"
         />
-        <button
-          type="submit"
-          className="hover:text-duech-blue absolute top-1/2 right-3 -translate-y-1/2 transform rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
-          aria-label="Buscar"
-        >
-          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
-      </div>
-
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-        <button
-          type="button"
-          onClick={() => setIsAdvancedOpen((prev) => !prev)}
-          className="text-duech-blue inline-flex items-center gap-2 text-sm font-semibold"
-        >
-          <svg
-            className={`h-5 w-5 transition-transform ${isAdvancedOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-          Opciones avanzadas
-        </button>
-
-        {hasActiveFilters && (
+        <div className="absolute inset-y-0 right-3 flex items-center gap-2">
           <button
             type="button"
-            onClick={handleClearFilters}
-            className="text-sm font-medium text-gray-600 underline-offset-4 hover:underline"
+            onClick={toggleAdvanced}
+            className="hover:text-duech-blue rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
+            aria-label={isAdvancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'}
           >
-            Limpiar filtros
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.89 3.31.877 2.42 2.42a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.89 1.543-.877 3.31-2.42 2.42a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.89-3.31-.877-2.42-2.42a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.89-1.543.877-3.31 2.42-2.42.996.575 2.275.126 2.572-1.065z"
+              />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
           </button>
-        )}
+          <button
+            type="submit"
+            className="hover:text-duech-blue rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
+            aria-label="Buscar"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
       </div>
 
       {isAdvancedOpen && (
