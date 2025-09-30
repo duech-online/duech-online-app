@@ -1,8 +1,4 @@
-/**
- * Client-side dictionary API functions
- */
-
-import { SearchResult, Word } from '@/app/lib/definitions';
+import { SearchFilters, SearchMetadata, SearchResponse, Word } from '@/app/lib/definitions';
 
 const LETTERS = 'abcdefghijklmnñopqrstuvwxyz'.split('');
 const wordOfTheDayCache = new Map<string, { word: Word; letter: string }>();
@@ -34,7 +30,7 @@ export async function getWordOfTheDay(
     let searchResult: SearchResponse | null = null;
     let selectedLetter = LETTERS[startIndex];
 
-    const idx = (startIndex) % LETTERS.length;
+    const idx = startIndex % LETTERS.length;
     const initialLetter = LETTERS[idx];
     const initialResult = await searchDictionary({ letters: [initialLetter] }, 1, 1000);
 
@@ -91,36 +87,6 @@ export async function getWordByLemma(
     console.error('Error getting word:', error);
     return null;
   }
-}
-
-/**
- * Advanced search with filters
- */
-export interface SearchFilters {
-  query?: string;
-  categories?: string[];
-  styles?: string[];
-  origins?: string[];
-  letters?: string[];
-}
-
-export interface SearchMetadata {
-  categories: string[];
-  styles: string[];
-  origins: string[];
-}
-
-export interface SearchResponse {
-  results: SearchResult[];
-  metadata: SearchMetadata;
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
 }
 
 export async function searchDictionary(

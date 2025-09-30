@@ -24,7 +24,8 @@ export default function WordOfTheDay() {
       } catch (err) {
         console.error('WordOfTheDay load error:', err);
         if (!active) return;
-        const message = err instanceof Error ? err.message : 'No pudimos cargar una palabra aleatoria.';
+        const message =
+          err instanceof Error ? err.message : 'No pudimos cargar una palabra aleatoria.';
         setWord(null);
         setError(message);
       } finally {
