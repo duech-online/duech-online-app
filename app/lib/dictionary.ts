@@ -34,21 +34,16 @@ export async function getWordOfTheDay(
     let searchResult: SearchResponse | null = null;
     let selectedLetter = LETTERS[startIndex];
 
-    for (let offset = 0; offset < LETTERS.length; offset += 1) {
-      const idx = (startIndex + offset) % LETTERS.length;
-      const candidateLetter = LETTERS[idx];
-      const candidateResult = await searchDictionary({ letters: [candidateLetter] }, 1, 1000);
+    const idx = (startIndex) % LETTERS.length;
+    const initialLetter = LETTERS[idx];
+    const initialResult = await searchDictionary({ letters: [initialLetter] }, 1, 1000);
 
-      if (candidateResult.results.length > 0) {
-        searchResult = candidateResult;
-        selectedLetter = candidateLetter;
-        break;
-      }
-    }
-
-    if (!searchResult || searchResult.results.length === 0) {
-      searchResult = await searchDictionary({}, 1, 1000);
-      selectedLetter = 'all';
+    if (initialResult.results.length > 0) {
+      searchResult = initialResult;
+      selectedLetter = initialLetter;
+    } else {
+      selectedLetter = 'o';
+      searchResult = await searchDictionary({ letters: [selectedLetter] }, 1, 1000);
     }
 
     const pool = [...searchResult.results].sort((a, b) =>
@@ -56,7 +51,7 @@ export async function getWordOfTheDay(
     );
     if (pool.length === 0) {
       throw new Error(
-        `No se encontraron palabras para la fecha ${seed}. (letra=${selectedLetter}, filtros vacíos)`
+        `No se encontraron palabras para la fecha ${seed}. (letra=${selectedLetter}, filtros vacíos, Resultados=${searchResult.results.length})`
       );
     }
 
