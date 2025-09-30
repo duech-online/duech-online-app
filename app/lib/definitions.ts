@@ -2,6 +2,10 @@
  * Type definitions for the Chilean Spanish Dictionary (DUECh)
  */
 
+/**
+ * Data structures
+ */
+
 export interface Example {
   value: string;
   author: string | null;
@@ -41,11 +45,40 @@ export interface Dictionary {
   value: LetterGroup[];
 }
 
-// Helper type for search results
+/**
+ * Advanced search with filters
+ */
 export interface SearchResult {
   word: Word;
   letter: string;
   matchType: 'exact' | 'partial' | 'definition' | 'filter';
+}
+
+export interface SearchFilters {
+  query?: string;
+  categories?: string[];
+  styles?: string[];
+  origins?: string[];
+  letters?: string[];
+}
+
+export interface SearchMetadata {
+  categories: string[];
+  styles: string[];
+  origins: string[];
+}
+
+export interface SearchResponse {
+  results: SearchResult[];
+  metadata: SearchMetadata;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
 }
 
 // Categories mapping for advanced search
@@ -53,6 +86,7 @@ export const GRAMMATICAL_CATEGORIES: Record<string, string> = {
   m: 'Masculino',
   f: 'Femenino',
   adj: 'Adjetivo',
+  adv: 'Adverbio',
   'adj/sust': 'Adjetivo/Sustantivo',
   'adj/adv': 'Adjetivo/Adverbio',
   sust: 'Sustantivo',

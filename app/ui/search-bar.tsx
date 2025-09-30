@@ -4,56 +4,42 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import FilterPill from '@/app/ui/filter-pill';
-import {
-  getAvailableCategories,
-  getAvailableStyles,
-  getAvailableOrigins,
-} from '@/app/lib/dictionary';
+import { getSearchMetadata, SearchFilters } from '@/app/lib/dictionary';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
-import {
-  getAdvancedSearchFilters,
-  setAdvancedSearchFilters,
-  clearAdvancedSearchFilters,
-} from '@/app/lib/cookies';
 
 interface SearchBarProps {
   placeholder?: string;
   className?: string;
   initialValue?: string;
-  initialFilters?: Partial<SearchFiltersState>;
+  initialFilters?: Partial<SearchFilters>;
 }
 
-interface SearchFiltersState {
-  categories: string[];
-  styles: string[];
-  origins: string[];
-  letters: string[];
-}
+type InternalFilters = Required<Omit<SearchFilters, 'query'>>;
 
-type FilterVariant = 'default' | 'category' | 'style' | 'origin' | 'letter';
+type FilterVariant = 'category' | 'style' | 'origin' | 'letter';
 
 const LETTER_OPTIONS = 'abcdefghijklmnñopqrstuvwxyz'.split('').map((letter) => ({
   value: letter,
   label: letter.toUpperCase(),
 }));
 
-const createEmptyFilters = (): SearchFiltersState => ({
+const EMPTY_FILTERS: InternalFilters = {
   categories: [],
   styles: [],
   origins: [],
   letters: [],
-});
+};
 
 export default function SearchBar({
   placeholder = 'Buscar palabra...',
   className = '',
-  initialValue,
+  initialValue = '',
   initialFilters,
 }: SearchBarProps) {
   const router = useRouter();
 
-  const [query, setQuery] = useState(initialValue ?? '');
-  const [selectedFilters, setSelectedFilters] = useState<SearchFiltersState>({
+  const [query, setQuery] = useState(initialValue);
+  const [filters, setFilters] = useState<InternalFilters>({
     categories: initialFilters?.categories ?? [],
     styles: initialFilters?.styles ?? [],
     origins: initialFilters?.origins ?? [],
@@ -62,100 +48,58 @@ export default function SearchBar({
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [availableStyles, setAvailableStyles] = useState<string[]>([]);
   const [availableOrigins, setAvailableOrigins] = useState<string[]>([]);
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  const toggleAdvanced = useCallback(() => {
-    setIsAdvancedOpen((prev) => !prev);
-  }, []);
+  const [advancedOpen, setAdvancedOpen] = useState<boolean>(false);
+  const [metadataLoaded, setMetadataLoaded] = useState(false);
 
   const hasActiveFilters = useMemo(
     () =>
-      selectedFilters.categories.length > 0 ||
-      selectedFilters.styles.length > 0 ||
-      selectedFilters.origins.length > 0 ||
-      selectedFilters.letters.length > 0,
-    [selectedFilters]
+      filters.categories.length > 0 ||
+      filters.styles.length > 0 ||
+      filters.origins.length > 0 ||
+      filters.letters.length > 0,
+    [filters]
   );
 
-  // Keep query in sync with external updates (e.g. navigating to a new search)
   useEffect(() => {
-    if (initialValue !== undefined) {
-      setQuery(initialValue);
-    }
+    setQuery(initialValue);
   }, [initialValue]);
 
-  // Sync filters when parent updates them (search page navigation)
   useEffect(() => {
-    if (!initialFilters) {
-      return;
-    }
-
-    setSelectedFilters({
-      categories: initialFilters.categories ?? [],
-      styles: initialFilters.styles ?? [],
-      origins: initialFilters.origins ?? [],
-      letters: initialFilters.letters ?? [],
+    setFilters({
+      categories: initialFilters?.categories ?? [],
+      styles: initialFilters?.styles ?? [],
+      origins: initialFilters?.origins ?? [],
+      letters: initialFilters?.letters ?? [],
     });
-
-    const shouldOpen = Boolean(
-      (initialFilters.categories && initialFilters.categories.length > 0) ||
+    if (
+      initialFilters &&
+      ((initialFilters.categories && initialFilters.categories.length > 0) ||
         (initialFilters.styles && initialFilters.styles.length > 0) ||
         (initialFilters.origins && initialFilters.origins.length > 0) ||
-        (initialFilters.letters && initialFilters.letters.length > 0)
-    );
-    setIsAdvancedOpen(shouldOpen);
-    setIsInitialized(true);
+        (initialFilters.letters && initialFilters.letters.length > 0))
+    ) {
+      setAdvancedOpen(true);
+    }
   }, [initialFilters]);
 
-  // Restore filters from cookies when the component is used without explicit initial filters (landing page)
-  useEffect(() => {
-    if (initialFilters) {
-      return;
-    }
-
-    const saved = getAdvancedSearchFilters();
-
-    setQuery((prev) => (prev !== '' ? prev : saved.query));
-    setSelectedFilters({
-      categories: saved.selectedCategories,
-      styles: saved.selectedStyles,
-      origins: saved.selectedOrigins,
-      letters: saved.selectedLetters,
-    });
-
-    const shouldOpen =
-      saved.selectedCategories.length > 0 ||
-      saved.selectedStyles.length > 0 ||
-      saved.selectedOrigins.length > 0 ||
-      saved.selectedLetters.length > 0;
-
-    if (shouldOpen) {
-      setIsAdvancedOpen(true);
-    }
-
-    setIsInitialized(true);
-  }, [initialFilters]);
-
-  // Load available metadata for dropdowns
   useEffect(() => {
     let isMounted = true;
 
     const loadMetadata = async () => {
       try {
-        const [cats, styles, origins] = await Promise.all([
-          getAvailableCategories(),
-          getAvailableStyles(),
-          getAvailableOrigins(),
-        ]);
+        const metadata = await getSearchMetadata();
 
         if (!isMounted) return;
 
-        setAvailableCategories(cats);
-        setAvailableStyles(styles);
-        setAvailableOrigins(origins);
+        setAvailableCategories(metadata.categories);
+        setAvailableStyles(metadata.styles);
+        setAvailableOrigins(metadata.origins);
+        setMetadataLoaded(true);
       } catch (error) {
-        console.error('Error loading search metadata:', error);
+        console.error('Error loading metadata for search filters:', error);
+        if (isMounted) {
+          setMetadataLoaded(true);
+        }
       }
     };
 
@@ -165,21 +109,6 @@ export default function SearchBar({
       isMounted = false;
     };
   }, []);
-
-  // Persist filters to cookies after initialization
-  useEffect(() => {
-    if (!isInitialized) {
-      return;
-    }
-
-    setAdvancedSearchFilters({
-      query,
-      selectedCategories: selectedFilters.categories,
-      selectedStyles: selectedFilters.styles,
-      selectedOrigins: selectedFilters.origins,
-      selectedLetters: selectedFilters.letters,
-    });
-  }, [query, selectedFilters, isInitialized]);
 
   const categoryOptions = useMemo(
     () =>
@@ -214,30 +143,24 @@ export default function SearchBar({
 
     const params = new URLSearchParams();
     if (trimmedQuery) params.set('q', trimmedQuery);
-    if (selectedFilters.categories.length)
-      params.set('categories', selectedFilters.categories.join(','));
-    if (selectedFilters.styles.length) params.set('styles', selectedFilters.styles.join(','));
-    if (selectedFilters.origins.length) params.set('origins', selectedFilters.origins.join(','));
-    if (selectedFilters.letters.length) params.set('letters', selectedFilters.letters.join(','));
+    if (filters.categories.length) params.set('categories', filters.categories.join(','));
+    if (filters.styles.length) params.set('styles', filters.styles.join(','));
+    if (filters.origins.length) params.set('origins', filters.origins.join(','));
+    if (filters.letters.length) params.set('letters', filters.letters.join(','));
 
-    const searchPath = params.toString();
-    router.push(`/search${searchPath ? `?${searchPath}` : ''}`);
+    router.push(`/search${params.toString() ? `?${params.toString()}` : ''}`);
   };
 
-  const updateFilters = useCallback(
-    <K extends keyof SearchFiltersState>(key: K, values: string[]) => {
-      setSelectedFilters((prev) => ({ ...prev, [key]: values }));
-    },
-    []
-  );
-
-  const handleClearFilters = useCallback(() => {
-    setSelectedFilters(createEmptyFilters());
-    clearAdvancedSearchFilters();
+  const updateFilters = useCallback(<K extends keyof InternalFilters>(key: K, values: string[]) => {
+    setFilters((prev) => ({ ...prev, [key]: values }));
   }, []);
 
-  const removeFilterValue = useCallback((key: keyof SearchFiltersState, value: string) => {
-    setSelectedFilters((prev) => ({
+  const clearFilters = useCallback(() => {
+    setFilters({ ...EMPTY_FILTERS });
+  }, []);
+
+  const removeFilterValue = useCallback((key: keyof InternalFilters, value: string) => {
+    setFilters((prev) => ({
       ...prev,
       [key]: prev[key].filter((item) => item !== value),
     }));
@@ -245,13 +168,13 @@ export default function SearchBar({
 
   const renderFilterPills = () => {
     const pills: Array<{
-      key: keyof SearchFiltersState;
+      key: keyof InternalFilters;
       value: string;
       label: string;
       variant: FilterVariant;
     }> = [];
 
-    selectedFilters.categories.forEach((category) => {
+    filters.categories.forEach((category) => {
       pills.push({
         key: 'categories',
         value: category,
@@ -260,7 +183,7 @@ export default function SearchBar({
       });
     });
 
-    selectedFilters.styles.forEach((style) => {
+    filters.styles.forEach((style) => {
       pills.push({
         key: 'styles',
         value: style,
@@ -269,7 +192,7 @@ export default function SearchBar({
       });
     });
 
-    selectedFilters.origins.forEach((origin) => {
+    filters.origins.forEach((origin) => {
       pills.push({
         key: 'origins',
         value: origin,
@@ -278,7 +201,7 @@ export default function SearchBar({
       });
     });
 
-    selectedFilters.letters.forEach((letter) => {
+    filters.letters.forEach((letter) => {
       pills.push({
         key: 'letters',
         value: letter,
@@ -312,18 +235,16 @@ export default function SearchBar({
         <input
           type="text"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(event) => setQuery(event.target.value)}
           placeholder={placeholder}
           className="focus:border-duech-blue w-full rounded-xl border-2 border-gray-300 bg-white px-6 py-4 pr-28 text-lg text-gray-900 shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200 focus:outline-none"
         />
         <div className="absolute inset-y-0 right-3 flex items-center gap-2">
           <button
             type="button"
-            onClick={toggleAdvanced}
+            onClick={() => setAdvancedOpen((prev) => !prev)}
             className="hover:text-duech-blue rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
-            aria-label={
-              isAdvancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'
-            }
+            aria-label={advancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -357,49 +278,54 @@ export default function SearchBar({
         </div>
       </div>
 
-      {isAdvancedOpen && (
+      {advancedOpen && (
         <div className="border-duech-blue/20 mt-4 rounded-xl border bg-white p-6 shadow-sm">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <MultiSelectDropdown
-              label="Letras"
-              options={LETTER_OPTIONS}
-              selectedValues={selectedFilters.letters}
-              onChange={(values) => updateFilters('letters', values)}
-              placeholder="Seleccionar letras"
-            />
+          {!metadataLoaded ? (
+            <div className="h-24 animate-pulse rounded bg-gray-100" />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <MultiSelectDropdown
+                label="Letras"
+                options={LETTER_OPTIONS}
+                selectedValues={filters.letters}
+                onChange={(values) => updateFilters('letters', values)}
+                placeholder="Seleccionar letras"
+              />
 
-            <MultiSelectDropdown
-              label="Orígenes"
-              options={originOptions}
-              selectedValues={selectedFilters.origins}
-              onChange={(values) => updateFilters('origins', values)}
-              placeholder="Seleccionar orígenes"
-            />
+              <MultiSelectDropdown
+                label="Orígenes"
+                options={originOptions}
+                selectedValues={filters.origins}
+                onChange={(values) => updateFilters('origins', values)}
+                placeholder="Seleccionar orígenes"
+              />
 
-            <MultiSelectDropdown
-              label="Categorías gramaticales"
-              options={categoryOptions}
-              selectedValues={selectedFilters.categories}
-              onChange={(values) => updateFilters('categories', values)}
-              placeholder="Seleccionar categorías"
-            />
+              <MultiSelectDropdown
+                label="Categorías gramaticales"
+                options={categoryOptions}
+                selectedValues={filters.categories}
+                onChange={(values) => updateFilters('categories', values)}
+                placeholder="Seleccionar categorías"
+              />
 
-            <MultiSelectDropdown
-              label="Estilos de uso"
-              options={styleOptions}
-              selectedValues={selectedFilters.styles}
-              onChange={(values) => updateFilters('styles', values)}
-              placeholder="Seleccionar estilos"
-            />
-          </div>
+              <MultiSelectDropdown
+                label="Estilos de uso"
+                options={styleOptions}
+                selectedValues={filters.styles}
+                onChange={(values) => updateFilters('styles', values)}
+                placeholder="Seleccionar estilos"
+              />
+            </div>
+          )}
 
           {renderFilterPills()}
 
           <div className="mt-6 flex flex-wrap justify-end gap-3">
             <button
               type="button"
-              onClick={handleClearFilters}
+              onClick={clearFilters}
               className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
+              disabled={!hasActiveFilters}
             >
               Limpiar filtros
             </button>

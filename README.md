@@ -91,7 +91,6 @@ The application includes several API endpoints:
 - `/api/search` - Basic text search
 - `/api/search/advanced` - Advanced search with filters
 - `/api/words/[lemma]` - Get specific word by lemma
-- `/api/words/random` - Get random word
 - `/api/metadata` - Get dictionary metadata
 
 ## Future Development

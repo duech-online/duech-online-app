@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface Option {
   value: string;
@@ -38,26 +38,11 @@ export default function MultiSelectDropdown({
     selectedOptions.length === 0
       ? placeholder
       : selectedOptions.length <= maxDisplay
-        ? selectedOptions.map((opt) => opt.label).join(', ')
+        ? selectedOptions.map((option) => option.label).join(', ')
         : `${selectedOptions
             .slice(0, maxDisplay)
-            .map((opt) => opt.label)
+            .map((option) => option.label)
             .join(', ')} +${selectedOptions.length - maxDisplay} más`;
-
-  const handleToggle = (value: string) => {
-    const newValues = selectedValues.includes(value)
-      ? selectedValues.filter((v) => v !== value)
-      : [...selectedValues, value];
-    onChange(newValues);
-  };
-
-  const handleSelectAll = () => {
-    if (selectedValues.length === options.length) {
-      onChange([]);
-    } else {
-      onChange(options.map((opt) => opt.value));
-    }
-  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -71,13 +56,27 @@ export default function MultiSelectDropdown({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const toggleValue = (value: string) => {
+    const values = selectedValues.includes(value)
+      ? selectedValues.filter((item) => item !== value)
+      : [...selectedValues, value];
+    onChange(values);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedValues.length === options.length) {
+      onChange([]);
+    } else {
+      onChange(options.map((option) => option.value));
+    }
+  };
+
   return (
     <div className="relative" ref={dropdownRef}>
       <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
-
       <button
         type="button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((prev) => !prev)}
         className="focus:border-duech-blue w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left transition-colors focus:outline-none"
       >
         <div className="flex items-center justify-between">
@@ -116,7 +115,7 @@ export default function MultiSelectDropdown({
               type="text"
               placeholder="Buscar..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(event) => setSearchTerm(event.target.value)}
               className="focus:border-duech-blue w-full rounded border border-gray-300 px-3 py-1 text-sm focus:outline-none"
             />
           </div>
@@ -142,7 +141,7 @@ export default function MultiSelectDropdown({
                 <input
                   type="checkbox"
                   checked={selectedValues.includes(option.value)}
-                  onChange={() => handleToggle(option.value)}
+                  onChange={() => toggleValue(option.value)}
                   className="text-duech-blue focus:ring-duech-blue mr-3 rounded"
                 />
                 <span className="text-sm text-gray-700">{option.label}</span>
