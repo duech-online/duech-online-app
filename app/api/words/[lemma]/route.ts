@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { getWordByLemma } from '@/app/lib/queries';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
 
 export async function GET(
@@ -29,8 +29,8 @@ export async function GET(
       return NextResponse.json({ error: 'Lemma too long' }, { status: 400 });
     }
 
-    // Get word data
-    const wordData = await getWordByLemmaServer(decodedLemma);
+    // Get word data from database
+    const wordData = await getWordByLemma(decodedLemma);
 
     if (!wordData) {
       return NextResponse.json({ error: 'Word not found' }, { status: 404 });

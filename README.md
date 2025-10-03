@@ -70,12 +70,11 @@ duech-online-app/
 │   ├── WordOfTheDay.tsx   # Random word component
 │   └── MarkdownRenderer.tsx # Markdown rendering component
 ├── lib/                    # Utilities and business logic
-│   ├── dictionary.ts      # Client-side dictionary functions
-│   └── dictionary-server.ts # Server-side dictionary functions
-├── types/                  # TypeScript definitions
-│   └── dictionary.ts      # Dictionary types
-├── data/                   # Data files
-│   └── example.json       # Dictionary data
+│   ├── db.ts              # Database connection (Drizzle ORM)
+│   ├── schema.ts          # Database schema definitions
+│   ├── queries.ts         # Database query functions
+│   ├── transformers.ts    # DB to frontend format transformers
+│   └── definitions.ts     # TypeScript type definitions
 └── public/                 # Static assets
     └── [various SVG icons and images]
 ```

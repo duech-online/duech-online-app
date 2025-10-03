@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { loadDictionaryServer } from '@/app/lib/dictionary-server';
-import { SearchResult, Word } from '@/app/lib/definitions';
+import { advancedSearch } from '@/app/lib/queries';
+import { SearchResult } from '@/app/lib/definitions';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
+import { db } from '@/app/lib/db';
+import { meanings } from '@/app/lib/schema';
+import { sql } from 'drizzle-orm';
 
 const MAX_QUERY_LENGTH = 100;
 const MAX_FILTER_OPTIONS = 10;
@@ -50,53 +53,34 @@ export async function GET(request: NextRequest) {
 
     const { filters, page, limit, metaOnly } = parsed;
 
-    const dictionaries = await loadDictionaryServer();
-    const results: SearchResult[] = [];
-    const categories = new Set<string>();
-    const styles = new Set<string>();
-    const origins = new Set<string>();
+    // Get metadata from database
+    const categoriesResult = await db
+      .select({
+        category: sql<string>`DISTINCT UNNEST(${meanings.categories})`,
+      })
+      .from(meanings);
 
-    dictionaries.forEach((dict) => {
-      dict.value.forEach((letterGroup) => {
-        const letterIncluded =
-          filters.letters.length === 0 || filters.letters.includes(letterGroup.letter);
+    const stylesResult = await db
+      .select({
+        style: sql<string>`DISTINCT UNNEST(${meanings.styles})`,
+      })
+      .from(meanings);
 
-        letterGroup.values.forEach((word) => {
-          word.values.forEach((definition) => {
-            definition.categories.forEach((category) => categories.add(category));
-
-            if (Array.isArray(definition.styles)) {
-              definition.styles.forEach((style) => styles.add(style));
-            }
-
-            if (definition.origin) {
-              origins.add(definition.origin);
-            }
-          });
-
-          if (metaOnly || !letterIncluded) {
-            return;
-          }
-
-          const evaluation = evaluateWord(word, filters);
-
-          if (!evaluation.matches) {
-            return;
-          }
-
-          results.push({
-            word,
-            letter: letterGroup.letter,
-            matchType: evaluation.matchType,
-          });
-        });
-      });
-    });
+    const originsResult = await db.selectDistinct({ origin: meanings.origin }).from(meanings);
 
     const metadata = {
-      categories: Array.from(categories).sort((a, b) => a.localeCompare(b, 'es')),
-      styles: Array.from(styles).sort((a, b) => a.localeCompare(b, 'es')),
-      origins: Array.from(origins).sort((a, b) => a.localeCompare(b, 'es')),
+      categories: categoriesResult
+        .map((r) => r.category)
+        .filter((c) => c != null)
+        .sort((a, b) => a.localeCompare(b, 'es')),
+      styles: stylesResult
+        .map((r) => r.style)
+        .filter((s) => s != null)
+        .sort((a, b) => a.localeCompare(b, 'es')),
+      origins: originsResult
+        .map((r) => r.origin)
+        .filter((o) => o != null)
+        .sort((a, b) => a!.localeCompare(b!, 'es')) as string[],
     };
 
     let paginatedResults: SearchResult[] = [];
@@ -110,6 +94,17 @@ export async function GET(request: NextRequest) {
     };
 
     if (!metaOnly) {
+      // Search in database using advanced search
+      const results = await advancedSearch({
+        query: filters.query || undefined,
+        categories: filters.categories.length > 0 ? filters.categories : undefined,
+        styles: filters.styles.length > 0 ? filters.styles : undefined,
+        origin: filters.origins.length > 0 ? filters.origins.join('|') : undefined,
+        letter: filters.letters.length > 0 ? filters.letters[0] : undefined,
+        limit: MAX_LIMIT,
+      });
+
+      // Sort results by match type
       const sortedResults = results.sort(
         (a, b) => MATCH_ORDER[a.matchType] - MATCH_ORDER[b.matchType]
       );
@@ -206,56 +201,4 @@ function parseInteger(input: string | null, fallback: number): number {
   if (!input) return fallback;
   const parsed = parseInt(input, 10);
   return Number.isNaN(parsed) ? fallback : parsed;
-}
-
-function evaluateWord(
-  word: Word,
-  filters: SearchFilters
-): { matches: boolean; matchType: SearchResult['matchType'] } {
-  let matchType: SearchResult['matchType'] = 'filter';
-
-  if (filters.query) {
-    const normalizedQuery = filters.query.toLowerCase();
-    const lemma = word.lemma.toLowerCase();
-
-    if (lemma === normalizedQuery) {
-      matchType = 'exact';
-    } else if (lemma.includes(normalizedQuery)) {
-      matchType = 'partial';
-  }
-
-  if (filters.categories.length > 0) {
-    const hasCategory = word.values.some((def) =>
-      def.categories.some((category) => filters.categories.includes(category))
-    );
-
-    if (!hasCategory) {
-      return { matches: false, matchType };
-    }
-  }
-
-  if (filters.styles.length > 0) {
-    const hasStyle = word.values.some(
-      (def) =>
-        Array.isArray(def.styles) && def.styles.some((style) => filters.styles.includes(style))
-    );
-
-    if (!hasStyle) {
-      return { matches: false, matchType };
-    }
-  }
-
-  if (filters.origins.length > 0) {
-    const hasOrigin = word.values.some(
-      (def) =>
-        typeof def.origin === 'string' &&
-        filters.origins.some((origin) => def.origin!.toLowerCase().includes(origin.toLowerCase()))
-    );
-
-    if (!hasOrigin) {
-      return { matches: false, matchType };
-    }
-  }
-
-  return { matches: true, matchType };
 }
