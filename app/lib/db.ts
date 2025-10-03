@@ -1,8 +1,6 @@
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from './schema';
-import path from 'path';
-import fs from 'fs';
 
 // Support both connection string (production/Supabase) and individual params (local dev)
 const connectionString = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL;
@@ -12,7 +10,7 @@ const pool = connectionString
     new Pool({
       connectionString,
       ssl: {
-        ca: fs.readFileSync(path.join(__dirname, 'certs', 'prod-ca-2021.crt')).toString(),
+        rejectUnauthorized: true, // Trust system CA certificates (Supabase uses valid certs)
       },
       // Optimized for serverless/Supabase
       max: 20,
