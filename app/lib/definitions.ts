@@ -51,7 +51,7 @@ export interface Dictionary {
 export interface SearchResult {
   word: Word;
   letter: string;
-  matchType: 'exact' | 'partial' | 'definition' | 'filter';
+  matchType: 'exact' | 'partial' | 'filter';
 }
 
 export interface SearchFilters {

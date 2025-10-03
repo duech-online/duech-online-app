@@ -98,6 +98,7 @@ function SearchResults() {
       <div className="mb-10">
         <h1 className="text-duech-blue mb-6 text-4xl font-bold">Resultados de búsqueda</h1>
         <SearchBar
+          placeholder="Buscar palabra en el diccionario..."
           initialValue={trimmedQuery}
           initialFilters={initialFilters}
           className="max-w-3xl"
