@@ -15,54 +15,54 @@ export interface Example {
   page?: string;
 }
 
-// Database schema types
+// Database schema types (match Drizzle's camelCase output)
 export interface User {
   id: number;
   username: string;
   email?: string;
-  password_hash: string;
+  passwordHash: string;
   role: 'lexicographer' | 'editor' | 'admin' | 'superadmin';
-  created_at: string;
-  updated_at: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface DBWord {
   id: number;
   lemma: string;
-  root: string;
+  root: string | null;
   letter: string;
-  variant?: string;
-  status: 'draft' | 'in_review' | 'reviewed' | 'rejected' | 'published';
-  created_by?: number;
-  assigned_to?: number;
-  created_at: string;
-  updated_at: string;
+  variant?: string | null;
+  status: string; // Drizzle returns string, not literal union
+  createdBy?: number | null;
+  assignedTo?: number | null;
+  createdAt: Date;
+  updatedAt: Date;
   meanings?: Meaning[]; // When joined with meanings
 }
 
 export interface Meaning {
   id: number;
-  word_id: number;
+  wordId: number;
   number: number;
-  origin?: string;
+  origin?: string | null;
   meaning: string;
-  observation?: string;
-  remission?: string;
-  categories: string[];
-  styles: string[];
-  examples: Example[]; // JSONB field
-  expressions: string[]; // Array field
-  created_at: string;
-  updated_at: string;
+  observation?: string | null;
+  remission?: string | null;
+  categories: string[] | null;
+  styles: string[] | null;
+  examples: Example[] | null; // JSONB field
+  expressions: string[] | null; // Array field
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface Note {
   id: number;
-  word_id: number;
-  user_id?: number;
+  wordId: number;
+  userId?: number | null;
   note: string;
   resolved: boolean;
-  created_at: string;
+  createdAt: Date;
 }
 
 // Legacy types for backward compatibility (will be deprecated)
