@@ -3,15 +3,15 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from './schema';
 
 // Support both connection string (production/Supabase) and individual params (local dev)
-const connectionString = process.env.POSTGRES_URL || process.env.POSTGRES_PRISMA_URL;
+const connectionString = process.env.POSTGRES_URL;
 
 const pool = connectionString
   ? // Production: Use connection string from Supabase
     new Pool({
       connectionString,
-      ssl: {
-        rejectUnauthorized: false, // Required for Supabase pooler connections
-      },
+      ssl: process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false } // Required for Supabase pooler connections
+        : false,
       // Optimized for serverless/Supabase
       max: 20,
       idleTimeoutMillis: 30000,
