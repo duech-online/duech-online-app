@@ -4,8 +4,8 @@ import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import FilterPill from '@/app/ui/filter-pill';
-import { getSearchMetadata, SearchFilters } from '@/app/lib/dictionary';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
+import { getSearchMetadata } from '@/app/lib/dictionary';
+import { GRAMMATICAL_CATEGORIES, USAGE_STYLES, SearchFilters } from '@/app/lib/definitions';
 
 interface SearchBarProps {
   placeholder?: string;
@@ -166,7 +166,7 @@ export default function SearchBar({
   const removeFilterValue = useCallback((key: keyof InternalFilters, value: string) => {
     setFilters((prev) => ({
       ...prev,
-      [key]: prev[key].filter((item) => item !== value),
+      [key]: prev[key].filter((item: string) => item !== value),
     }));
   }, []);
 
@@ -178,7 +178,7 @@ export default function SearchBar({
       variant: FilterVariant;
     }> = [];
 
-    filters.categories.forEach((category) => {
+    filters.categories.forEach((category: string) => {
       pills.push({
         key: 'categories',
         value: category,
@@ -187,7 +187,7 @@ export default function SearchBar({
       });
     });
 
-    filters.styles.forEach((style) => {
+    filters.styles.forEach((style: string) => {
       pills.push({
         key: 'styles',
         value: style,
