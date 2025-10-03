@@ -58,11 +58,14 @@ export function getWordVariant(dbWord: DBWord): string | null {
 /**
  * Transform DBWord with its letter to SearchResult-compatible format
  */
-export function dbWordToSearchResult(dbWord: DBWord) {
+export function dbWordToSearchResult(
+  dbWord: DBWord,
+  matchType: 'exact' | 'partial' | 'filter' = 'filter'
+) {
   const word = dbWordToWord(dbWord);
   return {
     word,
     letter: dbWord.letter,
-    matchType: 'exact' as const, // Can be updated based on search logic
+    matchType,
   };
 }

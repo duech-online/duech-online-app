@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { getWordByLemma } from '@/app/lib/queries';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 import { Example } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
@@ -9,8 +9,8 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const decodedLemma = decodeURIComponent(id);
 
-  // Use server-side function for better performance in server components
-  const wordData = await getWordByLemmaServer(decodedLemma);
+  // Get word from database
+  const wordData = await getWordByLemma(decodedLemma);
 
   if (!wordData) {
     notFound();

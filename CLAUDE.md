@@ -44,6 +44,7 @@ The app uses a **custom cookie-based authentication** (not NextAuth v5):
 - **Demo User**: Fallback to `admin@example.com` / `admin123` (configurable via env vars)
 
 **Key Files**:
+
 - `app/lib/auth.ts` - JWT creation, verification, session management
 - `app/lib/users.ts` - User CRUD, password hashing with scrypt
 - `app/lib/actions.ts` - Server actions for login/register
@@ -52,22 +53,33 @@ The app uses a **custom cookie-based authentication** (not NextAuth v5):
 ### Path Alias
 
 Use `@/*` to reference root-level imports:
+
 ```typescript
-import { getWordByLemmaServer } from '@/app/lib/dictionary-server'
-import { Word } from '@/app/lib/definitions'
+import { getWordByLemma } from '@/app/lib/queries';
+import { Word, DBWord } from '@/app/lib/definitions';
 ```
 
 ### Data Layer
 
-**Current (MVP)**: Uses placeholder data from `app/lib/placeholder-data.ts` (example.json content)
+**Current**: Uses PostgreSQL database with Drizzle ORM
 
-**Future**: PostgreSQL backend documented in `FRONTEND_INTEGRATION.md`
+**Database connection**: `app/lib/db.ts` - Connection pool and Drizzle instance
 
-**Server-side data functions**: Located in `app/lib/dictionary-server.ts`
-- `loadDictionaryServer()` - Load all dictionaries
-- `getWordByLemmaServer(lemma)` - Get word by lemma with letter group
+**Schema**: `app/lib/schema.ts` - Drizzle schema with `users`, `words`, `meanings`, `notes` tables
 
-**Client-side data functions**: Use client components and API routes
+**Query functions**: Located in `app/lib/queries.ts`
+
+- `getWordByLemma(lemma)` - Get word with meanings by lemma
+- `getRandomWord()` - Get random published word
+- `searchWords(query, limit)` - Full-text search
+- `advancedSearch(params)` - Filter by categories, styles, origin, letter
+- `getDictionaryMetadata()` - Get statistics and metadata
+- `getAvailableLetters()` - Get letter counts
+
+**Transformers**: `app/lib/transformers.ts` - Converts DB format to frontend format
+
+- `dbWordToWord(dbWord)` - Transform DBWord to Word
+- `meaningToWordDefinition(meaning)` - Transform Meaning to WordDefinition
 
 ### Type Definitions
 
@@ -75,18 +87,18 @@ Core types are in `app/lib/definitions.ts`:
 
 ```typescript
 interface Word {
-  lemma: string;      // The headword
-  root: string;       // Root form
+  lemma: string; // The headword
+  root: string; // Root form
   values: WordDefinition[];
 }
 
 interface WordDefinition {
   number: number;
   origin: string | null;
-  categories: string[];        // ['m', 'f', 'adj', 'tr', 'intr', etc.]
-  remission: string | null;    // Cross-reference
+  categories: string[]; // ['m', 'f', 'adj', 'tr', 'intr', etc.]
+  remission: string | null; // Cross-reference
   meaning: string;
-  styles: string[] | null;     // ['espon', 'vulgar', 'fest', 'hist', etc.]
+  styles: string[] | null; // ['espon', 'vulgar', 'fest', 'hist', etc.]
   observation: string | null;
   example: Example | Example[];
   variant: string | null;
@@ -104,6 +116,7 @@ interface Example {
 ```
 
 **Constants**:
+
 - `GRAMMATICAL_CATEGORIES` - Maps category codes to Spanish labels
 - `USAGE_STYLES` - Maps style codes to Spanish labels
 - `REGIONAL_MARKERS` - Regional dialect markers
@@ -139,11 +152,13 @@ app/
 ### Components
 
 Reusable components are in `/components`:
+
 - `SearchBar.tsx` - Main search input component
 - `WordOfTheDay.tsx` - Random word display
 - `MarkdownRenderer.tsx` - Renders markdown content with react-markdown
 
 UI-specific components are in `/app/ui`:
+
 - Form components, buttons, navigation elements
 
 ## Important Development Notes
@@ -151,11 +166,13 @@ UI-specific components are in `/app/ui`:
 ### Search Implementation
 
 **Basic Search**: Searches in lemmas and definitions
+
 - Case-insensitive
 - Matches partial words
 - Returns results with match type: 'exact', 'partial', or 'definition'
 
 **Advanced Search**: Supports filtering by:
+
 - Grammatical categories (`categories` array)
 - Usage styles (`styles` array)
 - Origin/etymology (`origin` field)
@@ -165,16 +182,16 @@ UI-specific components are in `/app/ui`:
 ### Working with Examples
 
 Examples can be a single object or an array:
+
 ```typescript
 // Always normalize to array
-const examples = Array.isArray(definition.example)
-  ? definition.example
-  : [definition.example];
+const examples = Array.isArray(definition.example) ? definition.example : [definition.example];
 ```
 
 ### Markdown Rendering
 
 Definitions and examples support markdown formatting:
+
 - Use `MarkdownRenderer` component from `/components`
 - Uses `react-markdown` with `remark-gfm` plugin
 - Asterisks (\*word\*) indicate emphasized terms
@@ -182,6 +199,7 @@ Definitions and examples support markdown formatting:
 ### Session Management
 
 **Getting current user**:
+
 ```typescript
 import { getSessionUser } from '@/app/lib/auth';
 
@@ -193,6 +211,7 @@ if (!user) {
 ```
 
 **Setting session**:
+
 ```typescript
 import { setSessionCookie } from '@/app/lib/auth';
 
@@ -200,11 +219,12 @@ await setSessionCookie({
   id: user.id,
   email: user.email,
   name: user.name,
-  role: user.role // optional
+  role: user.role, // optional
 });
 ```
 
 **Clearing session**:
+
 ```typescript
 import { clearSessionCookie } from '@/app/lib/auth';
 
@@ -214,6 +234,7 @@ await clearSessionCookie();
 ### Environment Variables
 
 Required for authentication:
+
 ```env
 AUTH_SECRET=your-long-random-secret
 DEMO_USER_EMAIL=admin@example.com
@@ -221,26 +242,30 @@ DEMO_USER_PASSWORD=admin123
 ```
 
 Optional (alternative to AUTH_SECRET):
+
 ```env
 NEXTAUTH_SECRET=your-secret
 ```
 
-## PostgreSQL Integration (Future)
+## PostgreSQL Integration
 
-See `FRONTEND_INTEGRATION.md` for complete database schema and integration guide.
+The application uses PostgreSQL with Drizzle ORM. See `FRONTEND_INTEGRATION.md` for complete database schema documentation.
 
-**Key differences from placeholder data**:
+**Database structure**:
+
 - Examples stored as JSONB (not separate table)
 - Expressions stored as TEXT[] array
 - Categories/Styles as TEXT[] arrays
 - Full-text search with Spanish language config
 - Editorial workflow with status field (draft → in_review → reviewed → published)
 
-**Recommended approach**:
-1. Create `app/lib/db.ts` with pg Pool connection
-2. Create `app/lib/queries.ts` with typed query functions
-3. Replace calls to `placeholder-data.ts` with database queries
-4. Keep same TypeScript interfaces in `definitions.ts`
+**Implementation**:
+
+1. ✅ `app/lib/db.ts` - Database connection with Drizzle
+2. ✅ `app/lib/schema.ts` - Drizzle schema definitions
+3. ✅ `app/lib/queries.ts` - Type-safe query functions
+4. ✅ `app/lib/transformers.ts` - DB to frontend format converters
+5. ✅ All API routes updated to use database queries
 
 ## Code Style
 

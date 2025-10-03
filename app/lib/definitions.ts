@@ -15,6 +15,47 @@ export interface Example {
   page?: string;
 }
 
+// Database schema types
+export interface User {
+  id: number;
+  username: string;
+  email?: string;
+  password_hash: string;
+  role: 'lexicographer' | 'editor' | 'admin' | 'superadmin';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DBWord {
+  id: number;
+  lemma: string;
+  root: string;
+  letter: string;
+  variant?: string;
+  status: 'draft' | 'in_review' | 'reviewed' | 'rejected' | 'published';
+  created_by?: number;
+  assigned_to?: number;
+  created_at: string;
+  updated_at: string;
+  meanings?: Meaning[]; // When joined with meanings
+}
+
+export interface Meaning {
+  id: number;
+  word_id: number;
+  number: number;
+  origin?: string;
+  meaning: string;
+  observation?: string;
+  remission?: string;
+  categories: string[];
+  styles: string[];
+  examples: Example[]; // JSONB field
+  expressions: string[]; // Array field
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Note {
   id: number;
   word_id: number;

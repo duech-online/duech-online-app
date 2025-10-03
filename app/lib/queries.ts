@@ -12,7 +12,9 @@ import { dbWordToWord, dbWordToSearchResult } from './transformers';
  * Get a word by lemma with all its meanings
  * Returns in frontend-compatible format
  */
-export async function getWordByLemma(lemma: string): Promise<{ word: Word; letter: string } | null> {
+export async function getWordByLemma(
+  lemma: string
+): Promise<{ word: Word; letter: string } | null> {
   const result = await db.query.words.findFirst({
     where: and(eq(words.lemma, lemma), eq(words.status, 'published')),
     with: {
@@ -129,8 +131,8 @@ export async function searchWords(query: string, limit = 20): Promise<SearchResu
   meaningMatchesWithData.forEach((w) => {
     if (w && !allMatches.has(w.lemma)) {
       allMatches.set(w.lemma, {
-        ...dbWordToSearchResult(w),
-        matchType: 'definition' as const,
+        ...dbWordToSearchResult(w, 'filter'),
+        matchType: 'filter' as const,
       });
     }
   });
@@ -201,7 +203,7 @@ export async function advancedSearch(params: {
     .where(and(...conditions))
     .limit(limit);
 
-  // Get full word data with meanings
+  // Get full word data with meanings and determine match type
   const wordsWithMeanings = await Promise.all(
     results.map(async (w) => {
       const fullWord = await db.query.words.findFirst({
@@ -212,11 +214,26 @@ export async function advancedSearch(params: {
           },
         },
       });
-      return fullWord;
+
+      // Determine match type
+      let matchType: 'exact' | 'partial' | 'filter' = 'filter';
+      if (query && fullWord) {
+        const normalizedQuery = query.toLowerCase();
+        const lemma = fullWord.lemma.toLowerCase();
+        if (lemma === normalizedQuery) {
+          matchType = 'exact';
+        } else if (lemma.includes(normalizedQuery)) {
+          matchType = 'partial';
+        }
+      }
+
+      return { fullWord, matchType };
     })
   );
 
-  return wordsWithMeanings.filter((w) => w !== undefined).map((w) => dbWordToSearchResult(w!));
+  return wordsWithMeanings
+    .filter((w) => w.fullWord !== undefined)
+    .map((w) => dbWordToSearchResult(w.fullWord!, w.matchType));
 }
 
 /**

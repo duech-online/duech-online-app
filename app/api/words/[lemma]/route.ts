@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { getWordByLemma } from '@/app/lib/queries';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
 
 export async function GET(
