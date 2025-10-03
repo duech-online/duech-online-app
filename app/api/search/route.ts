@@ -56,15 +56,17 @@ export async function GET(request: NextRequest) {
     // Get metadata from database
     const categoriesResult = await db
       .select({
-        category: sql<string>`DISTINCT UNNEST(${meanings.categories})`,
+        category: sql<string>`UNNEST(categories)`,
       })
-      .from(meanings);
+      .from(meanings)
+      .groupBy(sql`UNNEST(categories)`);
 
     const stylesResult = await db
       .select({
-        style: sql<string>`DISTINCT UNNEST(${meanings.styles})`,
+        style: sql<string>`UNNEST(styles)`,
       })
-      .from(meanings);
+      .from(meanings)
+      .groupBy(sql`UNNEST(styles)`);
 
     const originsResult = await db.selectDistinct({ origin: meanings.origin }).from(meanings);
 
