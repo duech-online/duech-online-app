@@ -10,7 +10,7 @@ const pool = connectionString
     new Pool({
       connectionString,
       ssl: {
-        rejectUnauthorized: true, // Trust system CA certificates (Supabase uses valid certs)
+        rejectUnauthorized: false, // Required for Supabase pooler connections
       },
       // Optimized for serverless/Supabase
       max: 20,

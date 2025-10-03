@@ -54,28 +54,22 @@ export async function GET(request: NextRequest) {
     const { filters, page, limit, metaOnly } = parsed;
 
     // Get metadata from database
-    const categoriesResult = await db
-      .select({
-        category: sql<string>`UNNEST(categories)`,
-      })
-      .from(meanings)
-      .groupBy(sql`UNNEST(categories)`);
+    const categoriesResult = await db.execute<{ category: string }>(
+      sql`SELECT DISTINCT UNNEST(categories) as category FROM meanings WHERE categories IS NOT NULL`
+    );
 
-    const stylesResult = await db
-      .select({
-        style: sql<string>`UNNEST(styles)`,
-      })
-      .from(meanings)
-      .groupBy(sql`UNNEST(styles)`);
+    const stylesResult = await db.execute<{ style: string }>(
+      sql`SELECT DISTINCT UNNEST(styles) as style FROM meanings WHERE styles IS NOT NULL`
+    );
 
     const originsResult = await db.selectDistinct({ origin: meanings.origin }).from(meanings);
 
     const metadata = {
-      categories: categoriesResult
+      categories: categoriesResult.rows
         .map((r) => r.category)
         .filter((c) => c != null)
         .sort((a, b) => a.localeCompare(b, 'es')),
-      styles: stylesResult
+      styles: stylesResult.rows
         .map((r) => r.style)
         .filter((s) => s != null)
         .sort((a, b) => a.localeCompare(b, 'es')),
