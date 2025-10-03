@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
-import { loadDictionaryServer } from '@/app/lib/dictionary-server';
-import { SearchResult } from '@/app/lib/definitions';
+import { searchWords } from '@/app/lib/queries';
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,7 +13,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const query = searchParams.get('q');
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 1000); // Max 50 results per page
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100); // Max 100 results per page
 
     // Input validation
     if (!query || typeof query !== 'string' || query.trim().length === 0) {
@@ -31,46 +30,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid pagination parameters' }, { status: 400 });
     }
 
-    const normalizedQuery = query.toLowerCase().trim();
-    const dictionaries = await loadDictionaryServer();
-    const results: SearchResult[] = [];
+    const normalizedQuery = query.trim();
 
-    // Search logic (same as before but with server-side processing)
-    dictionaries.forEach((dict) => {
-      dict.value.forEach((letterGroup) => {
-        letterGroup.values.forEach((word) => {
-          // Exact match
-          if (word.lemma.toLowerCase() === normalizedQuery) {
-            results.push({
-              word,
-              letter: letterGroup.letter,
-              matchType: 'exact',
-            });
-          }
-          // Partial match in lemma
-          else if (word.lemma.toLowerCase().includes(normalizedQuery)) {
-            results.push({
-              word,
-              letter: letterGroup.letter,
-              matchType: 'partial',
-            });
-          }
-          // Search in definitions
-          else {
-            const hasDefinitionMatch = word.values.some((def) =>
-              def.meaning.toLowerCase().includes(normalizedQuery)
-            );
-            if (hasDefinitionMatch) {
-              results.push({
-                word,
-                letter: letterGroup.letter,
-                matchType: 'definition',
-              });
-            }
-          }
-        });
-      });
-    });
+    // Search in database
+    const results = await searchWords(normalizedQuery, limit * page);
 
     // Sort results: exact matches first, then partial, then definition matches
     const sortedResults = results.sort((a, b) => {

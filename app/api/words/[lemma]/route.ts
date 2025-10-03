@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
-import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
+import { getWordByLemma } from '@/app/lib/queries';
 
 export async function GET(
   request: NextRequest,
@@ -28,8 +28,8 @@ export async function GET(
       return NextResponse.json({ error: 'Lemma too long' }, { status: 400 });
     }
 
-    // Get word data
-    const wordData = await getWordByLemmaServer(decodedLemma);
+    // Get word data from database
+    const wordData = await getWordByLemma(decodedLemma);
 
     if (!wordData) {
       return NextResponse.json({ error: 'Word not found' }, { status: 404 });

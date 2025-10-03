@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
-import { loadDictionaryServer } from '@/app/lib/dictionary-server';
-import { SearchResult } from '@/app/lib/definitions';
-
-interface AdvancedSearchFilters {
-  query?: string;
-  categories?: string[];
-  styles?: string[];
-  origins?: string[];
-  letters?: string[];
-}
+import { advancedSearch } from '@/app/lib/queries';
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,22 +16,17 @@ export async function GET(request: NextRequest) {
     const query = searchParams.get('q') || '';
     const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
     const styles = searchParams.get('styles')?.split(',').filter(Boolean) || [];
-    const origins = searchParams.get('origins')?.split(',').filter(Boolean) || [];
-    const letters = searchParams.get('letters')?.split(',').filter(Boolean) || [];
+    const origin = searchParams.get('origin') || searchParams.get('origins') || ''; // Support both singular and plural
+    const letter = searchParams.get('letter') || searchParams.get('letters') || ''; // Support both singular and plural
     const page = parseInt(searchParams.get('page') || '1');
-    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 1000);
+    const limit = Math.min(parseInt(searchParams.get('limit') || '20'), 100);
 
     // Input validation
     if (query.length > 100) {
       return NextResponse.json({ error: 'Query too long' }, { status: 400 });
     }
 
-    if (
-      categories.length > 10 ||
-      styles.length > 10 ||
-      origins.length > 10 ||
-      letters.length > 10
-    ) {
+    if (categories.length > 10 || styles.length > 10) {
       return NextResponse.json({ error: 'Too many filter options' }, { status: 400 });
     }
 
@@ -49,74 +35,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid pagination parameters' }, { status: 400 });
     }
 
-    const filters: AdvancedSearchFilters = {
-      query: query.trim(),
-      categories,
-      styles,
-      origins: origins.map((o) => o.trim()).filter(Boolean),
-      letters: letters.map((l) => l.trim()).filter(Boolean),
-    };
-
-    const dictionaries = await loadDictionaryServer();
-    const results: SearchResult[] = [];
-
-    dictionaries.forEach((dict) => {
-      dict.value.forEach((letterGroup) => {
-        // Filter by letters if specified
-        if (
-          filters.letters &&
-          filters.letters.length > 0 &&
-          !filters.letters.includes(letterGroup.letter)
-        )
-          return;
-
-        letterGroup.values.forEach((word) => {
-          let matches = true;
-
-          // Check query in lemma or meaning
-          if (filters.query && filters.query.trim()) {
-            const normalizedQuery = filters.query.toLowerCase();
-            const inLemma = word.lemma.toLowerCase().includes(normalizedQuery);
-            const inMeaning = word.values.some((def) =>
-              def.meaning.toLowerCase().includes(normalizedQuery)
-            );
-            matches = inLemma || inMeaning;
-          }
-
-          // Check categories
-          if (matches && filters.categories && filters.categories.length > 0) {
-            matches = word.values.some((def) =>
-              def.categories.some((cat) => filters.categories?.includes(cat))
-            );
-          }
-
-          // Check styles
-          if (matches && filters.styles && filters.styles.length > 0) {
-            matches = word.values.some(
-              (def) => def.styles && def.styles.some((style) => filters.styles?.includes(style))
-            );
-          }
-
-          // Check origins
-          if (matches && filters.origins && filters.origins.length > 0) {
-            matches = word.values.some(
-              (def) =>
-                def.origin &&
-                filters.origins!.some((origin) =>
-                  def.origin!.toLowerCase().includes(origin.toLowerCase())
-                )
-            );
-          }
-
-          if (matches) {
-            results.push({
-              word,
-              letter: letterGroup.letter,
-              matchType: filters.query ? 'partial' : 'exact',
-            });
-          }
-        });
-      });
+    // Search in database with filters
+    const results = await advancedSearch({
+      query: query.trim() || undefined,
+      categories: categories.length > 0 ? categories : undefined,
+      styles: styles.length > 0 ? styles : undefined,
+      origin: origin.trim() || undefined,
+      letter: letter.trim() || undefined,
+      limit: limit * page, // Get enough results for current page
     });
 
     // Apply pagination

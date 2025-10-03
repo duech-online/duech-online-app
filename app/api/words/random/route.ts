@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/app/lib/auth';
-import { loadDictionaryServer } from '@/app/lib/dictionary-server';
+import { getRandomWord } from '@/app/lib/queries';
 
 export async function GET() {
   try {
@@ -10,31 +10,18 @@ export async function GET() {
     if (!token || !verifyToken(token)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const dictionaries = await loadDictionaryServer();
 
-    if (!dictionaries.length) {
-      return NextResponse.json({ error: 'No dictionary data available' }, { status: 404 });
-    }
+    // Get random word from database
+    const wordData = await getRandomWord();
 
-    const dict = dictionaries[0];
-    const letterGroups = dict.value.filter((lg) => lg.values.length > 0);
-
-    if (!letterGroups.length) {
+    if (!wordData) {
       return NextResponse.json({ error: 'No words available' }, { status: 404 });
     }
 
-    // Get random word
-    const randomLetterGroup = letterGroups[Math.floor(Math.random() * letterGroups.length)];
-    const randomWord =
-      randomLetterGroup.values[Math.floor(Math.random() * randomLetterGroup.values.length)];
-
-    // Return only the random word data
+    // Return the random word data
     return NextResponse.json({
       success: true,
-      data: {
-        word: randomWord,
-        letter: randomLetterGroup.letter,
-      },
+      data: wordData,
     });
   } catch (error) {
     console.error('Error in random word API:', error);

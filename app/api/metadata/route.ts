@@ -1,46 +1,55 @@
 import { NextResponse } from 'next/server';
-import { loadDictionaryServer } from '@/app/lib/dictionary-server';
+import { getDictionaryMetadata, getAvailableLetters } from '@/app/lib/queries';
+import { db } from '@/app/lib/db';
+import { meanings } from '@/app/lib/schema';
+import { sql } from 'drizzle-orm';
 
 export async function GET() {
   try {
-    const dictionaries = await loadDictionaryServer();
+    // Get dictionary statistics
+    const metadata = await getDictionaryMetadata();
+    const letters = await getAvailableLetters();
 
-    if (!dictionaries.length) {
-      return NextResponse.json({ error: 'No dictionary data available' }, { status: 404 });
-    }
+    // Get distinct categories
+    const categoriesResult = await db
+      .select({
+        category: sql<string>`DISTINCT UNNEST(${meanings.categories})`,
+      })
+      .from(meanings);
 
-    const categories = new Set<string>();
-    const styles = new Set<string>();
-    const origins = new Set<string>();
+    const categories = categoriesResult
+      .map((r) => r.category)
+      .filter((c) => c != null)
+      .sort();
 
-    // Extract unique values
-    dictionaries.forEach((dict) => {
-      dict.value.forEach((letterGroup) => {
-        letterGroup.values.forEach((word) => {
-          word.values.forEach((def) => {
-            // Collect categories
-            def.categories.forEach((cat) => categories.add(cat));
+    // Get distinct styles
+    const stylesResult = await db
+      .select({
+        style: sql<string>`DISTINCT UNNEST(${meanings.styles})`,
+      })
+      .from(meanings);
 
-            // Collect styles
-            if (def.styles) {
-              def.styles.forEach((style) => styles.add(style));
-            }
+    const styles = stylesResult
+      .map((r) => r.style)
+      .filter((s) => s != null)
+      .sort();
 
-            // Collect origins
-            if (def.origin) {
-              origins.add(def.origin);
-            }
-          });
-        });
-      });
-    });
+    // Get distinct origins
+    const originsResult = await db.selectDistinct({ origin: meanings.origin }).from(meanings);
+
+    const origins = originsResult
+      .map((r) => r.origin)
+      .filter((o) => o != null)
+      .sort();
 
     return NextResponse.json({
       success: true,
       data: {
-        categories: Array.from(categories).sort(),
-        styles: Array.from(styles).sort(),
-        origins: Array.from(origins).sort(),
+        categories,
+        styles,
+        origins: origins as string[],
+        letters,
+        stats: metadata,
       },
     });
   } catch (error) {
