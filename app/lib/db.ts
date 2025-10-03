@@ -6,12 +6,9 @@ import * as schema from './schema';
 const connectionString = process.env.POSTGRES_URL;
 
 const pool = connectionString
-  ? // Production: Use connection string from Supabase
+  ? // Production: Use connection string from Supabase (SSL handled by sslmode param in URL)
     new Pool({
       connectionString,
-      ssl: process.env.NODE_ENV === 'production'
-        ? { rejectUnauthorized: false } // Required for Supabase pooler connections
-        : false,
       // Optimized for serverless/Supabase
       max: 20,
       idleTimeoutMillis: 30000,
