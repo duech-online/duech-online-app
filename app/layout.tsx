@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import HeaderAuth from '@/app/ui/header-auth';
 
 import '@/app/globals.css';
 import { inter } from '@/app/ui/fonts';
@@ -52,13 +51,26 @@ export default function RootLayout({
                   <span className="hover:text-yellow-300">Inicio</span>
                 </Link>
                 <Link
-                  href="/busqueda-avanzada"
+                  href="/search"
                   className="text-lg font-medium transition-colors"
                   style={{ color: '#ffffff' }}
                 >
-                  <span className="hover:text-yellow-300">Búsqueda Avanzada</span>
+                  <span className="hover:text-yellow-300">Buscar</span>
                 </Link>
-                <HeaderAuth />
+                <Link
+                  href="/recursos"
+                  className="text-lg font-medium transition-colors"
+                  style={{ color: '#ffffff' }}
+                >
+                  <span className="hover:text-yellow-300">Recursos</span>
+                </Link>
+                <Link
+                  href="/acerca"
+                  className="text-lg font-medium transition-colors"
+                  style={{ color: '#ffffff' }}
+                >
+                  <span className="hover:text-yellow-300">Acerca</span>
+                </Link>
               </div>
             </div>
           </nav>

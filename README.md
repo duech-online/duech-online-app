@@ -91,7 +91,6 @@ The application includes several API endpoints:
 - `/api/search` - Basic text search
 - `/api/search/advanced` - Advanced search with filters
 - `/api/words/[lemma]` - Get specific word by lemma
-- `/api/words/random` - Get random word
 - `/api/metadata` - Get dictionary metadata
 
 ## Future Development
@@ -110,25 +109,9 @@ The application includes several API endpoints:
 - `npm run lint` - Run ESLint
 - `npm run format` - Format code with Prettier
 
-## Authentication (MVP)
+## Authentication
 
-This repo includes a minimal cookie-based login:
-
-- Visit `/login` to authenticate. Default credentials:
-  - Email: `admin@example.com` (configurable via `DEMO_USER_EMAIL`)
-  - Password: `admin123` (configurable via `DEMO_USER_PASSWORD`)
-- After login, a signed session cookie is set for 7 days.
-- Logout via the header button or POST `/api/logout`.
-
-Environment variables (optional):
-
-```
-AUTH_SECRET=your-long-random-secret
-DEMO_USER_EMAIL=admin@example.com
-DEMO_USER_PASSWORD=admin123
-```
-
-For production, replace the demo validation in `app/lib/actions.ts` with a proper user store and hashed passwords.
+All dictionary features are available without authentication. The previous cookie-based login flow has been removed so the application can be explored freely.
 
 ## Contributing
 

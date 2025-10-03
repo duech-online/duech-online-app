@@ -1,17 +1,11 @@
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getWordByLemmaServer } from '@/app/lib/dictionary-server';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 import { Example } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 
-import { getSessionUser } from '@/app/lib/auth';
-
 export default async function WordDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const user = await getSessionUser();
-  if (!user) {
-    redirect(`/login?callbackUrl=${encodeURIComponent(`/palabra/${(await params).id}`)}`);
-  }
   const { id } = await params;
   const decodedLemma = decodeURIComponent(id);
 
@@ -204,21 +198,6 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
                 />
               </svg>
               Volver a búsqueda
-            </Link>
-
-            <Link
-              href="/busqueda-avanzada"
-              className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
-            >
-              Búsqueda avanzada
-              <svg className="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
             </Link>
           </div>
         </div>
