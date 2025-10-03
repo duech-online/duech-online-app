@@ -119,14 +119,18 @@ export default function SearchBar({
     [availableCategories]
   );
 
-  const styleOptions = useMemo(
-    () =>
-      availableStyles.map((style) => ({
-        value: style,
-        label: USAGE_STYLES[style] || style,
-      })),
-    [availableStyles]
-  );
+  const styleOptions = useMemo(() => {
+    const optionsMap = new Map<string, { value: string; label: string }>();
+
+    availableStyles.forEach((style) => {
+      const label = USAGE_STYLES[style] || style;
+      if (!optionsMap.has(label)) {
+        optionsMap.set(label, { value: style, label });
+      }
+    });
+
+    return Array.from(optionsMap.values());
+  }, [availableStyles]);
 
   const originOptions = useMemo(
     () => availableOrigins.map((origin) => ({ value: origin, label: origin })),
@@ -283,38 +287,42 @@ export default function SearchBar({
           {!metadataLoaded ? (
             <div className="h-24 animate-pulse rounded bg-gray-100" />
           ) : (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-              <MultiSelectDropdown
-                label="Letras"
-                options={LETTER_OPTIONS}
-                selectedValues={filters.letters}
-                onChange={(values) => updateFilters('letters', values)}
-                placeholder="Seleccionar letras"
-              />
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <MultiSelectDropdown
+                  label="Letras"
+                  options={LETTER_OPTIONS}
+                  selectedValues={filters.letters}
+                  onChange={(values) => updateFilters('letters', values)}
+                  placeholder="Seleccionar letras"
+                />
 
-              <MultiSelectDropdown
-                label="Orígenes"
-                options={originOptions}
-                selectedValues={filters.origins}
-                onChange={(values) => updateFilters('origins', values)}
-                placeholder="Seleccionar orígenes"
-              />
+                <MultiSelectDropdown
+                  label="Orígenes"
+                  options={originOptions}
+                  selectedValues={filters.origins}
+                  onChange={(values) => updateFilters('origins', values)}
+                  placeholder="Seleccionar orígenes"
+                />
+              </div>
 
-              <MultiSelectDropdown
-                label="Categorías gramaticales"
-                options={categoryOptions}
-                selectedValues={filters.categories}
-                onChange={(values) => updateFilters('categories', values)}
-                placeholder="Seleccionar categorías"
-              />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <MultiSelectDropdown
+                  label="Categorías gramaticales"
+                  options={categoryOptions}
+                  selectedValues={filters.categories}
+                  onChange={(values) => updateFilters('categories', values)}
+                  placeholder="Seleccionar categorías"
+                />
 
-              <MultiSelectDropdown
-                label="Estilos de uso"
-                options={styleOptions}
-                selectedValues={filters.styles}
-                onChange={(values) => updateFilters('styles', values)}
-                placeholder="Seleccionar estilos"
-              />
+                <MultiSelectDropdown
+                  label="Estilos de uso"
+                  options={styleOptions}
+                  selectedValues={filters.styles}
+                  onChange={(values) => updateFilters('styles', values)}
+                  placeholder="Seleccionar estilos"
+                />
+              </div>
             </div>
           )}
 

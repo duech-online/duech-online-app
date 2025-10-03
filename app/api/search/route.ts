@@ -31,8 +31,7 @@ type ParseResult = ParseSuccess | ParseError;
 const MATCH_ORDER: Record<SearchResult['matchType'], number> = {
   exact: 0,
   partial: 1,
-  definition: 2,
-  filter: 3,
+  filter: 2,
 };
 
 export async function GET(request: NextRequest) {
@@ -223,17 +222,6 @@ function evaluateWord(
       matchType = 'exact';
     } else if (lemma.includes(normalizedQuery)) {
       matchType = 'partial';
-    } else {
-      const hasDefinitionMatch = word.values.some((def) =>
-        def.meaning.toLowerCase().includes(normalizedQuery)
-      );
-
-      if (!hasDefinitionMatch) {
-        return { matches: false, matchType };
-      }
-
-      matchType = 'definition';
-    }
   }
 
   if (filters.categories.length > 0) {
