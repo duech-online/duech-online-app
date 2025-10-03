@@ -9,6 +9,9 @@ const pool = connectionString
   ? // Production: Use connection string from Supabase
     new Pool({
       connectionString,
+      ssl: {
+        rejectUnauthorized: false, // Accept Supabase's SSL certificates
+      },
       // Optimized for serverless/Supabase
       max: 20,
       idleTimeoutMillis: 30000,
