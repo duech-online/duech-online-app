@@ -12,6 +12,8 @@ interface SearchBarProps {
   className?: string;
   initialValue?: string;
   initialFilters?: Partial<SearchFilters>;
+  searchPath?: string; // Custom search route, defaults to /search
+  initialAdvancedOpen?: boolean; // Whether advanced filters start expanded
 }
 
 type InternalFilters = Required<Omit<SearchFilters, 'query'>>;
@@ -35,6 +37,8 @@ export default function SearchBar({
   className = '',
   initialValue = '',
   initialFilters,
+  searchPath = '/search',
+  initialAdvancedOpen = false,
 }: SearchBarProps) {
   const router = useRouter();
 
@@ -48,7 +52,7 @@ export default function SearchBar({
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [availableStyles, setAvailableStyles] = useState<string[]>([]);
   const [availableOrigins, setAvailableOrigins] = useState<string[]>([]);
-  const [advancedOpen, setAdvancedOpen] = useState<boolean>(false);
+  const [advancedOpen, setAdvancedOpen] = useState<boolean>(initialAdvancedOpen);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
 
   const hasActiveFilters = useMemo(
@@ -152,7 +156,7 @@ export default function SearchBar({
     if (filters.origins.length) params.set('origins', filters.origins.join(','));
     if (filters.letters.length) params.set('letters', filters.letters.join(','));
 
-    router.push(`/search${params.toString() ? `?${params.toString()}` : ''}`);
+    router.push(`${searchPath}${params.toString() ? `?${params.toString()}` : ''}`);
   };
 
   const updateFilters = useCallback(<K extends keyof InternalFilters>(key: K, values: string[]) => {
