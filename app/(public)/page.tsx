@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import SearchBar from '@/app/ui/search-bar';
 import WordOfTheDay from '@/app/ui/word-of-the-day';
 
@@ -98,7 +99,7 @@ export default function Home() {
           Personaliza tus búsquedas con filtros por categoría, estilo de uso, origen o letra inicial
           directamente desde la barra de búsqueda.
         </p>
-        <a
+        <Link
           href="/search"
           className="bg-duech-blue inline-flex transform items-center rounded-lg px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-800"
         >
@@ -111,7 +112,7 @@ export default function Home() {
               d="M13 7l5 5m0 0l-5 5m5-5H6"
             />
           </svg>
-        </a>
+        </Link>
       </div>
     </div>
   );
