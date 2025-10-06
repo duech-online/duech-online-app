@@ -172,3 +172,18 @@ export const USAGE_STYLES: Record<string, string> = {
 export const REGIONAL_MARKERS: Record<string, string> = {
   '(Norte)': 'Norte de Chile',
 };
+
+// Lexicographers (for editor)
+export const LEXICOGRAPHERS = ['Soledad', 'Sofía'];
+
+// Word states (for editorial workflow)
+export const STATES = [
+  'Importada',
+  'Incorporada',
+  'Prerredactada',
+  'Redactado',
+  'Revisado por comisión',
+  'Publicado',
+  'Arcaico',
+  'Cuarentena',
+];
