@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import Link from 'next/link';
 import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import SelectDropdown from '@/app/ui/select-dropdown';
 import FilterPill from '@/app/ui/filter-pill';
@@ -70,7 +69,7 @@ function EditorContent() {
   const alphabet = 'abcdefghijklmnñopqrstuvwxyz'.split('');
 
   // Save current filter state to cookies
-  const saveFiltersToCache = () => {
+  const saveFiltersToCache = useCallback(() => {
     const filters = {
       query,
       selectedCategories,
@@ -81,7 +80,7 @@ function EditorContent() {
       selectedAssignedTo,
     };
     setCocinaSearchFilters(filters);
-  };
+  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters, selectedStatus, selectedAssignedTo]);
 
   // Restore state from cookies
   const restoreFromCache = () => {
@@ -123,16 +122,7 @@ function EditorContent() {
     if (isInitialized) {
       saveFiltersToCache();
     }
-  }, [
-    query,
-    selectedCategories,
-    selectedStyles,
-    selectedOrigins,
-    selectedLetters,
-    selectedStatus,
-    selectedAssignedTo,
-    isInitialized,
-  ]);
+  }, [isInitialized, saveFiltersToCache]);
 
   const handleSearch = async () => {
     setLoading(true);
@@ -271,9 +261,8 @@ function EditorContent() {
             width: 'auto',
           }}
           nested
-          {...({} as any)}
         >
-          {(close: () => void) => (
+          {((close: () => void) => (
             <div className="relative w-[500px] rounded-lg bg-white p-6 shadow-xl">
               <button
                 className="absolute right-3 top-3 text-2xl font-light leading-none text-gray-400 hover:text-gray-600"
@@ -344,7 +333,7 @@ function EditorContent() {
                 </button>
               </div>
             </div>
-          )}
+          )) as unknown as React.ReactNode}
         </Popup>
       </div>
 
