@@ -92,10 +92,15 @@ export async function getWordByLemma(
 export async function searchDictionary(
   filters: SearchFilters,
   page: number = 1,
-  limit: number = 1000
+  limit: number = 1000,
+  status?: string,
+  assignedTo?: string[]
 ): Promise<SearchResponse> {
   try {
     const params = buildFilterParams(filters);
+
+    if (status) params.append('status', status);
+    if (assignedTo?.length) params.append('assignedTo', assignedTo.join(','));
 
     params.append('page', page.toString());
     params.append('limit', limit.toString());
@@ -179,4 +184,28 @@ function hashSeed(seed: string): number {
     hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   }
   return hash;
+}
+
+/**
+ * Get available categories from metadata
+ */
+export async function getAvailableCategories(): Promise<string[]> {
+  const metadata = await getSearchMetadata();
+  return metadata.categories;
+}
+
+/**
+ * Get available styles from metadata
+ */
+export async function getAvailableStyles(): Promise<string[]> {
+  const metadata = await getSearchMetadata();
+  return metadata.styles;
+}
+
+/**
+ * Get available origins from metadata
+ */
+export async function getAvailableOrigins(): Promise<string[]> {
+  const metadata = await getSearchMetadata();
+  return metadata.origins;
 }

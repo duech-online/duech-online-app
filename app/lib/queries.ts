@@ -150,11 +150,29 @@ export async function advancedSearch(params: {
   styles?: string[];
   origin?: string;
   letter?: string;
+  status?: string;
+  assignedTo?: string[];
   limit?: number;
 }): Promise<SearchResult[]> {
-  const { query, categories, styles, origin, letter, limit = 50 } = params;
+  const { query, categories, styles, origin, letter, status, assignedTo, limit = 50 } = params;
 
-  const conditions: SQL[] = [eq(words.status, 'published')];
+  const conditions: SQL[] = [];
+
+  // Filter by status (default to 'published' if not specified)
+  if (status) {
+    conditions.push(eq(words.status, status));
+  } else {
+    conditions.push(eq(words.status, 'published'));
+  }
+
+  // Filter by assignedTo
+  if (assignedTo && assignedTo.length > 0) {
+    const assignedToIds = assignedTo.map((id) => parseInt(id, 10)).filter((id) => !isNaN(id));
+    if (assignedToIds.length > 0) {
+      const assignedConditions = assignedToIds.map((id) => eq(words.assignedTo, id));
+      conditions.push(or(...assignedConditions)!);
+    }
+  }
 
   // Text search in lemma or meaning
   if (query) {

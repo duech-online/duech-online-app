@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/editor/inline-editable';
@@ -22,12 +22,12 @@ import {
 
 type Props = { initialWord: Word; initialLetter: string };
 
+type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
+
 export default function EditorClient({ initialWord, initialLetter }: Props) {
   const [word, setWord] = useState<Word>(initialWord);
   const [letter] = useState(initialLetter);
-  const [saving, setSaving] = useState(false);
-
-  const [dirty, setDirty] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [lastSavedLemma, setLastSavedLemma] = useState(initialWord.lemma);
 
   const [editingKey, setEditingKey] = useState<string | null>(null);
@@ -40,10 +40,67 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   const [lexicographer, setLexicographer] = useState('');
   const [status, setStatus] = useState('');
 
+  // Debounced auto-save
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const wordRef = useRef(word);
+
+  // Keep wordRef up to date
+  useEffect(() => {
+    wordRef.current = word;
+  }, [word]);
+
+  // Auto-save function
+  const autoSave = useCallback(async () => {
+    setSaveStatus('saving');
+    try {
+      const response = await fetch(`/api/editor/words/${encodeURIComponent(lastSavedLemma)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(wordRef.current),
+      });
+      if (!response.ok) throw new Error('Error al guardar');
+
+      setSaveStatus('saved');
+      setLastSavedLemma(wordRef.current.lemma);
+
+      // Reset to idle after 2 seconds
+      setTimeout(() => {
+        setSaveStatus('idle');
+      }, 2000);
+    } catch (error) {
+      console.error('Error saving:', error);
+      setSaveStatus('error');
+
+      // Reset error status after 3 seconds
+      setTimeout(() => {
+        setSaveStatus('idle');
+      }, 3000);
+    }
+  }, [lastSavedLemma]);
+
+  // Debounced save trigger - 2 seconds after last change
+  useEffect(() => {
+    // Clear any existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
+
+    // Set new timeout for auto-save
+    saveTimeoutRef.current = setTimeout(() => {
+      autoSave();
+    }, 2000); // 2 second debounce
+
+    // Cleanup on unmount
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, [word, autoSave]);
+
   // ---------- helpers: patch LOCAL ----------
   const patchWordLocal = (patch: Partial<Word>) => {
     setWord((prev) => ({ ...prev, ...patch }));
-    setDirty(true);
   };
 
   const patchDefLocal = (idx: number, patch: Partial<WordDefinition>) => {
@@ -51,7 +108,6 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       ...prev,
       values: prev.values.map((d, i) => (i === idx ? { ...d, ...patch } : d)),
     }));
-    setDirty(true);
   };
 
   // ---------- ejemplos ----------
@@ -80,13 +136,12 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       };
       return { ...prev, values };
     });
-    setDirty(true);
   };
 
   const handleAddExample = (defIndex: number) => {
     const arr = getExamples(word.values[defIndex]);
     setExamples(defIndex, [...arr, emptyExample()]);
-    setEditingKey(`def:${defIndex}:ex:${arr.length}`); // abre el recién creado
+    setEditingKey(`def:${defIndex}:ex:${arr.length}`);
   };
 
   const handleDeleteExample = (defIndex: number, exIndex: number) => {
@@ -127,43 +182,73 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       expressions: null,
     };
     setWord((prev) => ({ ...prev, values: [...prev.values, newDef] }));
-    setDirty(true);
   };
 
   const handleDeleteDefinition = (defIndex: number) => {
     setWord((prev) => ({ ...prev, values: prev.values.filter((_, i) => i !== defIndex) }));
-    setDirty(true);
   };
 
-  // ---------- guardar TODO ----------
-  const saveAll = async () => {
-    setSaving(true);
-    try {
-      const response = await fetch(`/api/editor/words/${encodeURIComponent(lastSavedLemma)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(word),
-      });
-      if (!response.ok) throw new Error('Error al guardar');
-      setSaving(false);
-      setDirty(false);
-      setLastSavedLemma(word.lemma); // si cambiaste el lema, actualiza clave
-      setEditingKey(null); // sal de cualquier modo edición
-    } catch (error) {
-      console.error('Error saving:', error);
-      alert('Error al guardar los cambios');
-      setSaving(false);
-    }
+  // Save status indicator component
+  const SaveStatusIndicator = () => {
+    if (saveStatus === 'idle') return null;
+
+    const statusConfig = {
+      saving: {
+        bg: 'bg-blue-50',
+        text: 'text-blue-700',
+        icon: (
+          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4" />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+        ),
+        label: 'Guardando...',
+      },
+      saved: {
+        bg: 'bg-green-50',
+        text: 'text-green-700',
+        icon: (
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        ),
+        label: 'Guardado',
+      },
+      error: {
+        bg: 'bg-red-50',
+        text: 'text-red-700',
+        icon: (
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        ),
+        label: 'Error al guardar',
+      },
+    };
+
+    const config = statusConfig[saveStatus];
+
+    return (
+      <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg ${config.bg} px-4 py-2 shadow-lg ${config.text}`}>
+        {config.icon}
+        <span className="text-sm font-medium">{config.label}</span>
+      </div>
+    );
   };
 
   // ---------- UI ----------
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      {saving && (
-        <div className="mb-4 rounded-lg bg-blue-100 p-4 text-center text-blue-800">
-          Guardando cambios...
-        </div>
-      )}
+      <SaveStatusIndicator />
 
       <div className="border-duech-gold rounded-xl border-t-4 bg-white p-10 shadow-2xl">
         {/* header */}
@@ -350,7 +435,6 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                 {/* categorías */}
                 <div className="mb-3">
                   {!def.categories || def.categories.length === 0 ? (
-                    // SIN categorías → mostrar "Añadir categorías"
                     <button
                       onClick={() => setEditingCategories(defIndex)}
                       className="text-sm text-blue-600 hover:text-blue-800"
@@ -358,7 +442,6 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                       + Añadir categorías
                     </button>
                   ) : (
-                    // CON categorías → chips + botón redondo para agregar más
                     <div className="flex flex-wrap items-center gap-2">
                       {def.categories.map((cat, i) => (
                         <CategoryChip
@@ -865,18 +948,6 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
             );
           })}
         </div>
-
-        {/* botón global Guardar cambios */}
-        {dirty && (
-          <div className="mt-8 flex justify-end">
-            <button
-              onClick={saveAll}
-              className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-            >
-              Guardar cambios
-            </button>
-          </div>
-        )}
       </div>
 
       {/* modales multi-select */}

@@ -103,6 +103,7 @@ export interface SearchResult {
   word: Word;
   letter: string;
   matchType: 'exact' | 'partial' | 'filter';
+  status?: string;
 }
 
 export interface SearchFilters {

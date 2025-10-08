@@ -16,6 +16,8 @@ interface SearchFilters {
   styles: string[];
   origins: string[];
   letters: string[];
+  status: string;
+  assignedTo: string[];
 }
 
 interface ParseSuccess {
@@ -97,6 +99,8 @@ export async function GET(request: NextRequest) {
         styles: filters.styles.length > 0 ? filters.styles : undefined,
         origin: filters.origins.length > 0 ? filters.origins.join('|') : undefined,
         letter: filters.letters.length > 0 ? filters.letters[0] : undefined,
+        status: filters.status || undefined,
+        assignedTo: filters.assignedTo.length > 0 ? filters.assignedTo : undefined,
         limit: MAX_LIMIT,
       });
 
@@ -147,12 +151,15 @@ function parseSearchParams(searchParams: URLSearchParams): ParseResult {
   const styles = parseList(searchParams.get('styles'));
   const origins = parseList(searchParams.get('origins'));
   const letters = parseList(searchParams.get('letters'));
+  const status = searchParams.get('status') ?? '';
+  const assignedTo = parseList(searchParams.get('assignedTo'));
 
   if (
     categories.length > MAX_FILTER_OPTIONS ||
     styles.length > MAX_FILTER_OPTIONS ||
     origins.length > MAX_FILTER_OPTIONS ||
-    letters.length > MAX_FILTER_OPTIONS
+    letters.length > MAX_FILTER_OPTIONS ||
+    assignedTo.length > MAX_FILTER_OPTIONS
   ) {
     return {
       errorResponse: NextResponse.json({ error: 'Too many filter options' }, { status: 400 }),
@@ -177,6 +184,8 @@ function parseSearchParams(searchParams: URLSearchParams): ParseResult {
     styles,
     origins,
     letters,
+    status,
+    assignedTo,
   };
 
   return { filters, page, limit, metaOnly };
