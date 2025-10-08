@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateWordByLemma, deleteWordByLemma } from '@/app/lib/editor-mutations';
 import type { Word } from '@/app/lib/definitions';
+import { Atkinson_Hyperlegible_Next } from 'next/font/google';
 
 /**
  * PUT /api/editor/words/[lemma]

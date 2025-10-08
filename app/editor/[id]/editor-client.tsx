@@ -3,13 +3,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import InlineEditable from '@/app/ui/editor/inline-editable';
+import InlineEditable from '@/app/ui/inline-editable';
 import {
   CategorySelector,
   StyleSelector,
   CategoryChip,
   StyleChip,
-} from '@/app/ui/editor/edit-controls';
+} from '@/app/ui/edit-controls';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
