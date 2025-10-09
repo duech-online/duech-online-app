@@ -33,7 +33,7 @@ export function middleware(request: NextRequest) {
 
     if (!pathname.startsWith('/editor')) {
       const rewriteUrl = new URL(request.url);
-      rewriteUrl.pathname = pathname === '/' ? '/editor/search' : `/editor${pathname}`;
+      rewriteUrl.pathname = pathname === '/' ? '/editor/buscar' : `/editor${pathname}`;
       return NextResponse.rewrite(rewriteUrl);
     }
 

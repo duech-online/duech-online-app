@@ -100,7 +100,7 @@ export default function Home() {
           directamente desde la barra de búsqueda.
         </p>
         <Link
-          href="/search"
+          href="/buscar"
           className="bg-duech-blue inline-flex transform items-center rounded-lg px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-800"
         >
           Abrir buscador

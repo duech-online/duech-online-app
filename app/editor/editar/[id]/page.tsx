@@ -21,7 +21,7 @@ export default async function EditorPage({ params }: { params: Promise<{ id: str
       <nav className="mb-6">
         <ol className="flex items-center space-x-2 text-sm">
           <li>
-            <Link href="/editor/search" className="text-blue-600 hover:text-blue-800">
+            <Link href="/editor/buscar" className="text-blue-600 hover:text-blue-800">
               Búsqueda en editor
             </Link>
           </li>

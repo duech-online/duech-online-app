@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
 
 export default function EditorIndexPage() {
-  redirect('/editor/search');
+  redirect('/editor/buscar');
 }

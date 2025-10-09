@@ -12,7 +12,7 @@ interface SearchBarProps {
   className?: string;
   initialValue?: string;
   initialFilters?: Partial<SearchFilters>;
-  searchPath?: string; // Custom search route, defaults to /search
+  searchPath?: string; // Custom search route, defaults to /buscar
   initialAdvancedOpen?: boolean; // Whether advanced filters start expanded
   onSearch?: (state: { query: string; filters: InternalFilters }) => void | Promise<void>;
   onStateChange?: (state: { query: string; filters: InternalFilters }) => void;
@@ -65,7 +65,7 @@ export default function SearchBar({
   className = '',
   initialValue = '',
   initialFilters,
-  searchPath = '/search',
+  searchPath = '/buscar',
   initialAdvancedOpen = false,
   onSearch,
   onStateChange,

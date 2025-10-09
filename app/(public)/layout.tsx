@@ -41,7 +41,7 @@ export default function PublicLayout({
                 <span className="hover:text-yellow-300">Inicio</span>
               </Link>
               <Link
-                href="/search"
+                href="/buscar"
                 className="text-lg font-medium transition-colors"
                 style={{ color: '#ffffff' }}
               >
