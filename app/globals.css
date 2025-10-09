@@ -66,11 +66,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family:
-    'Lusitana',
-    'Georgia',
-    'Times New Roman',
-    serif;
+  font-family: 'Lusitana', 'Georgia', 'Times New Roman', serif;
   line-height: 1.6;
 }
 

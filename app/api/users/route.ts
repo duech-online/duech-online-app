@@ -4,12 +4,14 @@ import { users } from '@/app/lib/schema';
 
 export async function GET() {
   try {
-    const allUsers = await db.select({
-      id: users.id,
-      username: users.username,
-      email: users.email,
-      role: users.role,
-    }).from(users);
+    const allUsers = await db
+      .select({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+        role: users.role,
+      })
+      .from(users);
 
     return NextResponse.json({
       success: true,

@@ -4,16 +4,10 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
-import {
-  CategorySelector,
-  StyleSelector,
-  CategoryChip,
-  StyleChip,
-} from '@/app/ui/edit-controls';
+import { CategorySelector, StyleSelector, CategoryChip, StyleChip } from '@/app/ui/edit-controls';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
-  LEXICOGRAPHERS,
   STATUS_OPTIONS,
   type Example,
   type Word,
@@ -40,8 +34,8 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   const [letter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [lastSavedLemma, setLastSavedLemma] = useState(initialWord.lemma);
-  const [lexicographer, setLexicographer] = useState('');
-  const [status, setStatus] = useState('');
+  const [lexicographer] = useState('');
+  const [status] = useState('');
 
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const isEditing = (k: string) => editingKey === k;
@@ -52,7 +46,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   const [activeExample, setActiveExample] = useState<ActiveExample | null>(null);
   const [exampleDraft, setExampleDraft] = useState<ExampleDraft | null>(null);
 
-// Debounced auto-save
+  // Debounced auto-save
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wordRef = useRef(word);
 
@@ -282,7 +276,12 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
         bg: 'bg-blue-50',
         text: 'text-blue-700',
         icon: (
-          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <svg
+            className="h-4 w-4 animate-spin"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
             <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4" />
             <path
               className="opacity-75"
@@ -323,7 +322,9 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
     const config = statusConfig[saveStatus];
 
     return (
-      <div className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg ${config.bg} px-4 py-2 shadow-lg ${config.text}`}>
+      <div
+        className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg ${config.bg} px-4 py-2 shadow-lg ${config.text}`}
+      >
         {config.icon}
         <span className="text-sm font-medium">{config.label}</span>
       </div>
@@ -670,7 +671,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                 <div className="mb-3">
                   {isEditing(`def:${defIndex}:observation`) ? (
                     <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-900">
-                      <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                      <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
                         Observación
                       </label>
                       <textarea
@@ -681,7 +682,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                           })
                         }
                         rows={3}
-                        className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                         placeholder="Añade una observación…"
                       />
                       <div className="flex justify-end gap-2">
@@ -751,7 +752,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                           {isExampleActive && draft ? (
                             <>
                               <div className="mb-4">
-                                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                <label className="mb-1 block text-xs font-semibold tracking-wide text-blue-900 uppercase">
                                   Texto del ejemplo
                                 </label>
                                 <textarea
@@ -763,14 +764,14 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                     )
                                   }
                                   rows={4}
-                                  className="min-h-[120px] w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                  className="min-h-[120px] w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                                   placeholder="Escribe el ejemplo..."
                                 />
                               </div>
 
                               <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
                                 <div>
-                                  <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                  <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
                                     Autor
                                   </label>
                                   <input
@@ -780,13 +781,13 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                         prev ? { ...prev, author: event.target.value } : prev
                                       )
                                     }
-                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                                     placeholder="Nombre del autor"
                                   />
                                 </div>
 
                                 <div>
-                                  <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                  <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
                                     Título
                                   </label>
                                   <input
@@ -796,13 +797,13 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                         prev ? { ...prev, title: event.target.value } : prev
                                       )
                                     }
-                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                                     placeholder="Título de la obra / artículo"
                                   />
                                 </div>
 
                                 <div>
-                                  <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                  <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
                                     Fuente
                                   </label>
                                   <input
@@ -812,14 +813,14 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                         prev ? { ...prev, source: event.target.value } : prev
                                       )
                                     }
-                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                                     placeholder="Revista, libro, medio..."
                                   />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
                                   <div>
-                                    <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
                                       Fecha
                                     </label>
                                     <input
@@ -829,13 +830,13 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                           prev ? { ...prev, date: event.target.value } : prev
                                         )
                                       }
-                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                                       placeholder="1998, s. XIX, etc."
                                     />
                                   </div>
 
                                   <div>
-                                    <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
                                       Página
                                     </label>
                                     <input
@@ -845,7 +846,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                           prev ? { ...prev, page: event.target.value } : prev
                                         )
                                       }
-                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                                       placeholder="p. 42"
                                     />
                                   </div>
@@ -856,7 +857,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                                 <button
                                   type="button"
                                   onClick={saveExampleDraft}
-                                  className="inline-flex items-center rounded-lg bg-duech-blue px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800"
+                                  className="bg-duech-blue inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800"
                                 >
                                   Guardar ejemplo
                                 </button>
@@ -968,45 +969,45 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
                 {/* variante */}
                 <div className="mt-4">
-          <span className="text-sm font-medium text-gray-900">Variante: </span>
-          {isEditing(`def:${defIndex}:variant`) ? (
-            <div className="flex items-center gap-2">
-              <input
-                value={def.variant ?? ''}
-                onChange={(event) =>
-                  patchDefLocal(defIndex, { variant: event.target.value || null })
-                }
-                className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                placeholder="Añade una variante..."
-              />
-              <button
-                type="button"
-                onClick={() => toggle(`def:${defIndex}:variant`)}
-                className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
-              >
-                Listo
-              </button>
-            </div>
-          ) : def.variant ? (
-            <button
-              type="button"
-              onClick={() => toggle(`def:${defIndex}:variant`)}
-              className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
-            >
-              {def.variant}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => {
-                patchDefLocal(defIndex, { variant: '' });
-                toggle(`def:${defIndex}:variant`);
-              }}
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              + Añadir variante
-            </button>
-          )}
+                  <span className="text-sm font-medium text-gray-900">Variante: </span>
+                  {isEditing(`def:${defIndex}:variant`) ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        value={def.variant ?? ''}
+                        onChange={(event) =>
+                          patchDefLocal(defIndex, { variant: event.target.value || null })
+                        }
+                        className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                        placeholder="Añade una variante..."
+                      />
+                      <button
+                        type="button"
+                        onClick={() => toggle(`def:${defIndex}:variant`)}
+                        className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
+                      >
+                        Listo
+                      </button>
+                    </div>
+                  ) : def.variant ? (
+                    <button
+                      type="button"
+                      onClick={() => toggle(`def:${defIndex}:variant`)}
+                      className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
+                    >
+                      {def.variant}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        patchDefLocal(defIndex, { variant: '' });
+                        toggle(`def:${defIndex}:variant`);
+                      }}
+                      className="text-sm text-blue-600 hover:text-blue-800"
+                    >
+                      + Añadir variante
+                    </button>
+                  )}
                 </div>
 
                 {/* botones agregar/eliminar definición */}

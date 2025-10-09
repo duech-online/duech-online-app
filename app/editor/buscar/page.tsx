@@ -47,7 +47,9 @@ const createDefaultSearchState = (): EditorSearchState => ({
 });
 
 function EditorContent() {
-  const [searchState, setSearchState] = useState<EditorSearchState>(() => createDefaultSearchState());
+  const [searchState, setSearchState] = useState<EditorSearchState>(() =>
+    createDefaultSearchState()
+  );
   const [isInitialized, setIsInitialized] = useState(false);
 
   // For add word modal
@@ -307,78 +309,80 @@ function EditorContent() {
           }}
           nested
         >
-          {((close: () => void) => (
-            <div className="relative w-[500px] rounded-lg bg-white p-6 shadow-xl">
-              <button
-                className="absolute right-3 top-3 text-2xl font-light leading-none text-gray-400 hover:text-gray-600"
-                onClick={close}
-              >
-                &times;
-              </button>
-
-              <h3 className="text-duech-blue mb-4 text-xl font-semibold">Agregar palabra</h3>
-
-              <div className="mb-4 flex flex-col gap-3">
-                <div>
-                  <label htmlFor="raiz" className="mb-1 block text-sm font-medium text-gray-900">
-                    Raíz
-                  </label>
-                  <input
-                    type="text"
-                    id="raiz"
-                    placeholder=""
-                    value={newWordRoot}
-                    onChange={(e) => setNewWordRoot(e.target.value)}
-                    className="focus:border-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-duech-blue focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="lema" className="mb-1 block text-sm font-medium text-gray-900">
-                    Lema
-                  </label>
-                  <input
-                    type="text"
-                    id="lema"
-                    placeholder=""
-                    value={newWordLemma}
-                    onChange={(e) => setNewWordLemma(e.target.value)}
-                    className="focus:border-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-duech-blue focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="letra" className="mb-1 block text-sm font-medium text-gray-900">
-                    Letra
-                  </label>
-                  <input
-                    type="text"
-                    id="letra"
-                    placeholder=""
-                    value={newWordLetter}
-                    onChange={(e) => setNewWordLetter(e.target.value)}
-                    className="focus:border-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-duech-blue focus:border-transparent"
-                  />
-                </div>
-              </div>
-              <MultiSelectDropdown
-                label="Asignado a"
-                options={userOptions}
-                selectedValues={newWordAssignedTo}
-                onChange={setNewWordAssignedTo}
-              />
-
-              <div className="mt-5 flex justify-end">
+          {
+            ((close: () => void) => (
+              <div className="relative w-[500px] rounded-lg bg-white p-6 shadow-xl">
                 <button
-                  className="bg-duech-blue rounded px-6 py-2 font-semibold text-white transition-colors hover:bg-blue-800"
-                  onClick={() => {
-                    handleAddWord();
-                    close();
-                  }}
+                  className="absolute top-3 right-3 text-2xl leading-none font-light text-gray-400 hover:text-gray-600"
+                  onClick={close}
                 >
-                  Guardar
+                  &times;
                 </button>
+
+                <h3 className="text-duech-blue mb-4 text-xl font-semibold">Agregar palabra</h3>
+
+                <div className="mb-4 flex flex-col gap-3">
+                  <div>
+                    <label htmlFor="raiz" className="mb-1 block text-sm font-medium text-gray-900">
+                      Raíz
+                    </label>
+                    <input
+                      type="text"
+                      id="raiz"
+                      placeholder=""
+                      value={newWordRoot}
+                      onChange={(e) => setNewWordRoot(e.target.value)}
+                      className="focus:border-duech-blue focus:ring-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="lema" className="mb-1 block text-sm font-medium text-gray-900">
+                      Lema
+                    </label>
+                    <input
+                      type="text"
+                      id="lema"
+                      placeholder=""
+                      value={newWordLemma}
+                      onChange={(e) => setNewWordLemma(e.target.value)}
+                      className="focus:border-duech-blue focus:ring-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="letra" className="mb-1 block text-sm font-medium text-gray-900">
+                      Letra
+                    </label>
+                    <input
+                      type="text"
+                      id="letra"
+                      placeholder=""
+                      value={newWordLetter}
+                      onChange={(e) => setNewWordLetter(e.target.value)}
+                      className="focus:border-duech-blue focus:ring-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
+                    />
+                  </div>
+                </div>
+                <MultiSelectDropdown
+                  label="Asignado a"
+                  options={userOptions}
+                  selectedValues={newWordAssignedTo}
+                  onChange={setNewWordAssignedTo}
+                />
+
+                <div className="mt-5 flex justify-end">
+                  <button
+                    className="bg-duech-blue rounded px-6 py-2 font-semibold text-white transition-colors hover:bg-blue-800"
+                    onClick={() => {
+                      handleAddWord();
+                      close();
+                    }}
+                  >
+                    Guardar
+                  </button>
+                </div>
               </div>
-            </div>
-          )) as unknown as React.ReactNode}
+            )) as unknown as React.ReactNode
+          }
         </Popup>
       </div>
 
@@ -447,22 +451,22 @@ function EditorContent() {
                 <table className="min-w-full divide-y divide-gray-200">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                         Lema
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                         Raíz
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                         Letra
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                         Estado
                       </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
                         Definiciones
                       </th>
-                      <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                      <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase">
                         Acciones
                       </th>
                     </tr>
@@ -473,7 +477,9 @@ function EditorContent() {
                       const isPublished = result.status === 'published';
 
                       // Get status label and color
-                      const statusOption = STATUS_OPTIONS.find((opt) => opt.value === result.status);
+                      const statusOption = STATUS_OPTIONS.find(
+                        (opt) => opt.value === result.status
+                      );
                       const statusLabel = statusOption?.label || result.status || 'Desconocido';
 
                       // Color coding for status badges
@@ -484,36 +490,38 @@ function EditorContent() {
                         rejected: 'bg-red-100 text-red-800',
                         published: 'bg-green-100 text-green-800',
                       };
-                      const statusColor = statusColors[result.status || ''] || 'bg-gray-100 text-gray-800';
+                      const statusColor =
+                        statusColors[result.status || ''] || 'bg-gray-100 text-gray-800';
 
                       return (
                         <tr key={`${result.word.lemma}-${index}`} className="hover:bg-gray-50">
-                          <td className="whitespace-nowrap px-6 py-4">
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-duech-blue text-sm font-semibold">
                               {result.word.lemma}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4">
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-500">{result.word.root || '-'}</div>
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4">
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <span className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800">
                               {result.letter.toUpperCase()}
                             </span>
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4">
-                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor}`}>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span
+                              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor}`}
+                            >
                               {statusLabel}
                             </span>
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4">
+                          <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-500">
-                              {result.word.values.length}
-                              {' '}
-                              definici{result.word.values.length !== 1 ? 'ones' : 'ón'}
+                              {result.word.values.length} definici
+                              {result.word.values.length !== 1 ? 'ones' : 'ón'}
                             </div>
                           </td>
-                          <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                          <td className="px-6 py-4 text-right text-sm font-medium whitespace-nowrap">
                             <div className="flex items-center justify-end gap-3">
                               {isPublished && (
                                 <Link
