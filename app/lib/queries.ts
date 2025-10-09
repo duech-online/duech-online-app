@@ -12,11 +12,22 @@ import { dbWordToWord, dbWordToSearchResult } from './transformers';
  * Get a word by lemma with all its meanings
  * Returns in frontend-compatible format
  */
+interface GetWordByLemmaOptions {
+  includeDrafts?: boolean;
+}
+
 export async function getWordByLemma(
-  lemma: string
-): Promise<{ word: Word; letter: string } | null> {
+  lemma: string,
+  options: GetWordByLemmaOptions = {}
+): Promise<{ word: Word; letter: string; status: string; assignedTo: number | null } | null> {
+  const { includeDrafts = false } = options;
+
+  const whereCondition = includeDrafts
+    ? eq(words.lemma, lemma)
+    : and(eq(words.lemma, lemma), eq(words.status, 'published'));
+
   const result = await db.query.words.findFirst({
-    where: and(eq(words.lemma, lemma), eq(words.status, 'published')),
+    where: whereCondition,
     with: {
       meanings: {
         orderBy: (meanings, { asc }) => [asc(meanings.number)],
@@ -29,6 +40,8 @@ export async function getWordByLemma(
   return {
     word: dbWordToWord(result),
     letter: result.letter,
+    status: result.status,
+    assignedTo: result.assignedTo ?? null,
   };
 }
 
@@ -158,12 +171,17 @@ export async function advancedSearch(params: {
 
   const conditions: SQL[] = [];
 
-  // Filter by status (default to 'published' if not specified)
-  if (status) {
+  // Filter by status
+  // If status is explicitly set, filter by it
+  // If status is undefined (not provided), show all statuses
+  // If status is empty string '', default to 'published' for public search
+  if (status !== undefined && status !== '') {
     conditions.push(eq(words.status, status));
-  } else {
+  } else if (status === '') {
+    // Empty string means public search - only show published
     conditions.push(eq(words.status, 'published'));
   }
+  // If status is undefined, don't add any status filter (show all)
 
   // Filter by assignedTo
   if (assignedTo && assignedTo.length > 0) {

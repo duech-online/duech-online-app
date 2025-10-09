@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Popup from 'reactjs-popup';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
@@ -46,7 +47,13 @@ const createDefaultSearchState = (): EditorSearchState => ({
   assignedTo: [],
 });
 
+const LETTER_OPTIONS = 'abcdefghijklmnñopqrstuvwxyz'.split('').map((letter) => ({
+  value: letter,
+  label: letter.toUpperCase(),
+}));
+
 function EditorContent() {
+  const router = useRouter();
   const [searchState, setSearchState] = useState<EditorSearchState>(() =>
     createDefaultSearchState()
   );
@@ -199,31 +206,64 @@ function EditorContent() {
     clearEditorSearchFilters();
   }, []);
 
-  const handleAddWord = async () => {
-    if (!newWordLemma.trim()) {
+  const handleAddWord = useCallback(async () => {
+    const trimmedLemma = newWordLemma.trim();
+    if (!trimmedLemma) {
       alert('El lema es requerido');
-      return;
+      return false;
     }
 
+    const rawAssignedTo =
+      newWordAssignedTo.length > 0 ? parseInt(newWordAssignedTo[0], 10) : null;
+    const assignedToValue =
+      typeof rawAssignedTo === 'number' && Number.isInteger(rawAssignedTo) ? rawAssignedTo : null;
+    const trimmedRoot = newWordRoot.trim();
+    const autoLetter = trimmedLemma ? trimmedLemma[0].toLowerCase() : '';
+    const trimmedLetter = newWordLetter.trim().toLowerCase();
+    const letterToSend = trimmedLetter || autoLetter;
+
     try {
-      // TODO: Call API to create word
-      console.log('Add word:', {
-        root: newWordRoot,
-        lemma: newWordLemma,
-        letter: newWordLetter,
-        assignedTo: newWordAssignedTo,
+      const response = await fetch('/api/words', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lemma: trimmedLemma,
+          root: trimmedRoot,
+          letter: letterToSend || undefined,
+          assignedTo: assignedToValue,
+          values: [],
+        }),
       });
 
-      // Clear form
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        const message =
+          (result && typeof result.error === 'string' && result.error) ||
+          'Error al agregar la palabra';
+        throw new Error(message);
+      }
+
+      const createdLemma =
+        (result &&
+          result.data &&
+          typeof result.data.lemma === 'string' &&
+          result.data.lemma.trim()) ||
+        trimmedLemma;
+
       setNewWordRoot('');
       setNewWordLemma('');
       setNewWordLetter('');
       setNewWordAssignedTo([]);
+
+      router.push(`/editor/editar/${encodeURIComponent(createdLemma)}`);
+      return true;
     } catch (error) {
       console.error('Error adding word:', error);
-      alert('Error al agregar la palabra');
+      alert(error instanceof Error ? error.message : 'Error al agregar la palabra');
+      return false;
     }
-  };
+  }, [newWordAssignedTo, newWordLemma, newWordLetter, newWordRoot, router]);
 
   const userOptions = useMemo(
     () =>
@@ -238,6 +278,8 @@ function EditorContent() {
 
   const hasExtraFilters = searchState.status.length > 0 || searchState.assignedTo.length > 0;
   const trimmedQuery = searchState.query.trim();
+  const autoLetterForLemma = newWordLemma.trim().charAt(0).toLowerCase();
+  const selectedLetter = newWordLetter || autoLetterForLemma;
 
   const canExecuteSearch =
     trimmedQuery.length > 0 ||
@@ -352,14 +394,19 @@ function EditorContent() {
                     <label htmlFor="letra" className="mb-1 block text-sm font-medium text-gray-900">
                       Letra
                     </label>
-                    <input
-                      type="text"
+                    <select
                       id="letra"
-                      placeholder=""
-                      value={newWordLetter}
-                      onChange={(e) => setNewWordLetter(e.target.value)}
+                      value={selectedLetter}
+                      onChange={(event) => setNewWordLetter(event.target.value.toLowerCase())}
                       className="focus:border-duech-blue focus:ring-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
-                    />
+                    >
+                      <option value="">Seleccionar letra</option>
+                      {LETTER_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
                 <MultiSelectDropdown
@@ -372,9 +419,11 @@ function EditorContent() {
                 <div className="mt-5 flex justify-end">
                   <button
                     className="bg-duech-blue rounded px-6 py-2 font-semibold text-white transition-colors hover:bg-blue-800"
-                    onClick={() => {
-                      handleAddWord();
-                      close();
+                    onClick={async () => {
+                      const created = await handleAddWord();
+                      if (created) {
+                        close();
+                      }
                     }}
                   >
                     Guardar

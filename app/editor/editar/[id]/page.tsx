@@ -8,13 +8,13 @@ export default async function EditorPage({ params }: { params: Promise<{ id: str
   const decodedLemma = decodeURIComponent(id);
 
   // Get word from database
-  const wordData = await getWordByLemma(decodedLemma);
+  const wordData = await getWordByLemma(decodedLemma, { includeDrafts: true });
 
   if (!wordData) {
     notFound();
   }
 
-  const { word, letter } = wordData;
+  const { word, letter, status, assignedTo } = wordData;
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -29,7 +29,12 @@ export default async function EditorPage({ params }: { params: Promise<{ id: str
           <li className="text-gray-600">Editor: {word.lemma}</li>
         </ol>
       </nav>
-      <EditorClient initialWord={word} initialLetter={letter} />
+      <EditorClient
+        initialWord={word}
+        initialLetter={letter}
+        initialStatus={status}
+        initialAssignedTo={assignedTo ?? undefined}
+      />
     </div>
   );
 }

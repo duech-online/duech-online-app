@@ -14,7 +14,12 @@ import {
   type WordDefinition,
 } from '@/app/lib/definitions';
 
-type Props = { initialWord: Word; initialLetter: string };
+type Props = {
+  initialWord: Word;
+  initialLetter: string;
+  initialStatus?: string;
+  initialAssignedTo?: number;
+};
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -29,13 +34,14 @@ type ExampleDraft = {
   page: string;
 };
 
-export default function EditorClient({ initialWord, initialLetter }: Props) {
+export default function EditorClient({ initialWord, initialLetter, initialStatus, initialAssignedTo }: Props) {
   const [word, setWord] = useState<Word>(initialWord);
   const [letter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [lastSavedLemma, setLastSavedLemma] = useState(initialWord.lemma);
-  const [lexicographer] = useState('');
-  const [status] = useState('');
+  const [status, setStatus] = useState<string>(initialStatus || 'draft');
+  const [assignedTo, setAssignedTo] = useState<number | null>(initialAssignedTo || null);
+  const [users, setUsers] = useState<Array<{ id: number; username: string; role: string }>>([]);
 
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const isEditing = (k: string) => editingKey === k;
@@ -46,9 +52,29 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   const [activeExample, setActiveExample] = useState<ActiveExample | null>(null);
   const [exampleDraft, setExampleDraft] = useState<ExampleDraft | null>(null);
 
+  // Fetch users for assignedTo dropdown
+  useEffect(() => {
+    fetch('/api/users')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setUsers(data.data);
+        }
+      })
+      .catch((err) => console.error('Error fetching users:', err));
+  }, []);
+
   // Debounced auto-save
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wordRef = useRef(word);
+  const statusRef = useRef(status);
+  const assignedToRef = useRef(assignedTo);
+
+  // Keep refs up to date
+  useEffect(() => {
+    statusRef.current = status;
+    assignedToRef.current = assignedTo;
+  }, [status, assignedTo]);
 
   // Keep wordRef up to date
   useEffect(() => {
@@ -62,7 +88,11 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       const response = await fetch(`/api/words/${encodeURIComponent(lastSavedLemma)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(wordRef.current),
+        body: JSON.stringify({
+          word: wordRef.current,
+          status: statusRef.current,
+          assignedTo: assignedToRef.current,
+        }),
       });
       if (!response.ok) throw new Error('Error al guardar');
 
@@ -102,7 +132,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [word, autoSave]);
+  }, [word, status, assignedTo, autoSave]);
 
   // ---------- helpers: patch LOCAL ----------
   const patchWordLocal = (patch: Partial<Word>) => {
@@ -332,6 +362,8 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   };
 
   // ---------- UI ----------
+  const hasDefinitions = word.values.length > 0;
+
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <SaveStatusIndicator />
@@ -381,19 +413,45 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
           </div>
 
           {/* selects locales */}
-          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-            <span className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-800">
-              <span className="font-semibold">Asignado a:</span>
-              <span>{lexicographer ? lexicographer : 'Sin asignar'}</span>
-            </span>
-            <span className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-800">
-              <span className="font-semibold">Estado:</span>
-              <span>
-                {status
-                  ? STATUS_OPTIONS.find((option) => option.value === status)?.label || status
-                  : 'Sin estado'}
-              </span>
-            </span>
+          <div className="flex flex-wrap items-center gap-3 text-sm">
+            <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2">
+              <label htmlFor="assignedTo" className="font-semibold text-blue-900">
+                Asignado a:
+              </label>
+              <select
+                id="assignedTo"
+                value={assignedTo ?? ''}
+                onChange={(e) => setAssignedTo(e.target.value ? Number(e.target.value) : null)}
+                className="rounded border-gray-300 bg-white text-sm text-gray-800 focus:border-blue-500 focus:ring-blue-500"
+              >
+                <option value="">Sin asignar</option>
+                {users
+                  .filter((u) => u.role === 'lexicographer' || u.role === 'editor' || u.role === 'admin')
+                  .map((u) => (
+                    <option key={u.id} value={u.id}>
+                      {u.username}
+                    </option>
+                  ))}
+              </select>
+            </div>
+
+            <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2">
+              <label htmlFor="status" className="font-semibold text-blue-900">
+                Estado:
+              </label>
+              <select
+                id="status"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="rounded border-gray-300 bg-white text-sm text-gray-800 focus:border-blue-500 focus:ring-blue-500"
+              >
+                {STATUS_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 
@@ -437,616 +495,629 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
         {/* definiciones */}
         <div className="space-y-16">
-          {word.values.map((def, defIndex) => {
-            const exs = getExamples(def);
-            return (
-              <section
-                key={defIndex}
-                className="relative rounded-2xl border-2 border-blue-300/70 bg-white p-6 pb-16 pl-14 shadow-sm sm:pl-16"
-              >
-                {/* número + origen */}
-                <div className="mt-1 mb-2 flex items-center gap-2">
-                  <span className="bg-duech-blue absolute top-3 left-3 inline-flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold text-white">
-                    {def.number}
-                  </span>
+          {hasDefinitions ? (
+            word.values.map((def, defIndex) => {
+              const exs = getExamples(def);
+              return (
+                <section
+                  key={defIndex}
+                  className="relative rounded-2xl border-2 border-blue-300/70 bg-white p-6 pb-16 pl-14 shadow-sm sm:pl-16"
+                >
+                  {/* número + origen */}
+                  <div className="mt-1 mb-2 flex items-center gap-2">
+                    <span className="bg-duech-blue absolute top-3 left-3 inline-flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold text-white">
+                      {def.number}
+                    </span>
 
-                  {/* ORIGEN */}
-                  {isEditing(`def:${defIndex}:origin`) ? (
-                    <div className="flex items-center gap-2">
+                    {/* ORIGEN */}
+                    {isEditing(`def:${defIndex}:origin`) ? (
+                      <div className="flex items-center gap-2">
+                        <InlineEditable
+                          value={def.origin ?? ''}
+                          editing
+                          saveStrategy="manual"
+                          onChange={(v) => {
+                            patchDefLocal(defIndex, { origin: v ? v : null });
+                            setEditingKey(null);
+                          }}
+                          onCancel={() => setEditingKey(null)}
+                          placeholder="Origen (p. ej. inglés, quechua)"
+                        />
+                      </div>
+                    ) : def.origin ? (
+                      <>
+                        <span className="text-sm text-gray-600">
+                          <span className="font-medium">Origen:</span> {def.origin}
+                        </span>
+                        <button
+                          onClick={() => toggle(`def:${defIndex}:origin`)}
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                          aria-label="Editar origen"
+                          title="Editar origen"
+                        >
+                          <svg
+                            className="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
+                            />
+                          </svg>
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        onClick={() => toggle(`def:${defIndex}:origin`)}
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        + Añadir origen
+                      </button>
+                    )}
+                  </div>
+
+                  {/* categorías */}
+                  <div className="mb-3">
+                    {!def.categories || def.categories.length === 0 ? (
+                      <button
+                        onClick={() => setEditingCategories(defIndex)}
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        + Añadir categorías
+                      </button>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-2">
+                        {def.categories.map((cat, i) => (
+                          <CategoryChip
+                            key={`${cat}-${i}`}
+                            code={cat}
+                            label={GRAMMATICAL_CATEGORIES[cat] || cat}
+                            onRemove={(code) => {
+                              const next = def.categories.filter((c) => c !== code);
+                              patchDefLocal(defIndex, { categories: next });
+                            }}
+                          />
+                        ))}
+
+                        <button
+                          onClick={() => setEditingCategories(defIndex)}
+                          aria-label="Editar categorías"
+                          title="Editar categorías"
+                          className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* remisión */}
+                  <div className="mb-2 flex items-center gap-2">
+                    {isEditing(`def:${defIndex}:remission`) ? (
                       <InlineEditable
-                        value={def.origin ?? ''}
+                        value={def.remission ?? ''}
                         editing
                         saveStrategy="manual"
                         onChange={(v) => {
-                          patchDefLocal(defIndex, { origin: v ? v : null });
+                          patchDefLocal(defIndex, { remission: v ? v : null });
                           setEditingKey(null);
                         }}
                         onCancel={() => setEditingKey(null)}
-                        placeholder="Origen (p. ej. inglés, quechua)"
+                        placeholder="Artículo de remisión"
                       />
-                    </div>
-                  ) : def.origin ? (
-                    <>
-                      <span className="text-sm text-gray-600">
-                        <span className="font-medium">Origen:</span> {def.origin}
-                      </span>
-                      <button
-                        onClick={() => toggle(`def:${defIndex}:origin`)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar origen"
-                        title="Editar origen"
-                      >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                    ) : def.remission ? (
+                      <>
+                        <span className="text-lg text-gray-800">Ver </span>
+                        <Link
+                          href={`/editor/editar/${encodeURIComponent(def.remission)}`}
+                          className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => toggle(`def:${defIndex}:origin`)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir origen
-                    </button>
-                  )}
-                </div>
-
-                {/* categorías */}
-                <div className="mb-3">
-                  {!def.categories || def.categories.length === 0 ? (
-                    <button
-                      onClick={() => setEditingCategories(defIndex)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir categorías
-                    </button>
-                  ) : (
-                    <div className="flex flex-wrap items-center gap-2">
-                      {def.categories.map((cat, i) => (
-                        <CategoryChip
-                          key={`${cat}-${i}`}
-                          code={cat}
-                          label={GRAMMATICAL_CATEGORIES[cat] || cat}
-                          onRemove={(code) => {
-                            const next = def.categories.filter((c) => c !== code);
-                            patchDefLocal(defIndex, { categories: next });
-                          }}
-                        />
-                      ))}
-
-                      <button
-                        onClick={() => setEditingCategories(defIndex)}
-                        aria-label="Editar categorías"
-                        title="Editar categorías"
-                        className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
-                      >
-                        +
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* remisión */}
-                <div className="mb-2 flex items-center gap-2">
-                  {isEditing(`def:${defIndex}:remission`) ? (
-                    <InlineEditable
-                      value={def.remission ?? ''}
-                      editing
-                      saveStrategy="manual"
-                      onChange={(v) => {
-                        patchDefLocal(defIndex, { remission: v ? v : null });
-                        setEditingKey(null);
-                      }}
-                      onCancel={() => setEditingKey(null)}
-                      placeholder="Artículo de remisión"
-                    />
-                  ) : def.remission ? (
-                    <>
-                      <span className="text-lg text-gray-800">Ver </span>
-                      <Link
-                        href={`/editor/editar/${encodeURIComponent(def.remission)}`}
-                        className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
-                      >
-                        {def.remission}
-                      </Link>
+                          {def.remission}
+                        </Link>
+                        <button
+                          onClick={() => toggle(`def:${defIndex}:remission`)}
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                          aria-label="Editar remisión"
+                          title="Editar remisión"
+                        >
+                          <svg
+                            className="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
+                            />
+                          </svg>
+                        </button>
+                      </>
+                    ) : (
                       <button
                         onClick={() => toggle(`def:${defIndex}:remission`)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar remisión"
-                        title="Editar remisión"
+                        className="text-sm text-blue-600 hover:text-blue-800"
                       >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
+                        + Añadir remisión
                       </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => toggle(`def:${defIndex}:remission`)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir remisión
-                    </button>
-                  )}
-                </div>
+                    )}
+                  </div>
 
-                {/* significado */}
-                <div className="mb-4">
-                  {isEditing(`def:${defIndex}:meaning`) ? (
-                    <InlineEditable
-                      as="textarea"
-                      value={def.meaning}
-                      editing
-                      saveStrategy="manual"
-                      onChange={(v) => {
-                        patchDefLocal(defIndex, { meaning: v });
-                        setEditingKey(null);
-                      }}
-                      onCancel={() => setEditingKey(null)}
-                    />
-                  ) : (
-                    <div className="text-xl leading-relaxed text-gray-900">
-                      <MarkdownRenderer content={def.meaning} />
-                      <button
-                        onClick={() => toggle(`def:${defIndex}:meaning`)}
-                        className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar significado"
-                        title="Editar significado"
-                      >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                  {/* significado */}
+                  <div className="mb-4">
+                    {isEditing(`def:${defIndex}:meaning`) ? (
+                      <InlineEditable
+                        as="textarea"
+                        value={def.meaning}
+                        editing
+                        saveStrategy="manual"
+                        onChange={(v) => {
+                          patchDefLocal(defIndex, { meaning: v });
+                          setEditingKey(null);
+                        }}
+                        onCancel={() => setEditingKey(null)}
+                      />
+                    ) : (
+                      <div className="text-xl leading-relaxed text-gray-900">
+                        <MarkdownRenderer content={def.meaning} />
+                        <button
+                          onClick={() => toggle(`def:${defIndex}:meaning`)}
+                          className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                          aria-label="Editar significado"
+                          title="Editar significado"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                          <svg
+                            className="h-6 w-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
-                {/* estilos de uso */}
-                <div className="mb-3">
-                  {!def.styles || def.styles.length === 0 ? (
-                    <button
-                      onClick={() => setEditingStyles(defIndex)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir estilos de uso
-                    </button>
-                  ) : (
-                    <div className="flex flex-wrap items-center gap-2">
-                      {def.styles.map((s) => (
-                        <StyleChip
-                          className="bg-duech-gold inline-block rounded-full px-4 py-2 text-sm font-semibold text-gray-900"
-                          key={s}
-                          code={s}
-                          label={USAGE_STYLES[s] || s}
-                          onRemove={(code) => {
-                            const next = (def.styles || []).filter((x) => x !== code);
-                            patchDefLocal(defIndex, { styles: next.length ? next : null });
-                          }}
-                        />
-                      ))}
-
+                  {/* estilos de uso */}
+                  <div className="mb-3">
+                    {!def.styles || def.styles.length === 0 ? (
                       <button
                         onClick={() => setEditingStyles(defIndex)}
-                        aria-label="Editar estilos de uso"
-                        title="Editar estilos de uso"
-                        className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        + Añadir estilos de uso
+                      </button>
+                    ) : (
+                      <div className="flex flex-wrap items-center gap-2">
+                        {def.styles.map((s) => (
+                          <StyleChip
+                            className="bg-duech-gold inline-block rounded-full px-4 py-2 text-sm font-semibold text-gray-900"
+                            key={s}
+                            code={s}
+                            label={USAGE_STYLES[s] || s}
+                            onRemove={(code) => {
+                              const next = (def.styles || []).filter((x) => x !== code);
+                              patchDefLocal(defIndex, { styles: next.length ? next : null });
+                            }}
+                          />
+                        ))}
+
+                        <button
+                          onClick={() => setEditingStyles(defIndex)}
+                          aria-label="Editar estilos de uso"
+                          title="Editar estilos de uso"
+                          className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* observación */}
+                  <div className="mb-3">
+                    {isEditing(`def:${defIndex}:observation`) ? (
+                      <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-900">
+                        <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                          Observación
+                        </label>
+                        <textarea
+                          value={def.observation ?? ''}
+                          onChange={(event) =>
+                            patchDefLocal(defIndex, {
+                              observation: event.target.value.trim() ? event.target.value : null,
+                            })
+                          }
+                          rows={3}
+                          className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                          placeholder="Añade una observación…"
+                        />
+                        <div className="flex justify-end gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (!def.observation?.trim()) {
+                                patchDefLocal(defIndex, { observation: null });
+                              }
+                              toggle(`def:${defIndex}:observation`);
+                            }}
+                            className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
+                          >
+                            Cerrar
+                          </button>
+                        </div>
+                      </div>
+                    ) : def.observation ? (
+                      <button
+                        type="button"
+                        onClick={() => toggle(`def:${defIndex}:observation`)}
+                        className="w-full rounded-md bg-blue-50 px-4 py-3 text-left text-sm text-blue-800 hover:bg-blue-100"
+                      >
+                        <span className="font-semibold">Observación:</span> {def.observation}
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          patchDefLocal(defIndex, { observation: '' });
+                          toggle(`def:${defIndex}:observation`);
+                        }}
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        + Añadir observación
+                      </button>
+                    )}
+                  </div>
+
+                  {/* ejemplos */}
+                  <div className="mt-4">
+                    <div className="mb-2 flex items-center gap-3">
+                      <h3 className="text-sm font-medium text-gray-900">
+                        Ejemplo{exs.length > 1 ? 's' : ''}
+                      </h3>
+                      <button
+                        onClick={() => handleAddExample(defIndex)}
+                        aria-label="Agregar ejemplo"
+                        title="Agregar ejemplo"
+                        className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 text-blue-600 hover:bg-blue-50"
                       >
                         +
                       </button>
                     </div>
-                  )}
-                </div>
 
-                {/* observación */}
-                <div className="mb-3">
-                  {isEditing(`def:${defIndex}:observation`) ? (
-                    <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-900">
-                      <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                        Observación
-                      </label>
-                      <textarea
-                        value={def.observation ?? ''}
-                        onChange={(event) =>
-                          patchDefLocal(defIndex, {
-                            observation: event.target.value.trim() ? event.target.value : null,
-                          })
-                        }
-                        rows={3}
-                        className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                        placeholder="Añade una observación…"
-                      />
-                      <div className="flex justify-end gap-2">
+                    <div className="space-y-2">
+                      {exs.map((ex, exIndex) => {
+                        const isExampleActive =
+                          activeExample?.defIndex === defIndex && activeExample?.exIndex === exIndex;
+                        const draft = isExampleActive ? exampleDraft : null;
+
+                        return (
+                          <div
+                            key={exIndex}
+                            className="relative rounded-xl border border-blue-100 bg-blue-50/70 p-4 pb-16 ring-1 ring-blue-100 ring-inset"
+                          >
+                            {isExampleActive && draft ? (
+                              <>
+                                <div className="mb-4">
+                                  <label className="mb-1 block text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                                    Texto del ejemplo
+                                  </label>
+                                  <textarea
+                                    autoFocus
+                                    value={draft.value}
+                                    onChange={(event) =>
+                                      setExampleDraft((prev) =>
+                                        prev ? { ...prev, value: event.target.value } : prev
+                                      )
+                                    }
+                                    rows={4}
+                                    className="min-h-[120px] w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                                    placeholder="Escribe el ejemplo..."
+                                  />
+                                </div>
+
+                                <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
+                                  <div>
+                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                                      Autor
+                                    </label>
+                                    <input
+                                      value={draft.author}
+                                      onChange={(event) =>
+                                        setExampleDraft((prev) =>
+                                          prev ? { ...prev, author: event.target.value } : prev
+                                        )
+                                      }
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                                      placeholder="Nombre del autor"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                                      Título
+                                    </label>
+                                    <input
+                                      value={draft.title}
+                                      onChange={(event) =>
+                                        setExampleDraft((prev) =>
+                                          prev ? { ...prev, title: event.target.value } : prev
+                                        )
+                                      }
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                                      placeholder="Título de la obra / artículo"
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                                      Fuente
+                                    </label>
+                                    <input
+                                      value={draft.source}
+                                      onChange={(event) =>
+                                        setExampleDraft((prev) =>
+                                          prev ? { ...prev, source: event.target.value } : prev
+                                        )
+                                      }
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                                      placeholder="Revista, libro, medio..."
+                                    />
+                                  </div>
+
+                                  <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
+                                    <div>
+                                      <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                                        Fecha
+                                      </label>
+                                      <input
+                                        value={draft.date}
+                                        onChange={(event) =>
+                                          setExampleDraft((prev) =>
+                                            prev ? { ...prev, date: event.target.value } : prev
+                                          )
+                                        }
+                                        className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                                        placeholder="1998, s. XIX, etc."
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
+                                        Página
+                                      </label>
+                                      <input
+                                        value={draft.page}
+                                        onChange={(event) =>
+                                          setExampleDraft((prev) =>
+                                            prev ? { ...prev, page: event.target.value } : prev
+                                          )
+                                        }
+                                        className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                                        placeholder="p. 42"
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="absolute right-3 bottom-3 flex gap-2">
+                                  <button
+                                    type="button"
+                                    onClick={saveExampleDraft}
+                                    className="bg-duech-blue inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800"
+                                  >
+                                    Guardar ejemplo
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => closeExampleEditor(activeExample?.isNew ?? false)}
+                                    className="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                                  >
+                                    Cancelar
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <>
+                                <div className="mb-3 text-gray-700">
+                                  <MarkdownRenderer content={ex.value || '*Ejemplo vacío*'} />
+                                </div>
+
+                                {(() => {
+                                  const hasAnyMeta = !!(
+                                    ex.author ||
+                                    ex.title ||
+                                    ex.source ||
+                                    ex.date ||
+                                    ex.page
+                                  );
+                                  if (!hasAnyMeta) return null;
+
+                                  return (
+                                    <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm text-gray-600 md:grid-cols-2">
+                                      {ex.author && (
+                                        <div>
+                                          <span className="font-medium">Autor:</span> {ex.author}
+                                        </div>
+                                      )}
+                                      {ex.title && (
+                                        <div>
+                                          <span className="font-medium">Título:</span> {ex.title}
+                                        </div>
+                                      )}
+                                      {ex.source && (
+                                        <div>
+                                          <span className="font-medium">Fuente:</span> {ex.source}
+                                        </div>
+                                      )}
+                                      {ex.date && (
+                                        <div>
+                                          <span className="font-medium">Fecha:</span> {ex.date}
+                                        </div>
+                                      )}
+                                      {ex.page && (
+                                        <div>
+                                          <span className="font-medium">Página:</span> {ex.page}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
+
+                                <div className="absolute right-3 bottom-3 flex gap-2">
+                                  <button
+                                    onClick={() => openExampleEditor(defIndex, exIndex)}
+                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                                    aria-label="Editar ejemplo"
+                                    title="Editar ejemplo"
+                                  >
+                                    <svg
+                                      className="h-6 w-6"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
+                                      />
+                                    </svg>
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteExample(defIndex, exIndex)}
+                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 hover:bg-red-100"
+                                    aria-label="Eliminar ejemplo"
+                                    title="Eliminar ejemplo"
+                                  >
+                                    <svg
+                                      className="h-6 w-6"
+                                      viewBox="0 0 24 24"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={2}
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
+                                      />
+                                    </svg>
+                                  </button>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* variante */}
+                  <div className="mt-4">
+                    <span className="text-sm font-medium text-gray-900">Variante: </span>
+                    {isEditing(`def:${defIndex}:variant`) ? (
+                      <div className="flex items-center gap-2">
+                        <input
+                          value={def.variant ?? ''}
+                          onChange={(event) =>
+                            patchDefLocal(defIndex, { variant: event.target.value || null })
+                          }
+                          className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                          placeholder="Añade una variante..."
+                        />
                         <button
                           type="button"
-                          onClick={() => {
-                            if (!def.observation?.trim()) {
-                              patchDefLocal(defIndex, { observation: null });
-                            }
-                            toggle(`def:${defIndex}:observation`);
-                          }}
+                          onClick={() => toggle(`def:${defIndex}:variant`)}
                           className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
                         >
-                          Cerrar
+                          Listo
                         </button>
                       </div>
-                    </div>
-                  ) : def.observation ? (
-                    <button
-                      type="button"
-                      onClick={() => toggle(`def:${defIndex}:observation`)}
-                      className="w-full rounded-md bg-blue-50 px-4 py-3 text-left text-sm text-blue-800 hover:bg-blue-100"
-                    >
-                      <span className="font-semibold">Observación:</span> {def.observation}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        patchDefLocal(defIndex, { observation: '' });
-                        toggle(`def:${defIndex}:observation`);
-                      }}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir observación
-                    </button>
-                  )}
-                </div>
-
-                {/* ejemplos */}
-                <div className="mt-4">
-                  <div className="mb-2 flex items-center gap-3">
-                    <h3 className="text-sm font-medium text-gray-900">
-                      Ejemplo{exs.length > 1 ? 's' : ''}
-                    </h3>
-                    <button
-                      onClick={() => handleAddExample(defIndex)}
-                      aria-label="Agregar ejemplo"
-                      title="Agregar ejemplo"
-                      className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 text-blue-600 hover:bg-blue-50"
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    {exs.map((ex, exIndex) => {
-                      const isExampleActive =
-                        activeExample?.defIndex === defIndex && activeExample?.exIndex === exIndex;
-                      const draft = isExampleActive ? exampleDraft : null;
-
-                      return (
-                        <div
-                          key={exIndex}
-                          className="relative rounded-xl border border-blue-100 bg-blue-50/70 p-4 pb-16 ring-1 ring-blue-100 ring-inset"
-                        >
-                          {isExampleActive && draft ? (
-                            <>
-                              <div className="mb-4">
-                                <label className="mb-1 block text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                                  Texto del ejemplo
-                                </label>
-                                <textarea
-                                  autoFocus
-                                  value={draft.value}
-                                  onChange={(event) =>
-                                    setExampleDraft((prev) =>
-                                      prev ? { ...prev, value: event.target.value } : prev
-                                    )
-                                  }
-                                  rows={4}
-                                  className="min-h-[120px] w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                                  placeholder="Escribe el ejemplo..."
-                                />
-                              </div>
-
-                              <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
-                                <div>
-                                  <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                                    Autor
-                                  </label>
-                                  <input
-                                    value={draft.author}
-                                    onChange={(event) =>
-                                      setExampleDraft((prev) =>
-                                        prev ? { ...prev, author: event.target.value } : prev
-                                      )
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                                    placeholder="Nombre del autor"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                                    Título
-                                  </label>
-                                  <input
-                                    value={draft.title}
-                                    onChange={(event) =>
-                                      setExampleDraft((prev) =>
-                                        prev ? { ...prev, title: event.target.value } : prev
-                                      )
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                                    placeholder="Título de la obra / artículo"
-                                  />
-                                </div>
-
-                                <div>
-                                  <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                                    Fuente
-                                  </label>
-                                  <input
-                                    value={draft.source}
-                                    onChange={(event) =>
-                                      setExampleDraft((prev) =>
-                                        prev ? { ...prev, source: event.target.value } : prev
-                                      )
-                                    }
-                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                                    placeholder="Revista, libro, medio..."
-                                  />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
-                                  <div>
-                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                                      Fecha
-                                    </label>
-                                    <input
-                                      value={draft.date}
-                                      onChange={(event) =>
-                                        setExampleDraft((prev) =>
-                                          prev ? { ...prev, date: event.target.value } : prev
-                                        )
-                                      }
-                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                                      placeholder="1998, s. XIX, etc."
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label className="text-xs font-semibold tracking-wide text-blue-900 uppercase">
-                                      Página
-                                    </label>
-                                    <input
-                                      value={draft.page}
-                                      onChange={(event) =>
-                                        setExampleDraft((prev) =>
-                                          prev ? { ...prev, page: event.target.value } : prev
-                                        )
-                                      }
-                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                                      placeholder="p. 42"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="absolute right-3 bottom-3 flex gap-2">
-                                <button
-                                  type="button"
-                                  onClick={saveExampleDraft}
-                                  className="bg-duech-blue inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800"
-                                >
-                                  Guardar ejemplo
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => closeExampleEditor(activeExample?.isNew ?? false)}
-                                  className="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
-                                >
-                                  Cancelar
-                                </button>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="mb-3 text-gray-700">
-                                <MarkdownRenderer content={ex.value || '*Ejemplo vacío*'} />
-                              </div>
-
-                              {(() => {
-                                const hasAnyMeta = !!(
-                                  ex.author ||
-                                  ex.title ||
-                                  ex.source ||
-                                  ex.date ||
-                                  ex.page
-                                );
-                                if (!hasAnyMeta) return null;
-
-                                return (
-                                  <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm text-gray-600 md:grid-cols-2">
-                                    {ex.author && (
-                                      <div>
-                                        <span className="font-medium">Autor:</span> {ex.author}
-                                      </div>
-                                    )}
-                                    {ex.title && (
-                                      <div>
-                                        <span className="font-medium">Título:</span> {ex.title}
-                                      </div>
-                                    )}
-                                    {ex.source && (
-                                      <div>
-                                        <span className="font-medium">Fuente:</span> {ex.source}
-                                      </div>
-                                    )}
-                                    {ex.date && (
-                                      <div>
-                                        <span className="font-medium">Fecha:</span> {ex.date}
-                                      </div>
-                                    )}
-                                    {ex.page && (
-                                      <div>
-                                        <span className="font-medium">Página:</span> {ex.page}
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })()}
-
-                              <div className="absolute right-3 bottom-3 flex gap-2">
-                                <button
-                                  onClick={() => openExampleEditor(defIndex, exIndex)}
-                                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                                  aria-label="Editar ejemplo"
-                                  title="Editar ejemplo"
-                                >
-                                  <svg
-                                    className="h-6 w-6"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                                    />
-                                  </svg>
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteExample(defIndex, exIndex)}
-                                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 hover:bg-red-100"
-                                  aria-label="Eliminar ejemplo"
-                                  title="Eliminar ejemplo"
-                                >
-                                  <svg
-                                    className="h-6 w-6"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
-                                    />
-                                  </svg>
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* variante */}
-                <div className="mt-4">
-                  <span className="text-sm font-medium text-gray-900">Variante: </span>
-                  {isEditing(`def:${defIndex}:variant`) ? (
-                    <div className="flex items-center gap-2">
-                      <input
-                        value={def.variant ?? ''}
-                        onChange={(event) =>
-                          patchDefLocal(defIndex, { variant: event.target.value || null })
-                        }
-                        className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                        placeholder="Añade una variante..."
-                      />
+                    ) : def.variant ? (
                       <button
                         type="button"
                         onClick={() => toggle(`def:${defIndex}:variant`)}
-                        className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
+                        className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
                       >
-                        Listo
+                        {def.variant}
                       </button>
-                    </div>
-                  ) : def.variant ? (
-                    <button
-                      type="button"
-                      onClick={() => toggle(`def:${defIndex}:variant`)}
-                      className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
-                    >
-                      {def.variant}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        patchDefLocal(defIndex, { variant: '' });
-                        toggle(`def:${defIndex}:variant`);
-                      }}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir variante
-                    </button>
-                  )}
-                </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          patchDefLocal(defIndex, { variant: '' });
+                          toggle(`def:${defIndex}:variant`);
+                        }}
+                        className="text-sm text-blue-600 hover:text-blue-800"
+                      >
+                        + Añadir variante
+                      </button>
+                    )}
+                  </div>
 
-                {/* botones agregar/eliminar definición */}
-                <div className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4">
-                  <button
-                    onClick={() => handleAddDefinition(defIndex)}
-                    aria-label="Agregar definición"
-                    title="Agregar definición"
-                    className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                  >
-                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path
-                        d="M12 5v14M5 12h14"
-                        strokeWidth={2.5}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
+                  {/* botones agregar/eliminar definición */}
+                  <div className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4">
+                    <button
+                      onClick={() => handleAddDefinition(defIndex)}
+                      aria-label="Agregar definición"
+                      title="Agregar definición"
+                      className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                    >
+                      <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path
+                          d="M12 5v14M5 12h14"
+                          strokeWidth={2.5}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
 
-                  <button
-                    onClick={() => handleDeleteDefinition(defIndex)}
-                    aria-label="Eliminar definición"
-                    title="Eliminar definición"
-                    className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
-                  >
-                    <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path
-                        d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
-                        strokeWidth={2.2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </section>
-            );
-          })}
+                    <button
+                      onClick={() => handleDeleteDefinition(defIndex)}
+                      aria-label="Eliminar definición"
+                      title="Eliminar definición"
+                      className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
+                    >
+                      <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path
+                          d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
+                          strokeWidth={2.2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </section>
+              );
+            })
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 px-6 py-10 text-center text-gray-600">
+              <p>Esta palabra aún no tiene definiciones.</p>
+              <button
+                type="button"
+                onClick={() => handleAddDefinition()}
+                className="bg-duech-blue rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+              >
+                Añadir definición
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

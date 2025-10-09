@@ -7,7 +7,11 @@ import type { Word, Example } from '@/app/lib/definitions';
 /**
  * Update a word and all its meanings
  */
-export async function updateWordByLemma(prevLemma: string, updatedWord: Word) {
+export async function updateWordByLemma(
+  prevLemma: string,
+  updatedWord: Word,
+  options?: { status?: string; assignedTo?: number | null }
+) {
   // Find the word by lemma
   const existingWord = await db.query.words.findFirst({
     where: eq(words.lemma, prevLemma),
@@ -17,14 +21,24 @@ export async function updateWordByLemma(prevLemma: string, updatedWord: Word) {
     throw new Error(`Word not found: ${prevLemma}`);
   }
 
-  // Update word metadata (lemma, root)
+  // Update word metadata (lemma, root, and optionally status/assignedTo)
+  const updateData: any = {
+    lemma: updatedWord.lemma,
+    root: updatedWord.root || null,
+    updatedAt: new Date(),
+  };
+
+  if (options?.status !== undefined) {
+    updateData.status = options.status;
+  }
+
+  if (options?.assignedTo !== undefined) {
+    updateData.assignedTo = options.assignedTo;
+  }
+
   await db
     .update(words)
-    .set({
-      lemma: updatedWord.lemma,
-      root: updatedWord.root || null,
-      updatedAt: new Date(),
-    })
+    .set(updateData)
     .where(eq(words.id, existingWord.id));
 
   // Delete all existing meanings for this word
@@ -69,16 +83,46 @@ export async function updateWordByLemma(prevLemma: string, updatedWord: Word) {
 /**
  * Create a new word with its meanings
  */
-export async function createWord(newWord: Word, createdBy?: number) {
+interface CreateWordOptions {
+  createdBy?: number | null;
+  assignedTo?: number | null;
+  letter?: string | null;
+  status?: string;
+}
+
+export async function createWord(newWord: Word, options: CreateWordOptions = {}) {
+  // Normalize core fields
+  const normalizedLemma = newWord.lemma.trim();
+  if (!normalizedLemma) {
+    throw new Error('El lema es obligatorio');
+  }
+
+  const normalizedRoot = (newWord.root || '').trim();
+  const requestedLetter = options.letter?.trim();
+  const normalizedLetter = (requestedLetter?.[0] || normalizedLemma[0] || 'a').toLowerCase();
+  const assignedTo = options.assignedTo ?? null;
+  const createdBy = options.createdBy ?? null;
+  const status = options.status ?? 'included';
+
+  // Prevent duplicate lemmas
+  const existing = await db.query.words.findFirst({
+    where: eq(words.lemma, normalizedLemma),
+  });
+
+  if (existing) {
+    throw new Error(`Ya existe una palabra con el lema "${normalizedLemma}"`);
+  }
+
   // Insert the word
   const [wordRecord] = await db
     .insert(words)
     .values({
-      lemma: newWord.lemma,
-      root: newWord.root || null,
-      letter: newWord.lemma[0].toLowerCase(),
-      status: 'draft',
-      createdBy: createdBy || null,
+      lemma: normalizedLemma,
+      root: normalizedRoot || null,
+      letter: normalizedLetter,
+      status,
+      createdBy,
+      assignedTo,
     })
     .returning();
 
@@ -113,7 +157,7 @@ export async function createWord(newWord: Word, createdBy?: number) {
     });
   }
 
-  return { success: true, wordId: wordRecord.id };
+  return { success: true, wordId: wordRecord.id, lemma: normalizedLemma, letter: normalizedLetter };
 }
 
 /**

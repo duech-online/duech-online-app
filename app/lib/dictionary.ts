@@ -99,7 +99,17 @@ export async function searchDictionary(
   try {
     const params = buildFilterParams(filters);
 
-    if (status) params.append('status', status);
+    // Handle status parameter:
+    // - If status is undefined (not passed), it means public search → append '' to indicate "published only"
+    // - If status is '' (empty string), it means editor with no filter → don't append (show all)
+    // - If status has a value, append it to filter by that specific status
+    if (status === undefined) {
+      params.append('status', '');  // Public search: only published
+    } else if (status !== '') {
+      params.append('status', status);  // Specific status selected
+    }
+    // If status is '', don't append anything (editor: show all statuses)
+
     if (assignedTo?.length) params.append('assignedTo', assignedTo.join(','));
 
     params.append('page', page.toString());
