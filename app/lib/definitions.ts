@@ -179,12 +179,12 @@ export const LEXICOGRAPHERS = ['Soledad', 'Sofía'];
 
 // Word states (for editorial workflow)
 export const STATUS_OPTIONS = [
-  { value: 'imp', label: 'Importado' },
-  { value: 'inc', label: 'Incorporado' },
-  { value: 'pre', label: 'Prerredactada' },
-  { value: 'red', label: 'Redactado' },
-  { value: 'rev', label: 'Revisado por comisión' },
-  { value: 'pub', label: 'Publicado' },
-  { value: 'arc', label: 'Arcaico' },
-  { value: 'cuar', label: 'Cuarentena' },
+  { value: 'imported', label: 'Importado' },
+  { value: 'included', label: 'Incorporado' },
+  { value: 'preredacted', label: 'Prerredactada' },
+  { value: 'redacted', label: 'Redactado' },
+  { value: 'reviewed', label: 'Revisado por comisión' },
+  { value: 'published', label: 'Publicado' },
+  { value: 'archaic', label: 'Arcaico' },
+  { value: 'quarantined', label: 'Cuarentena' },
 ];
