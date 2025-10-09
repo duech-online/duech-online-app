@@ -14,7 +14,7 @@ import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
   LEXICOGRAPHERS,
-  STATES,
+  STATUS_OPTIONS,
   type Example,
   type Word,
   type WordDefinition,
@@ -319,9 +319,9 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
               <option value="" disabled>
                 Selecciona un estado
               </option>
-              {STATES.map((st) => (
-                <option key={st} value={st}>
-                  {st}
+              {STATUS_OPTIONS.map((st) => (
+                <option key={st.value} value={st.value}>
+                  {st.label}
                 </option>
               ))}
             </select>

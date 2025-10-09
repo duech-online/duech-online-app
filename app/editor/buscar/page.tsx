@@ -8,11 +8,13 @@ import SelectDropdown from '@/app/ui/select-dropdown';
 import SearchBar from '@/app/ui/search-bar';
 import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
+import { STATUS_OPTIONS } from '@/app/lib/definitions';
 import {
   setEditorSearchFilters,
   getEditorSearchFilters,
   clearEditorSearchFilters,
 } from '@/app/lib/cookies';
+import { ST } from 'next/dist/shared/lib/utils';
 
 interface User {
   id: number;
@@ -26,13 +28,6 @@ interface Option {
   label: string;
 }
 
-const STATUS_OPTIONS: Option[] = [
-  { value: 'draft', label: 'Borrador' },
-  { value: 'in_review', label: 'En revisión' },
-  { value: 'reviewed', label: 'Revisado' },
-  { value: 'rejected', label: 'Rechazado' },
-  { value: 'published', label: 'Publicado' },
-];
 
 type EditorSearchState = {
   query: string;
@@ -528,7 +523,7 @@ function EditorContent() {
                             <div className="flex items-center justify-end gap-3">
                               {isPublished && (
                                 <Link
-                                href={`/ver/${encodeURIComponent(result.word.lemma)}`}
+                                  href={`/ver/${encodeURIComponent(result.word.lemma)}`}
                                   className="text-gray-600 hover:text-gray-900"
                                   title="Ver en diccionario público"
                                 >
