@@ -38,7 +38,7 @@ The app uses a **custom cookie-based authentication** (not NextAuth v5):
 
 - **JWT Implementation**: Custom JWT signing/verification using HMAC SHA-256 (`app/lib/auth.ts`)
 - **Session Cookie**: `duech_session` cookie (httpOnly, 7-day expiration)
-- **Protected Routes**: Middleware (`middleware.ts`) protects `/palabra/*`, `/search`, `/busqueda-avanzada` and their API endpoints
+- **Protected Routes**: Middleware (`middleware.ts`) protects `/ver/*`, `/search`, `/busqueda-avanzada` and their API endpoints
 - **User Storage**: File-based JSON storage (`data/users.json`) with scrypt password hashing (`app/lib/users.ts`)
 - **Server Actions**: `app/lib/actions.ts` contains `authenticate()` and `register()` actions
 - **Demo User**: Fallback to `admin@example.com` / `admin123` (configurable via env vars)

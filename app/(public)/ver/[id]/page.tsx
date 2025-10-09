@@ -105,7 +105,7 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
                         <p className="text-lg text-gray-800">
                           Ver:{' '}
                           <Link
-                            href={`/palabra/${encodeURIComponent(definition.remission)}`}
+                            href={`/ver/${encodeURIComponent(definition.remission)}`}
                             className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                           >
                             {definition.remission}

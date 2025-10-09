@@ -109,7 +109,7 @@ export default function WordOfTheDay() {
       </div>
 
       <Link
-        href={`/palabra/${encodeURIComponent(word.word.lemma)}`}
+        href={`/ver/${encodeURIComponent(word.word.lemma)}`}
         className="bg-duech-gold inline-flex transform items-center rounded-lg px-6 py-3 font-semibold text-gray-900 shadow-md transition-all duration-200 hover:scale-105 hover:bg-yellow-500"
       >
         Ver definición completa

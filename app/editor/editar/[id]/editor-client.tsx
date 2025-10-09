@@ -485,7 +485,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                     <>
                       <span className="text-lg text-gray-800">Ver </span>
                       <Link
-                        href={`/editor/${encodeURIComponent(def.remission)}`}
+                        href={`/editor/editar/${encodeURIComponent(def.remission)}`}
                         className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                       >
                         {def.remission}
