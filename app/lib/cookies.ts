@@ -1,6 +1,6 @@
 'use client';
 
-export interface CocinaSearchFilters {
+export interface EditorSearchFilters {
   query: string;
   selectedCategories: string[];
   selectedStyles: string[];
@@ -10,20 +10,20 @@ export interface CocinaSearchFilters {
   selectedAssignedTo: string[];
 }
 
-const COOKIE_NAME = 'duech_cocina_filters';
+const COOKIE_NAME = 'duech_editor_filters';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
-export function setCocinaSearchFilters(filters: CocinaSearchFilters): void {
+export function setEditorSearchFilters(filters: EditorSearchFilters): void {
   try {
     const serializedFilters = JSON.stringify(filters);
     document.cookie = `${COOKIE_NAME}=${encodeURIComponent(serializedFilters)}; max-age=${COOKIE_MAX_AGE}; path=/; samesite=lax`;
   } catch (error) {
-    console.error('Error setting cocina search filters cookie:', error);
+    console.error('Error setting editor search filters cookie:', error);
   }
 }
 
-export function getCocinaSearchFilters(): CocinaSearchFilters {
-  const defaultFilters: CocinaSearchFilters = {
+export function getEditorSearchFilters(): EditorSearchFilters {
+  const defaultFilters: EditorSearchFilters = {
     query: '',
     selectedCategories: [],
     selectedStyles: [],
@@ -51,7 +51,7 @@ export function getCocinaSearchFilters(): CocinaSearchFilters {
     }
 
     const decodedValue = decodeURIComponent(cookieValue);
-    const parsedFilters = JSON.parse(decodedValue) as CocinaSearchFilters;
+    const parsedFilters = JSON.parse(decodedValue) as EditorSearchFilters;
 
     // Validate the structure
     if (
@@ -68,15 +68,15 @@ export function getCocinaSearchFilters(): CocinaSearchFilters {
 
     return defaultFilters;
   } catch (error) {
-    console.error('Error getting cocina search filters cookie:', error);
+    console.error('Error getting editor search filters cookie:', error);
     return defaultFilters;
   }
 }
 
-export function clearCocinaSearchFilters(): void {
+export function clearEditorSearchFilters(): void {
   try {
     document.cookie = `${COOKIE_NAME}=; max-age=0; path=/; samesite=lax`;
   } catch (error) {
-    console.error('Error clearing cocina search filters cookie:', error);
+    console.error('Error clearing editor search filters cookie:', error);
   }
 }

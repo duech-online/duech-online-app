@@ -9,9 +9,9 @@ import SearchBar from '@/app/ui/search-bar';
 import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
 import {
-  setCocinaSearchFilters,
-  getCocinaSearchFilters,
-  clearCocinaSearchFilters,
+  setEditorSearchFilters,
+  getEditorSearchFilters,
+  clearEditorSearchFilters,
 } from '@/app/lib/cookies';
 
 interface User {
@@ -75,7 +75,7 @@ function EditorContent() {
   const [hasSearched, setHasSearched] = useState(false);
 
   const restoreFromCache = useCallback(() => {
-    const savedFilters = getCocinaSearchFilters();
+    const savedFilters = getEditorSearchFilters();
 
     setSearchState({
       query: savedFilters.query,
@@ -113,7 +113,7 @@ function EditorContent() {
       return;
     }
 
-    setCocinaSearchFilters({
+    setEditorSearchFilters({
       query: searchState.query,
       selectedCategories: searchState.filters.categories,
       selectedStyles: searchState.filters.styles,
@@ -206,7 +206,7 @@ function EditorContent() {
     setSearchState(createDefaultSearchState());
     setResults([]);
     setHasSearched(false);
-    clearCocinaSearchFilters();
+    clearEditorSearchFilters();
   }, []);
 
   const handleAddWord = async () => {
