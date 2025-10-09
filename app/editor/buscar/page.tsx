@@ -508,8 +508,9 @@ function EditorContent() {
                           </td>
                           <td className="whitespace-nowrap px-6 py-4">
                             <div className="text-sm text-gray-500">
-                              {result.word.values.length} definición
-                              {result.word.values.length !== 1 ? 'es' : ''}
+                              {result.word.values.length}
+                              {' '}
+                              definici{result.word.values.length !== 1 ? 'ones' : 'ón'}
                             </div>
                           </td>
                           <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
