@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { db } from '@/app/lib/db'; // ← USA DRIZZLE
-import { users } from '@/app/lib/schema'; // ← IMPORTAR SCHEMA
+import { db } from '@/app/lib/db';
+import { users } from '@/app/lib/schema';
 import { eq } from 'drizzle-orm';
 
 interface LoginRequest {
@@ -16,7 +16,8 @@ interface JWTPayload {
   role: string;
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'ba2957cefdc373a77a269222951e6062';
+const JWT_SECRET = process.env.JWT_SECRET;
+
 
 /**
  * POST /api/auth/login
@@ -27,7 +28,7 @@ export async function POST(request: NextRequest) {
     const body: LoginRequest = await request.json();
     const { username, password } = body;
 
-    // Validar que se recibieron los datos necesarios
+    // validate correct data
     if (!username || !password) {
       return NextResponse.json(
         { error: 'Usuario y contraseña son requeridos' },
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Buscar el usuario en la base de datos usando Drizzle
+    // Search user in database using drizzle
     const userResult = await db
       .select()
       .from(users)
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     const dbUser = userResult[0];
 
-    // Verificar la contraseña bcrypt.hash(password,15)
+    // Verify password,      :bcrypt.hash(password,15) used for example admin/admin123:
     const isPasswordValid = await bcrypt.compare(password, dbUser.passwordHash);
 
 
@@ -62,18 +63,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generar JWT token
+    // Generate JWT Token
     const token = jwt.sign(
       {
         userId: dbUser.id,
         username: dbUser.username,
         role: dbUser.role,
       } as JWTPayload,
-      JWT_SECRET,
+      JWT_SECRET!,
       { expiresIn: '24h' }
     );
 
-    // Retornar datos del usuario y token (sin passwordHash)
+    // Return user data and token (without passwordHash)
     return NextResponse.json({
       success: true,
       token,
