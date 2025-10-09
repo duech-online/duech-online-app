@@ -26,7 +26,7 @@ export default function PublicLayout({
                 <div>
                   <div className="text-duech-gold">DUECh</div>
                   <div className="text-xs font-normal text-gray-200">
-                    Diccionario del Español de Chile
+                    Diccionario del uso del español de Chile
                   </div>
                 </div>
               </Link>

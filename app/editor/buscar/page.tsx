@@ -14,7 +14,6 @@ import {
   getEditorSearchFilters,
   clearEditorSearchFilters,
 } from '@/app/lib/cookies';
-import { ST } from 'next/dist/shared/lib/utils';
 
 interface User {
   id: number;
@@ -22,12 +21,6 @@ interface User {
   email?: string;
   role: string;
 }
-
-interface Option {
-  value: string;
-  label: string;
-}
-
 
 type EditorSearchState = {
   query: string;
