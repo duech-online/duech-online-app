@@ -10,14 +10,6 @@ interface LoginRequest {
   password: string;
 }
 
-interface JWTPayload {
-  userId: number;
-  username: string;
-  role: string;
-}
-
-const JWT_SECRET = process.env.JWT_SECRET;
-
 
 /**
  * POST /api/auth/login
@@ -63,21 +55,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate JWT Token
-    const token = jwt.sign(
-      {
-        userId: dbUser.id,
-        username: dbUser.username,
-        role: dbUser.role,
-      } as JWTPayload,
-      JWT_SECRET!,
-      { expiresIn: '24h' }
-    );
-
     // Return user data and token (without passwordHash)
     return NextResponse.json({
       success: true,
-      token,
       user: {
         id: dbUser.id,
         username: dbUser.username,
