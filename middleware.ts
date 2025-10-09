@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Protect editor routes
-  if (pathname.startsWith('/editor') || pathname.startsWith('/api/editor')) {
+  if (pathname.startsWith('/editor')) {
     // TODO: Add authentication check
     // For now, allow all requests (development mode)
     // Example of what should be added:
@@ -33,5 +33,5 @@ export function middleware(request: NextRequest) {
 
 // Configure which routes use this middleware
 export const config = {
-  matcher: ['/editor/:path*', '/api/editor/:path*'],
+  matcher: ['/editor/:path*'],
 };

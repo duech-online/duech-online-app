@@ -53,7 +53,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   const autoSave = useCallback(async () => {
     setSaveStatus('saving');
     try {
-      const response = await fetch(`/api/editor/words/${encodeURIComponent(lastSavedLemma)}`, {
+      const response = await fetch(`/api/words/${encodeURIComponent(lastSavedLemma)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(wordRef.current),
