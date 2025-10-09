@@ -240,9 +240,10 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   };
 
   // ---------- definiciones ----------
-  const handleAddDefinition = () => {
+  const handleAddDefinition = (insertIndex?: number) => {
+    const baseNumber = insertIndex !== undefined ? insertIndex + 1 : word.values.length + 1;
     const newDef: WordDefinition = {
-      number: word.values.length + 1,
+      number: baseNumber,
       origin: null,
       categories: [],
       remission: null,
@@ -253,7 +254,19 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       variant: null,
       expressions: null,
     };
-    setWord((prev) => ({ ...prev, values: [...prev.values, newDef] }));
+
+    setWord((prev) => {
+      const values = [...prev.values];
+      const insertAt = insertIndex !== undefined ? insertIndex + 1 : values.length;
+      values.splice(insertAt, 0, newDef);
+
+      const renumbered = values.map((def, idx) => ({
+        ...def,
+        number: idx + 1,
+      }));
+
+      return { ...prev, values: renumbered };
+    });
   };
 
   const handleDeleteDefinition = (defIndex: number) => {
@@ -367,36 +380,19 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
           </div>
 
           {/* selects locales */}
-          <div className="flex flex-col gap-2 sm:min-w-[320px]">
-            <select
-              value={lexicographer}
-              onChange={(e) => setLexicographer(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 px-2 text-[13px] focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="" disabled>
-                Selecciona un lexicógrafo
-              </option>
-              {LEXICOGRAPHERS.map((lx) => (
-                <option key={lx} value={lx}>
-                  {lx}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 px-2 text-[13px] focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="" disabled>
-                Selecciona un estado
-              </option>
-              {STATUS_OPTIONS.map((st) => (
-                <option key={st.value} value={st.value}>
-                  {st.label}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+            <span className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-800">
+              <span className="font-semibold">Asignado a:</span>
+              <span>{lexicographer ? lexicographer : 'Sin asignar'}</span>
+            </span>
+            <span className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-800">
+              <span className="font-semibold">Estado:</span>
+              <span>
+                {status
+                  ? STATUS_OPTIONS.find((option) => option.value === status)?.label || status
+                  : 'Sin estado'}
+              </span>
+            </span>
           </div>
         </div>
 
@@ -672,48 +668,52 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
                 {/* observación */}
                 <div className="mb-3">
-                  {def.observation ? (
-                    <div className="rounded-md bg-blue-50 px-4 py-3 text-blue-900">
-                      <span className="font-semibold">Observación: </span>
-                      {isEditing(`def:${defIndex}:observation`) ? (
-                        <InlineEditable
-                          as="textarea"
-                          value={def.observation}
-                          editing
-                          saveStrategy="manual"
-                          onChange={(v) => {
-                            patchDefLocal(defIndex, { observation: v.trim() ? v : null });
-                            setEditingKey(null);
+                  {isEditing(`def:${defIndex}:observation`) ? (
+                    <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-900">
+                      <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                        Observación
+                      </label>
+                      <textarea
+                        value={def.observation ?? ''}
+                        onChange={(event) =>
+                          patchDefLocal(defIndex, {
+                            observation: event.target.value.trim() ? event.target.value : null,
+                          })
+                        }
+                        rows={3}
+                        className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        placeholder="Añade una observación…"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!def.observation?.trim()) {
+                              patchDefLocal(defIndex, { observation: null });
+                            }
+                            toggle(`def:${defIndex}:observation`);
                           }}
-                          onCancel={() => setEditingKey(null)}
-                        />
-                      ) : (
-                        <span>{def.observation}</span>
-                      )}
-                      <button
-                        onClick={() => toggle(`def:${defIndex}:observation`)}
-                        className="ml-2 inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar observación"
-                        title="Editar observación"
-                      >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                          className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
+                          Cerrar
+                        </button>
+                      </div>
                     </div>
+                  ) : def.observation ? (
+                    <button
+                      type="button"
+                      onClick={() => toggle(`def:${defIndex}:observation`)}
+                      className="w-full rounded-md bg-blue-50 px-4 py-3 text-left text-sm text-blue-800 hover:bg-blue-100"
+                    >
+                      <span className="font-semibold">Observación:</span> {def.observation}
+                    </button>
                   ) : (
                     <button
-                      onClick={() => toggle(`def:${defIndex}:observation`)}
+                      type="button"
+                      onClick={() => {
+                        patchDefLocal(defIndex, { observation: '' });
+                        toggle(`def:${defIndex}:observation`);
+                      }}
                       className="text-sm text-blue-600 hover:text-blue-800"
                     >
                       + Añadir observación
@@ -968,54 +968,51 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
                 {/* variante */}
                 <div className="mt-4">
-                  <span className="text-sm font-medium text-gray-900">Variante: </span>
-                  {def.variant ? (
-                    <>
-                      <InlineEditable
-                        value={def.variant}
-                        editing={isEditing(`def:${defIndex}:variant`)}
-                        saveStrategy="manual"
-                        onChange={(v) => {
-                          patchDefLocal(defIndex, { variant: v.trim() ? v : null });
-                          setEditingKey(null);
-                        }}
-                        onCancel={() => setEditingKey(null)}
-                      />
-                      <button
-                        onClick={() => toggle(`def:${defIndex}:variant`)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar variante"
-                        title="Editar variante"
-                      >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => toggle(`def:${defIndex}:variant`)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir variante
-                    </button>
-                  )}
+          <span className="text-sm font-medium text-gray-900">Variante: </span>
+          {isEditing(`def:${defIndex}:variant`) ? (
+            <div className="flex items-center gap-2">
+              <input
+                value={def.variant ?? ''}
+                onChange={(event) =>
+                  patchDefLocal(defIndex, { variant: event.target.value || null })
+                }
+                className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                placeholder="Añade una variante..."
+              />
+              <button
+                type="button"
+                onClick={() => toggle(`def:${defIndex}:variant`)}
+                className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
+              >
+                Listo
+              </button>
+            </div>
+          ) : def.variant ? (
+            <button
+              type="button"
+              onClick={() => toggle(`def:${defIndex}:variant`)}
+              className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
+            >
+              {def.variant}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                patchDefLocal(defIndex, { variant: '' });
+                toggle(`def:${defIndex}:variant`);
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              + Añadir variante
+            </button>
+          )}
                 </div>
 
                 {/* botones agregar/eliminar definición */}
                 <div className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4">
                   <button
-                    onClick={handleAddDefinition}
+                    onClick={() => handleAddDefinition(defIndex)}
                     aria-label="Agregar definición"
                     title="Agregar definición"
                     className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
