@@ -1,19 +1,13 @@
 'use client';
 
-import { useState, useEffect, useCallback, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import Link from 'next/link';
 import Popup from 'reactjs-popup';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import SelectDropdown from '@/app/ui/select-dropdown';
-import FilterPill from '@/app/ui/filter-pill';
-import {
-  getAvailableCategories,
-  getAvailableStyles,
-  getAvailableOrigins,
-  searchDictionary,
-} from '@/app/lib/dictionary';
+import SearchBar from '@/app/ui/search-bar';
+import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
-import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 import {
   setCocinaSearchFilters,
   getCocinaSearchFilters,
@@ -40,15 +34,32 @@ const STATUS_OPTIONS: Option[] = [
   { value: 'published', label: 'Publicado' },
 ];
 
-function EditorContent() {
-  const [query, setQuery] = useState('');
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
-  const [selectedOrigins, setSelectedOrigins] = useState<string[]>([]);
-  const [selectedLetters, setSelectedLetters] = useState<string[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
-  const [selectedAssignedTo, setSelectedAssignedTo] = useState<string[]>([]);
+type EditorSearchState = {
+  query: string;
+  filters: {
+    categories: string[];
+    styles: string[];
+    origins: string[];
+    letters: string[];
+  };
+  status: string;
+  assignedTo: string[];
+};
 
+const createDefaultSearchState = (): EditorSearchState => ({
+  query: '',
+  filters: {
+    categories: [],
+    styles: [],
+    origins: [],
+    letters: [],
+  },
+  status: '',
+  assignedTo: [],
+});
+
+function EditorContent() {
+  const [searchState, setSearchState] = useState<EditorSearchState>(() => createDefaultSearchState());
   const [isInitialized, setIsInitialized] = useState(false);
 
   // For add word modal
@@ -57,112 +68,146 @@ function EditorContent() {
   const [newWordLetter, setNewWordLetter] = useState('');
   const [newWordAssignedTo, setNewWordAssignedTo] = useState<string[]>([]);
 
-  const [availableCategories, setAvailableCategories] = useState<string[]>([]);
-  const [availableStyles, setAvailableStyles] = useState<string[]>([]);
-  const [availableOrigins, setAvailableOrigins] = useState<string[]>([]);
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
 
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const alphabet = 'abcdefghijklmnñopqrstuvwxyz'.split('');
-
-  // Save current filter state to cookies
-  const saveFiltersToCache = useCallback(() => {
-    const filters = {
-      query,
-      selectedCategories,
-      selectedStyles,
-      selectedOrigins,
-      selectedLetters,
-      selectedStatus,
-      selectedAssignedTo,
-    };
-    setCocinaSearchFilters(filters);
-  }, [query, selectedCategories, selectedStyles, selectedOrigins, selectedLetters, selectedStatus, selectedAssignedTo]);
-
-  // Restore state from cookies
-  const restoreFromCache = () => {
+  const restoreFromCache = useCallback(() => {
     const savedFilters = getCocinaSearchFilters();
-    setQuery(savedFilters.query);
-    setSelectedCategories(savedFilters.selectedCategories);
-    setSelectedStyles(savedFilters.selectedStyles);
-    setSelectedOrigins(savedFilters.selectedOrigins);
-    setSelectedLetters(savedFilters.selectedLetters);
-    setSelectedStatus(savedFilters.selectedStatus);
-    setSelectedAssignedTo(savedFilters.selectedAssignedTo);
+
+    setSearchState({
+      query: savedFilters.query,
+      filters: {
+        categories: savedFilters.selectedCategories,
+        styles: savedFilters.selectedStyles,
+        origins: savedFilters.selectedOrigins,
+        letters: savedFilters.selectedLetters,
+      },
+      status: savedFilters.selectedStatus,
+      assignedTo: savedFilters.selectedAssignedTo,
+    });
     setIsInitialized(true);
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      const [cats, styles, origins, usersResponse] = await Promise.all([
-        getAvailableCategories(),
-        getAvailableStyles(),
-        getAvailableOrigins(),
-        fetch('/api/users').then((r) => r.json()),
-      ]);
-
-      setAvailableCategories(cats);
-      setAvailableStyles(styles);
-      setAvailableOrigins(origins);
-      if (usersResponse.success) {
-        setAvailableUsers(usersResponse.data);
-      }
-
-      // Restore state from cookies after options are loaded
-      restoreFromCache();
-    };
-    loadData();
   }, []);
 
-  // Save filters to cookies whenever filter state changes (after initialization)
   useEffect(() => {
-    if (isInitialized) {
-      saveFiltersToCache();
+    const loadUsers = async () => {
+      try {
+        const usersResponse = await fetch('/api/users').then((r) => r.json());
+        if (usersResponse.success) {
+          setAvailableUsers(usersResponse.data);
+        }
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      } finally {
+        restoreFromCache();
+      }
+    };
+
+    loadUsers();
+  }, [restoreFromCache]);
+
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
     }
-  }, [isInitialized, saveFiltersToCache]);
 
-  const handleSearch = async () => {
-    setLoading(true);
-    setHasSearched(true);
+    setCocinaSearchFilters({
+      query: searchState.query,
+      selectedCategories: searchState.filters.categories,
+      selectedStyles: searchState.filters.styles,
+      selectedOrigins: searchState.filters.origins,
+      selectedLetters: searchState.filters.letters,
+      selectedStatus: searchState.status,
+      selectedAssignedTo: searchState.assignedTo,
+    });
+  }, [isInitialized, searchState]);
 
-    try {
-      const searchData = await searchDictionary(
-        {
-          query: query.trim(),
-          categories: selectedCategories,
-          styles: selectedStyles,
-          origins: selectedOrigins,
-          letters: selectedLetters,
+  const handleSearchStateChange = useCallback(
+    ({ query, filters }: { query: string; filters: EditorSearchState['filters'] }) => {
+      setSearchState((prev) => ({
+        ...prev,
+        query,
+        filters: {
+          categories: [...filters.categories],
+          styles: [...filters.styles],
+          origins: [...filters.origins],
+          letters: [...filters.letters],
         },
-        1,
-        1000,
-        selectedStatus,
-        selectedAssignedTo
-      );
+      }));
+    },
+    []
+  );
 
-      setResults(searchData.results);
-    } catch (error) {
-      console.error('Error in search:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const handleStatusChange = useCallback((value: string) => {
+    setSearchState((prev) => ({
+      ...prev,
+      status: value,
+    }));
+  }, []);
 
-  const clearFilters = () => {
-    setQuery('');
-    setSelectedCategories([]);
-    setSelectedStyles([]);
-    setSelectedOrigins([]);
-    setSelectedLetters([]);
-    setSelectedStatus('');
-    setSelectedAssignedTo([]);
+  const handleAssignedChange = useCallback((values: string[]) => {
+    setSearchState((prev) => ({
+      ...prev,
+      assignedTo: values,
+    }));
+  }, []);
+
+  const clearAdditionalFilters = useCallback(() => {
+    setSearchState((prev) => ({
+      ...prev,
+      status: '',
+      assignedTo: [],
+    }));
+  }, []);
+
+  const executeSearch = useCallback(
+    async ({ query, filters }: { query: string; filters: EditorSearchState['filters'] }) => {
+      setLoading(true);
+      setHasSearched(true);
+
+      try {
+        const searchData = await searchDictionary(
+          {
+            query,
+            categories: filters.categories,
+            styles: filters.styles,
+            origins: filters.origins,
+            letters: filters.letters,
+          },
+          1,
+          1000,
+          searchState.status,
+          searchState.assignedTo
+        );
+
+        setResults(searchData.results);
+        setSearchState((prev) => ({
+          ...prev,
+          query,
+          filters: {
+            categories: [...filters.categories],
+            styles: [...filters.styles],
+            origins: [...filters.origins],
+            letters: [...filters.letters],
+          },
+        }));
+      } catch (error) {
+        console.error('Error in search:', error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [searchState.assignedTo, searchState.status]
+  );
+
+  const handleClearAll = useCallback(() => {
+    setSearchState(createDefaultSearchState());
     setResults([]);
     setHasSearched(false);
     clearCocinaSearchFilters();
-  };
+  }, []);
 
   const handleAddWord = async () => {
     if (!newWordLemma.trim()) {
@@ -190,57 +235,69 @@ function EditorContent() {
     }
   };
 
-  const categoryOptions = availableCategories.map((cat) => ({
-    value: cat,
-    label: GRAMMATICAL_CATEGORIES[cat] || cat,
-  }));
+  const userOptions = useMemo(
+    () =>
+      availableUsers
+        .filter((user) => user.role === 'lexicographer')
+        .map((user) => ({
+          value: user.id.toString(),
+          label: user.username,
+        })),
+    [availableUsers]
+  );
 
-  const styleOptions = availableStyles.map((style) => ({
-    value: style,
-    label: USAGE_STYLES[style] || style,
-  }));
+  const hasExtraFilters = searchState.status.length > 0 || searchState.assignedTo.length > 0;
+  const trimmedQuery = searchState.query.trim();
 
-  const originOptions = availableOrigins.map((origin) => ({
-    value: origin,
-    label: origin,
-  }));
+  const canExecuteSearch =
+    trimmedQuery.length > 0 ||
+    searchState.filters.categories.length > 0 ||
+    searchState.filters.styles.length > 0 ||
+    searchState.filters.origins.length > 0 ||
+    searchState.filters.letters.length > 0 ||
+    hasExtraFilters;
 
-  const letterOptions = alphabet.map((letter) => ({
-    value: letter,
-    label: letter.toUpperCase(),
-  }));
+  const hasAnyState =
+    searchState.query.length > 0 ||
+    searchState.filters.categories.length > 0 ||
+    searchState.filters.styles.length > 0 ||
+    searchState.filters.origins.length > 0 ||
+    searchState.filters.letters.length > 0 ||
+    hasExtraFilters;
 
-  const userOptions = availableUsers
-    .filter((user) => user.role === 'lexicographer')
-    .map((user) => ({
-      value: user.id.toString(),
-      label: user.username,
-    }));
-
-  const removeCategoryFilter = (category: string) => {
-    setSelectedCategories((prev) => prev.filter((c) => c !== category));
-  };
-
-  const removeStyleFilter = (style: string) => {
-    setSelectedStyles((prev) => prev.filter((s) => s !== style));
-  };
-
-  const removeOriginFilter = (origin: string) => {
-    setSelectedOrigins((prev) => prev.filter((o) => o !== origin));
-  };
-
-  const removeLetterFilter = (letter: string) => {
-    setSelectedLetters((prev) => prev.filter((l) => l !== letter));
-  };
-
-  const hasActiveFilters =
-    selectedCategories.length > 0 ||
-    selectedStyles.length > 0 ||
-    selectedOrigins.length > 0 ||
-    selectedLetters.length > 0 ||
-    selectedStatus.length > 0 ||
-    selectedAssignedTo.length > 0 ||
-    query;
+  const additionalFiltersConfig = useMemo(
+    () => ({
+      hasActive: hasExtraFilters,
+      onClear: clearAdditionalFilters,
+      render: () => (
+        <>
+          <SelectDropdown
+            label="Estado"
+            options={STATUS_OPTIONS}
+            selectedValue={searchState.status}
+            onChange={handleStatusChange}
+            placeholder="Seleccionar estado"
+          />
+          <MultiSelectDropdown
+            label="Asignado a"
+            options={userOptions}
+            selectedValues={searchState.assignedTo}
+            onChange={handleAssignedChange}
+            placeholder="Seleccionar usuario"
+          />
+        </>
+      ),
+    }),
+    [
+      clearAdditionalFilters,
+      handleAssignedChange,
+      handleStatusChange,
+      hasExtraFilters,
+      searchState.assignedTo,
+      searchState.status,
+      userOptions,
+    ]
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
@@ -339,158 +396,42 @@ function EditorContent() {
 
       {/* Main Search Section */}
       <div className="mb-8 rounded-xl bg-white p-6 shadow-lg">
-        {/* Primary Search Input */}
-        <div className="mb-6">
-          <label className="mb-3 block text-lg font-semibold text-gray-900">
-            Término de búsqueda
-          </label>
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar en lemmas y definiciones..."
-            className="focus:border-duech-blue w-full rounded-lg border-2 border-gray-300 px-4 py-3 text-lg transition-colors focus:outline-none"
-          />
-        </div>
+        <SearchBar
+          placeholder="Buscar en lemmas y definiciones..."
+          initialValue={searchState.query}
+          initialFilters={searchState.filters}
+          onSearch={executeSearch}
+          onStateChange={handleSearchStateChange}
+          onClearAll={handleClearAll}
+          additionalFilters={additionalFiltersConfig}
+          initialAdvancedOpen={
+            searchState.filters.categories.length > 0 ||
+            searchState.filters.styles.length > 0 ||
+            searchState.filters.origins.length > 0 ||
+            searchState.filters.letters.length > 0 ||
+            hasExtraFilters
+          }
+        />
 
-        {/* Quick Filters Row */}
-        <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <MultiSelectDropdown
-            label="Letras"
-            options={letterOptions}
-            selectedValues={selectedLetters}
-            onChange={setSelectedLetters}
-            placeholder="Seleccionar letras"
-          />
-
-          <MultiSelectDropdown
-            label="Orígenes"
-            options={originOptions}
-            selectedValues={selectedOrigins}
-            onChange={setSelectedOrigins}
-            placeholder="Seleccionar orígenes"
-          />
-
-          <MultiSelectDropdown
-            label="Categorías"
-            options={categoryOptions}
-            selectedValues={selectedCategories}
-            onChange={setSelectedCategories}
-            placeholder="Seleccionar categorías"
-          />
-
-          <MultiSelectDropdown
-            label="Estilos"
-            options={styleOptions}
-            selectedValues={selectedStyles}
-            onChange={setSelectedStyles}
-            placeholder="Seleccionar estilos"
-          />
-
-          <SelectDropdown
-            label="Estado"
-            options={STATUS_OPTIONS}
-            selectedValue={selectedStatus}
-            onChange={setSelectedStatus}
-            placeholder="Seleccionar estado"
-          />
-
-          <MultiSelectDropdown
-            label="Asignado a"
-            options={userOptions}
-            selectedValues={selectedAssignedTo}
-            onChange={setSelectedAssignedTo}
-            placeholder="Seleccionar usuario"
-          />
-        </div>
-
-        {/* Active Filters Pills */}
-        {hasActiveFilters && (
-          <div className="mb-6">
-            <div className="mb-2 flex items-center gap-2">
-              <span className="text-sm font-medium text-gray-700">Filtros activos:</span>
-              <button onClick={clearFilters} className="text-duech-blue text-sm hover:underline">
-                Limpiar todos
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {selectedLetters.map((letter) => (
-                <FilterPill
-                  key={letter}
-                  label={letter.toUpperCase()}
-                  value={letter}
-                  onRemove={removeLetterFilter}
-                  variant="letter"
-                />
-              ))}
-              {selectedOrigins.map((origin) => (
-                <FilterPill
-                  key={origin}
-                  label={origin}
-                  value={origin}
-                  onRemove={removeOriginFilter}
-                  variant="origin"
-                />
-              ))}
-              {selectedCategories.map((category) => (
-                <FilterPill
-                  key={category}
-                  label={GRAMMATICAL_CATEGORIES[category] || category}
-                  value={category}
-                  onRemove={removeCategoryFilter}
-                  variant="category"
-                />
-              ))}
-              {selectedStyles.map((style) => (
-                <FilterPill
-                  key={style}
-                  label={USAGE_STYLES[style] || style}
-                  value={style}
-                  onRemove={removeStyleFilter}
-                  variant="style"
-                />
-              ))}
-              {selectedStatus && (
-                <FilterPill
-                  key={selectedStatus}
-                  label={
-                    STATUS_OPTIONS.find((opt) => opt.value === selectedStatus)?.label ||
-                    selectedStatus
-                  }
-                  value={selectedStatus}
-                  onRemove={() => setSelectedStatus('')}
-                  variant="category"
-                />
-              )}
-              {selectedAssignedTo.map((userId) => (
-                <FilterPill
-                  key={userId}
-                  label={userOptions.find((opt) => opt.value === userId)?.label || userId}
-                  value={userId}
-                  onRemove={(value) =>
-                    setSelectedAssignedTo((prev) => prev.filter((id) => id !== value))
-                  }
-                  variant="style"
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="flex gap-3">
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-end">
           <button
-            onClick={handleSearch}
-            disabled={loading}
-            className="bg-duech-blue flex-1 rounded-lg py-3 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60 md:flex-none md:px-8"
+            type="button"
+            onClick={() => {
+              if (!canExecuteSearch) return;
+              executeSearch({ query: trimmedQuery, filters: searchState.filters });
+            }}
+            disabled={!canExecuteSearch || loading}
+            className="bg-duech-blue rounded-lg px-6 py-2 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {loading ? 'Buscando...' : 'Buscar'}
+            {loading ? 'Buscando…' : 'Buscar'}
           </button>
           <button
-            onClick={clearFilters}
-            className="rounded-lg bg-gray-200 px-6 py-3 font-semibold text-gray-800 transition-colors hover:bg-gray-300"
+            type="button"
+            onClick={handleClearAll}
+            disabled={!hasAnyState}
+            className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Limpiar
+            Limpiar búsqueda
           </button>
         </div>
       </div>

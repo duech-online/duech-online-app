@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import FilterPill from '@/app/ui/filter-pill';
@@ -14,11 +14,21 @@ interface SearchBarProps {
   initialFilters?: Partial<SearchFilters>;
   searchPath?: string; // Custom search route, defaults to /search
   initialAdvancedOpen?: boolean; // Whether advanced filters start expanded
+  onSearch?: (state: { query: string; filters: InternalFilters }) => void | Promise<void>;
+  onStateChange?: (state: { query: string; filters: InternalFilters }) => void;
+  onClearAll?: () => void;
+  additionalFilters?: AdditionalFiltersConfig;
 }
 
 type InternalFilters = Required<Omit<SearchFilters, 'query'>>;
 
 type FilterVariant = 'category' | 'style' | 'origin' | 'letter';
+
+interface AdditionalFiltersConfig {
+  hasActive: boolean;
+  onClear?: () => void;
+  render: () => ReactNode;
+}
 
 const LETTER_OPTIONS = 'abcdefghijklmnñopqrstuvwxyz'.split('').map((letter) => ({
   value: letter,
@@ -32,6 +42,24 @@ const EMPTY_FILTERS: InternalFilters = {
   letters: [],
 };
 
+function arraysEqual(current: string[], next: string[]): boolean {
+  if (current === next) return true;
+  if (current.length !== next.length) return false;
+  for (let index = 0; index < current.length; index += 1) {
+    if (current[index] !== next[index]) return false;
+  }
+  return true;
+}
+
+function filtersEqual(a: InternalFilters, b: InternalFilters): boolean {
+  return (
+    arraysEqual(a.categories, b.categories) &&
+    arraysEqual(a.styles, b.styles) &&
+    arraysEqual(a.origins, b.origins) &&
+    arraysEqual(a.letters, b.letters)
+  );
+}
+
 export default function SearchBar({
   placeholder = 'Buscar palabra...',
   className = '',
@@ -39,23 +67,37 @@ export default function SearchBar({
   initialFilters,
   searchPath = '/search',
   initialAdvancedOpen = false,
+  onSearch,
+  onStateChange,
+  onClearAll,
+  additionalFilters,
 }: SearchBarProps) {
   const router = useRouter();
 
   const [query, setQuery] = useState(initialValue);
-  const [filters, setFilters] = useState<InternalFilters>({
+  const [filters, setFilters] = useState<InternalFilters>(() => ({
     categories: initialFilters?.categories ?? [],
     styles: initialFilters?.styles ?? [],
     origins: initialFilters?.origins ?? [],
     letters: initialFilters?.letters ?? [],
-  });
+  }));
   const [availableCategories, setAvailableCategories] = useState<string[]>([]);
   const [availableStyles, setAvailableStyles] = useState<string[]>([]);
   const [availableOrigins, setAvailableOrigins] = useState<string[]>([]);
   const [advancedOpen, setAdvancedOpen] = useState<boolean>(initialAdvancedOpen);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
 
-  const hasActiveFilters = useMemo(
+  const initialCategories = initialFilters?.categories ?? EMPTY_FILTERS.categories;
+  const initialStyles = initialFilters?.styles ?? EMPTY_FILTERS.styles;
+  const initialOrigins = initialFilters?.origins ?? EMPTY_FILTERS.origins;
+  const initialLetters = initialFilters?.letters ?? EMPTY_FILTERS.letters;
+
+  const categoriesSignature = initialCategories.join('|');
+  const stylesSignature = initialStyles.join('|');
+  const originsSignature = initialOrigins.join('|');
+  const lettersSignature = initialLetters.join('|');
+
+  const baseHasActiveFilters = useMemo(
     () =>
       filters.categories.length > 0 ||
       filters.styles.length > 0 ||
@@ -64,27 +106,51 @@ export default function SearchBar({
     [filters]
   );
 
+  const extraFiltersActive = Boolean(additionalFilters?.hasActive);
+  const hasActiveFilters = baseHasActiveFilters || extraFiltersActive;
+
   useEffect(() => {
     setQuery(initialValue);
   }, [initialValue]);
 
   useEffect(() => {
-    setFilters({
-      categories: initialFilters?.categories ?? [],
-      styles: initialFilters?.styles ?? [],
-      origins: initialFilters?.origins ?? [],
-      letters: initialFilters?.letters ?? [],
-    });
-    if (
-      initialFilters &&
-      ((initialFilters.categories && initialFilters.categories.length > 0) ||
-        (initialFilters.styles && initialFilters.styles.length > 0) ||
-        (initialFilters.origins && initialFilters.origins.length > 0) ||
-        (initialFilters.letters && initialFilters.letters.length > 0))
-    ) {
+    const nextFilters: InternalFilters = {
+      categories: initialCategories,
+      styles: initialStyles,
+      origins: initialOrigins,
+      letters: initialLetters,
+    };
+
+    const shouldAutoOpen =
+      initialCategories.length > 0 ||
+      initialStyles.length > 0 ||
+      initialOrigins.length > 0 ||
+      initialLetters.length > 0;
+
+    if (!filtersEqual(filters, nextFilters)) {
+      setFilters(nextFilters);
+    }
+
+    if (shouldAutoOpen) {
       setAdvancedOpen(true);
     }
-  }, [initialFilters]);
+  }, [
+    categoriesSignature,
+    stylesSignature,
+    originsSignature,
+    lettersSignature,
+    filters,
+    initialCategories,
+    initialStyles,
+    initialOrigins,
+    initialLetters,
+  ]);
+
+  useEffect(() => {
+    if (extraFiltersActive) {
+      setAdvancedOpen(true);
+    }
+  }, [extraFiltersActive]);
 
   useEffect(() => {
     let isMounted = true;
@@ -141,31 +207,42 @@ export default function SearchBar({
     [availableOrigins]
   );
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmedQuery = query.trim();
+  const handleSubmit = useCallback(
+    async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const trimmedQuery = query.trim();
 
-    if (!trimmedQuery && !hasActiveFilters) {
-      return;
-    }
+      if (!trimmedQuery && !hasActiveFilters) {
+        return;
+      }
 
-    const params = new URLSearchParams();
-    if (trimmedQuery) params.set('q', trimmedQuery);
-    if (filters.categories.length) params.set('categories', filters.categories.join(','));
-    if (filters.styles.length) params.set('styles', filters.styles.join(','));
-    if (filters.origins.length) params.set('origins', filters.origins.join(','));
-    if (filters.letters.length) params.set('letters', filters.letters.join(','));
+      if (onSearch) {
+        await onSearch({ query: trimmedQuery, filters });
+        return;
+      }
 
-    router.push(`${searchPath}${params.toString() ? `?${params.toString()}` : ''}`);
-  };
+      const params = new URLSearchParams();
+      if (trimmedQuery) params.set('q', trimmedQuery);
+      if (filters.categories.length) params.set('categories', filters.categories.join(','));
+      if (filters.styles.length) params.set('styles', filters.styles.join(','));
+      if (filters.origins.length) params.set('origins', filters.origins.join(','));
+      if (filters.letters.length) params.set('letters', filters.letters.join(','));
+
+      router.push(`${searchPath}${params.toString() ? `?${params.toString()}` : ''}`);
+    },
+    [filters, hasActiveFilters, onSearch, query, router, searchPath]
+  );
 
   const updateFilters = useCallback(<K extends keyof InternalFilters>(key: K, values: string[]) => {
     setFilters((prev) => ({ ...prev, [key]: values }));
   }, []);
 
   const clearFilters = useCallback(() => {
+    setQuery('');
     setFilters({ ...EMPTY_FILTERS });
-  }, []);
+    additionalFilters?.onClear?.();
+    onClearAll?.();
+  }, [additionalFilters, onClearAll]);
 
   const removeFilterValue = useCallback((key: keyof InternalFilters, value: string) => {
     setFilters((prev) => ({
@@ -236,6 +313,16 @@ export default function SearchBar({
       </div>
     );
   };
+
+  useEffect(() => {
+    if (!onStateChange) {
+      return;
+    }
+
+    onStateChange({ query, filters });
+  }, [filters, onStateChange, query]);
+
+  const additionalFiltersContent = additionalFilters?.render?.();
 
   return (
     <form onSubmit={handleSubmit} className={`w-full ${className}`}>
@@ -327,6 +414,10 @@ export default function SearchBar({
                   placeholder="Seleccionar estilos"
                 />
               </div>
+
+              {additionalFiltersContent && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">{additionalFiltersContent}</div>
+              )}
             </div>
           )}
 
