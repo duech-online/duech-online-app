@@ -15,7 +15,7 @@ export async function searchWords(
 }
 
 /**
- * Get a random word for "Lotería de palabras"
+ * Get a random word for "Word of the Day"
  */
 export async function getWordOfTheDay(
   date: Date = new Date()

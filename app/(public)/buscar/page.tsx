@@ -131,7 +131,7 @@ function SearchResults() {
               {results.map((result, index) => (
                 <Link
                   key={`${result.word.lemma}-${index}`}
-                  href={`/palabra/${encodeURIComponent(result.word.lemma)}`}
+                  href={`/ver/${encodeURIComponent(result.word.lemma)}`}
                   className="border-duech-gold card-hover block rounded-xl border-l-4 bg-white p-8 shadow-lg transition-all duration-200 hover:shadow-xl"
                 >
                   <div className="flex items-center justify-between">

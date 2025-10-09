@@ -47,7 +47,7 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
           </li>
           <li className="text-gray-400">/</li>
           <li>
-            <Link href="/search" className="text-blue-600 hover:text-blue-800">
+            <Link href="/buscar" className="text-blue-600 hover:text-blue-800">
               Búsqueda
             </Link>
           </li>
@@ -105,7 +105,7 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
                         <p className="text-lg text-gray-800">
                           Ver:{' '}
                           <Link
-                            href={`/palabra/${encodeURIComponent(definition.remission)}`}
+                            href={`/ver/${encodeURIComponent(definition.remission)}`}
                             className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                           >
                             {definition.remission}
@@ -186,7 +186,7 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
         <div className="mt-8 border-t border-gray-200 pt-6">
           <div className="flex items-center justify-between">
             <Link
-              href="/search"
+              href="/buscar"
               className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
             >
               <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

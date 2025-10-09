@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import '@/app/globals.css';
-import { inter } from '@/app/ui/fonts';
+import { dictionary } from '@/app/ui/fonts';
 
 export const metadata: Metadata = {
-  title: 'Diccionario del Español de Chile',
+  title: 'Diccionario del uso español de Chile',
   description: 'Diccionario del uso del español de Chile - DUECh Online',
 };
 
@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.className}`} style={{ backgroundColor: 'var(--background)' }}>
+      <body className={dictionary.className} style={{ backgroundColor: 'var(--background)' }}>
         {children}
       </body>
     </html>

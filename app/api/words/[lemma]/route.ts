@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWordByLemma } from '@/app/lib/queries';
+import { updateWordByLemma, deleteWordByLemma } from '@/app/lib/editor-mutations';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
+import type { Word } from '@/app/lib/definitions';
 
 export async function GET(
   request: NextRequest,
@@ -44,5 +46,58 @@ export async function GET(
   } catch (error) {
     console.error('Error in word API:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+/**
+ * PUT /api/words/[lemma]
+ * Update a word and its meanings
+ */
+export async function PUT(request: NextRequest, context: { params: Promise<{ lemma: string }> }) {
+  try {
+    const { lemma } = await context.params;
+    const decodedLemma = decodeURIComponent(lemma);
+    const body = await request.json();
+    const updatedWord: Word = body;
+
+    await updateWordByLemma(decodedLemma, updatedWord);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error updating word:', error);
+    return NextResponse.json(
+      {
+        error: 'Error al actualizar la palabra',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/words/[lemma]
+ * Delete a word and its meanings
+ */
+export async function DELETE(
+  request: NextRequest,
+  context: { params: Promise<{ lemma: string }> }
+) {
+  try {
+    const { lemma } = await context.params;
+    const decodedLemma = decodeURIComponent(lemma);
+
+    await deleteWordByLemma(decodedLemma);
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting word:', error);
+    return NextResponse.json(
+      {
+        error: 'Error al eliminar la palabra',
+        details: error instanceof Error ? error.message : String(error),
+      },
+      { status: 500 }
+    );
   }
 }

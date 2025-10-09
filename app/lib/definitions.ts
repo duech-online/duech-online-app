@@ -178,13 +178,13 @@ export const REGIONAL_MARKERS: Record<string, string> = {
 export const LEXICOGRAPHERS = ['Soledad', 'Sofía'];
 
 // Word states (for editorial workflow)
-export const STATES = [
-  'Importada',
-  'Incorporada',
-  'Prerredactada',
-  'Redactado',
-  'Revisado por comisión',
-  'Publicado',
-  'Arcaico',
-  'Cuarentena',
+export const STATUS_OPTIONS = [
+  { value: 'imported', label: 'Importado' },
+  { value: 'included', label: 'Incorporado' },
+  { value: 'preredacted', label: 'Prerredactada' },
+  { value: 'redacted', label: 'Redactado' },
+  { value: 'reviewed', label: 'Revisado por comisión' },
+  { value: 'published', label: 'Publicado' },
+  { value: 'archaic', label: 'Arcaico' },
+  { value: 'quarantined', label: 'Cuarentena' },
 ];

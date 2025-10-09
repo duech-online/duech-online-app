@@ -6,11 +6,17 @@ MVP web application for the Dictionary of Chilean Spanish Usage (DUECh).
 
 This web application allows exploring and searching words from Chilean Spanish, including chileanisms, idioms, and expressions typical of the country. The project is designed with a modular architecture to facilitate future integration with Neo4j.
 
+The platform now ships with two experiences:
+
+- **Public dictionary** under `/buscar` and `/ver/[id]`
+- **Editor workspace** under `/editor/buscar` and `/editor/editar/[id]` (rewritten automatically when visiting `http://editor.localhost:3000`)
+
 ## Features
 
-- **Quick search**: Search words by lemma or content in definitions
+- **Quick search**: Search words by lemma or content in definitions (`/buscar`)
 - **Word lottery**: Discover a random word every time you visit the main page
 - **Advanced search**: Filter by grammatical categories, usage styles, origin, and initial letter
+- **Editor tools**: Manage dictionary entries through the `/editor/buscar` dashboard with additional filters (status, assigned lexicographer) and `/editor/editar/[id]` detail pages
 - **Detailed visualization**: Explore complete definitions with examples, variants, and related expressions
 - **Responsive design**: Interface optimized for mobile and desktop devices
 
@@ -55,20 +61,24 @@ npm run start
 ```
 duech-online-app/
 ├── app/                     # Pages and routes (App Router)
-│   ├── page.tsx            # Main page
+│   ├── (public)/           # Public dictionary experience
+│   │   ├── page.tsx        # Home page
+│   │   ├── buscar/page.tsx # Public search results
+│   │   └── ver/[id]/page.tsx # Public word detail
+│   ├── editor/             # Authenticated editor workspace
+│   │   ├── page.tsx        # Redirect to /editor/buscar
+│   │   ├── buscar/page.tsx # Editor search with extra filters
+│   │   └── editar/[id]/    # Editor detail editing UI
 │   ├── api/                # API routes
 │   │   ├── metadata/       # Metadata API endpoint
 │   │   ├── search/         # Search API endpoints
 │   │   └── words/          # Words API endpoints
-│   ├── search/             # Search results page
-│   ├── palabra/[id]/       # Word detail page
-│   ├── busqueda-avanzada/  # Advanced search page
 │   ├── recursos/           # Resources page
 │   └── acerca/             # About page
-├── components/             # Reusable components
-│   ├── SearchBar.tsx      # Search bar component
-│   ├── WordOfTheDay.tsx   # Random word component
-│   └── MarkdownRenderer.tsx # Markdown rendering component
+├── app/ui/                 # Reusable UI components
+│   ├── search-bar.tsx      # Search bar component
+│   ├── word-of-the-day.tsx # Random word component
+│   └── markdown-renderer.tsx # Markdown rendering component
 ├── lib/                    # Utilities and business logic
 │   ├── db.ts              # Database connection (Drizzle ORM)
 │   ├── schema.ts          # Database schema definitions
@@ -92,6 +102,8 @@ The application includes several API endpoints:
 - `/api/words/[lemma]` - Get specific word by lemma
 - `/api/metadata` - Get dictionary metadata
 
+> **Tip:** To access the editor interface via subdomain, add `127.0.0.1 editor.localhost` to your hosts file and visit `http://editor.localhost:3000`. Middleware rewrites the request to `/editor/buscar`.
+
 ## Future Development
 
 - Integration with Neo4j database for semantic relationships
@@ -111,6 +123,8 @@ The application includes several API endpoints:
 ## Authentication
 
 All dictionary features are available without authentication. The previous cookie-based login flow has been removed so the application can be explored freely.
+
+The editor search persists filter state in the `duech_editor_filters` cookie for convenience.
 
 ## Contributing
 

@@ -26,7 +26,7 @@ export default function PublicLayout({
                 <div>
                   <div className="text-duech-gold">DUECh</div>
                   <div className="text-xs font-normal text-gray-200">
-                    Diccionario del Español de Chile
+                    Diccionario del uso del español de Chile
                   </div>
                 </div>
               </Link>
@@ -41,7 +41,7 @@ export default function PublicLayout({
                 <span className="hover:text-yellow-300">Inicio</span>
               </Link>
               <Link
-                href="/search"
+                href="/buscar"
                 className="text-lg font-medium transition-colors"
                 style={{ color: '#ffffff' }}
               >

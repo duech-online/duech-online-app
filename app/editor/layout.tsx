@@ -13,7 +13,7 @@ export default function EditorLayout({
           <div className="flex h-20 items-center justify-between">
             <div className="flex items-center">
               <Link
-                href="/editor"
+                href="/editor/buscar"
                 className="hover:text-duech-gold flex items-center gap-4 text-2xl font-bold text-white transition-colors"
               >
                 <Image
@@ -34,7 +34,7 @@ export default function EditorLayout({
 
             <div className="flex items-center space-x-8">
               <Link
-                href="/editor"
+                href="/editor/buscar"
                 className="text-lg font-medium transition-colors"
                 style={{ color: '#ffffff' }}
               >

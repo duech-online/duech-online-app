@@ -25,7 +25,7 @@ export default function WordOfTheDay() {
         console.error('WordOfTheDay load error:', err);
         if (!active) return;
         const message =
-          err instanceof Error ? err.message : 'No pudimos cargar una palabra aleatoria.';
+          err instanceof Error ? err.message : 'No pudimos cargar la palabra del día.';
         setWord(null);
         setError(message);
       } finally {
@@ -85,7 +85,7 @@ export default function WordOfTheDay() {
             d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
           />
         </svg>
-        Lotería de palabras
+        Palabra del Día
       </h2>
 
       <div className="mb-6">
@@ -109,7 +109,7 @@ export default function WordOfTheDay() {
       </div>
 
       <Link
-        href={`/palabra/${encodeURIComponent(word.word.lemma)}`}
+        href={`/ver/${encodeURIComponent(word.word.lemma)}`}
         className="bg-duech-gold inline-flex transform items-center rounded-lg px-6 py-3 font-semibold text-gray-900 shadow-md transition-all duration-200 hover:scale-105 hover:bg-yellow-500"
       >
         Ver definición completa

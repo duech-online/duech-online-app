@@ -3,18 +3,18 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import InlineEditable from '@/app/ui/editor/inline-editable';
+import InlineEditable from '@/app/ui/inline-editable';
 import {
   CategorySelector,
   StyleSelector,
   CategoryChip,
   StyleChip,
-} from '@/app/ui/editor/edit-controls';
+} from '@/app/ui/edit-controls';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
   LEXICOGRAPHERS,
-  STATES,
+  STATUS_OPTIONS,
   type Example,
   type Word,
   type WordDefinition,
@@ -24,11 +24,24 @@ type Props = { initialWord: Word; initialLetter: string };
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
+type ActiveExample = { defIndex: number; exIndex: number; isNew?: boolean };
+
+type ExampleDraft = {
+  value: string;
+  author: string;
+  title: string;
+  source: string;
+  date: string;
+  page: string;
+};
+
 export default function EditorClient({ initialWord, initialLetter }: Props) {
   const [word, setWord] = useState<Word>(initialWord);
   const [letter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [lastSavedLemma, setLastSavedLemma] = useState(initialWord.lemma);
+  const [lexicographer, setLexicographer] = useState('');
+  const [status, setStatus] = useState('');
 
   const [editingKey, setEditingKey] = useState<string | null>(null);
   const isEditing = (k: string) => editingKey === k;
@@ -36,11 +49,10 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
   const [editingCategories, setEditingCategories] = useState<number | null>(null);
   const [editingStyles, setEditingStyles] = useState<number | null>(null);
+  const [activeExample, setActiveExample] = useState<ActiveExample | null>(null);
+  const [exampleDraft, setExampleDraft] = useState<ExampleDraft | null>(null);
 
-  const [lexicographer, setLexicographer] = useState('');
-  const [status, setStatus] = useState('');
-
-  // Debounced auto-save
+// Debounced auto-save
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wordRef = useRef(word);
 
@@ -53,7 +65,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
   const autoSave = useCallback(async () => {
     setSaveStatus('saving');
     try {
-      const response = await fetch(`/api/editor/words/${encodeURIComponent(lastSavedLemma)}`, {
+      const response = await fetch(`/api/words/${encodeURIComponent(lastSavedLemma)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(wordRef.current),
@@ -138,10 +150,73 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
     });
   };
 
+  const toExampleDraft = (example: Example): ExampleDraft => ({
+    value: example.value ?? '',
+    author: example.author ?? '',
+    title: example.title ?? '',
+    source: example.source ?? '',
+    date: example.date ?? '',
+    page: example.page ?? '',
+  });
+
+  const fromExampleDraft = (draft: ExampleDraft): Example => {
+    const sanitize = (value: string) => value.trim();
+    const base: Example = {
+      value: sanitize(draft.value),
+    };
+
+    const author = sanitize(draft.author);
+    const title = sanitize(draft.title);
+    const source = sanitize(draft.source);
+    const date = sanitize(draft.date);
+    const page = sanitize(draft.page);
+
+    if (author) base.author = author;
+    if (title) base.title = title;
+    if (source) base.source = source;
+    if (date) base.date = date;
+    if (page) base.page = page;
+
+    return base;
+  };
+
+  const openExampleEditor = (defIndex: number, exIndex: number, isNew = false) => {
+    const arr = getExamples(word.values[defIndex]);
+    const current = arr[exIndex] ?? emptyExample();
+    setActiveExample({ defIndex, exIndex, isNew });
+    setExampleDraft(toExampleDraft(current));
+  };
+
+  const closeExampleEditor = (shouldDiscardNew = false) => {
+    if (shouldDiscardNew && activeExample?.isNew) {
+      const arr = getExamples(word.values[activeExample.defIndex]);
+      setExamples(
+        activeExample.defIndex,
+        arr.filter((_, index) => index !== activeExample.exIndex)
+      );
+    }
+    setActiveExample(null);
+    setExampleDraft(null);
+  };
+
+  const saveExampleDraft = () => {
+    if (!activeExample || !exampleDraft) {
+      closeExampleEditor();
+      return;
+    }
+
+    const arr = getExamples(word.values[activeExample.defIndex]);
+    const updated = [...arr];
+    updated[activeExample.exIndex] = fromExampleDraft(exampleDraft);
+    setExamples(activeExample.defIndex, updated);
+    closeExampleEditor();
+  };
+
   const handleAddExample = (defIndex: number) => {
     const arr = getExamples(word.values[defIndex]);
-    setExamples(defIndex, [...arr, emptyExample()]);
-    setEditingKey(`def:${defIndex}:ex:${arr.length}`);
+    const newExample = emptyExample();
+    setExamples(defIndex, [...arr, newExample]);
+    openExampleEditor(defIndex, arr.length, true);
   };
 
   const handleDeleteExample = (defIndex: number, exIndex: number) => {
@@ -154,23 +229,21 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       defIndex,
       arr.filter((_, i) => i !== exIndex)
     );
-  };
 
-  const updateExampleField = (
-    defIndex: number,
-    exIndex: number,
-    field: keyof Example,
-    val: string | null
-  ) => {
-    const arr = getExamples(word.values[defIndex]);
-    arr[exIndex] = { ...arr[exIndex], [field]: val && String(val).length ? val : undefined };
-    setExamples(defIndex, arr);
+    if (activeExample && activeExample.defIndex === defIndex) {
+      if (activeExample.exIndex === exIndex) {
+        closeExampleEditor();
+      } else if (activeExample.exIndex > exIndex) {
+        setActiveExample({ ...activeExample, exIndex: activeExample.exIndex - 1 });
+      }
+    }
   };
 
   // ---------- definiciones ----------
-  const handleAddDefinition = () => {
+  const handleAddDefinition = (insertIndex?: number) => {
+    const baseNumber = insertIndex !== undefined ? insertIndex + 1 : word.values.length + 1;
     const newDef: WordDefinition = {
-      number: word.values.length + 1,
+      number: baseNumber,
       origin: null,
       categories: [],
       remission: null,
@@ -181,7 +254,19 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
       variant: null,
       expressions: null,
     };
-    setWord((prev) => ({ ...prev, values: [...prev.values, newDef] }));
+
+    setWord((prev) => {
+      const values = [...prev.values];
+      const insertAt = insertIndex !== undefined ? insertIndex + 1 : values.length;
+      values.splice(insertAt, 0, newDef);
+
+      const renumbered = values.map((def, idx) => ({
+        ...def,
+        number: idx + 1,
+      }));
+
+      return { ...prev, values: renumbered };
+    });
   };
 
   const handleDeleteDefinition = (defIndex: number) => {
@@ -295,36 +380,19 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
           </div>
 
           {/* selects locales */}
-          <div className="flex flex-col gap-2 sm:min-w-[320px]">
-            <select
-              value={lexicographer}
-              onChange={(e) => setLexicographer(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 px-2 text-[13px] focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="" disabled>
-                Selecciona un lexicógrafo
-              </option>
-              {LEXICOGRAPHERS.map((lx) => (
-                <option key={lx} value={lx}>
-                  {lx}
-                </option>
-              ))}
-            </select>
-
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="h-8 w-full rounded-md border border-gray-300 px-2 text-[13px] focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-            >
-              <option value="" disabled>
-                Selecciona un estado
-              </option>
-              {STATES.map((st) => (
-                <option key={st} value={st}>
-                  {st}
-                </option>
-              ))}
-            </select>
+          <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
+            <span className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-800">
+              <span className="font-semibold">Asignado a:</span>
+              <span>{lexicographer ? lexicographer : 'Sin asignar'}</span>
+            </span>
+            <span className="flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-blue-800">
+              <span className="font-semibold">Estado:</span>
+              <span>
+                {status
+                  ? STATUS_OPTIONS.find((option) => option.value === status)?.label || status
+                  : 'Sin estado'}
+              </span>
+            </span>
           </div>
         </div>
 
@@ -485,7 +553,7 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
                     <>
                       <span className="text-lg text-gray-800">Ver </span>
                       <Link
-                        href={`/editor/${encodeURIComponent(def.remission)}`}
+                        href={`/editor/editar/${encodeURIComponent(def.remission)}`}
                         className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                       >
                         {def.remission}
@@ -600,48 +668,52 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
                 {/* observación */}
                 <div className="mb-3">
-                  {def.observation ? (
-                    <div className="rounded-md bg-blue-50 px-4 py-3 text-blue-900">
-                      <span className="font-semibold">Observación: </span>
-                      {isEditing(`def:${defIndex}:observation`) ? (
-                        <InlineEditable
-                          as="textarea"
-                          value={def.observation}
-                          editing
-                          saveStrategy="manual"
-                          onChange={(v) => {
-                            patchDefLocal(defIndex, { observation: v.trim() ? v : null });
-                            setEditingKey(null);
+                  {isEditing(`def:${defIndex}:observation`) ? (
+                    <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-blue-900">
+                      <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                        Observación
+                      </label>
+                      <textarea
+                        value={def.observation ?? ''}
+                        onChange={(event) =>
+                          patchDefLocal(defIndex, {
+                            observation: event.target.value.trim() ? event.target.value : null,
+                          })
+                        }
+                        rows={3}
+                        className="w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        placeholder="Añade una observación…"
+                      />
+                      <div className="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!def.observation?.trim()) {
+                              patchDefLocal(defIndex, { observation: null });
+                            }
+                            toggle(`def:${defIndex}:observation`);
                           }}
-                          onCancel={() => setEditingKey(null)}
-                        />
-                      ) : (
-                        <span>{def.observation}</span>
-                      )}
-                      <button
-                        onClick={() => toggle(`def:${defIndex}:observation`)}
-                        className="ml-2 inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar observación"
-                        title="Editar observación"
-                      >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
+                          className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
+                          Cerrar
+                        </button>
+                      </div>
                     </div>
+                  ) : def.observation ? (
+                    <button
+                      type="button"
+                      onClick={() => toggle(`def:${defIndex}:observation`)}
+                      className="w-full rounded-md bg-blue-50 px-4 py-3 text-left text-sm text-blue-800 hover:bg-blue-100"
+                    >
+                      <span className="font-semibold">Observación:</span> {def.observation}
+                    </button>
                   ) : (
                     <button
-                      onClick={() => toggle(`def:${defIndex}:observation`)}
+                      type="button"
+                      onClick={() => {
+                        patchDefLocal(defIndex, { observation: '' });
+                        toggle(`def:${defIndex}:observation`);
+                      }}
                       className="text-sm text-blue-600 hover:text-blue-800"
                     >
                       + Añadir observación
@@ -667,197 +739,227 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
                   <div className="space-y-2">
                     {exs.map((ex, exIndex) => {
-                      const key = `def:${defIndex}:ex:${exIndex}`;
-                      const editing = isEditing(key);
+                      const isExampleActive =
+                        activeExample?.defIndex === defIndex && activeExample?.exIndex === exIndex;
+                      const draft = isExampleActive ? exampleDraft : null;
+
                       return (
                         <div
                           key={exIndex}
                           className="relative rounded-xl border border-blue-100 bg-blue-50/70 p-4 pb-16 ring-1 ring-blue-100 ring-inset"
                         >
-                          {/* texto del ejemplo */}
-                          <div className="mb-3 text-gray-700">
-                            {editing ? (
-                              <InlineEditable
-                                as="textarea"
-                                value={ex.value || ''}
-                                editing
-                                saveStrategy="manual"
-                                onChange={(v) => {
-                                  updateExampleField(defIndex, exIndex, 'value', v);
-                                  setEditingKey(null);
-                                }}
-                                onCancel={() => setEditingKey(null)}
-                                placeholder="*Ejemplo*"
-                              />
-                            ) : (
-                              <MarkdownRenderer content={ex.value || '*Ejemplo vacío*'} />
-                            )}
-                          </div>
-
-                          {/* metadatos: se muestran solo si existen; en edición se muestran todos */}
-                          {(() => {
-                            const hasAnyMeta = !!(
-                              ex.author ||
-                              ex.title ||
-                              ex.source ||
-                              ex.date ||
-                              ex.page
-                            );
-                            if (!hasAnyMeta && !editing) return null;
-
-                            return (
-                              <div className="grid grid-cols-1 gap-x-6 gap-y-2 text-sm text-gray-600 md:grid-cols-2">
-                                {(editing || ex.author) && (
-                                  <div>
-                                    <span className="font-medium">Autor:</span>{' '}
-                                    {editing ? (
-                                      <InlineEditable
-                                        value={ex.author ?? ''}
-                                        editing
-                                        saveStrategy="manual"
-                                        onChange={(v) => {
-                                          updateExampleField(defIndex, exIndex, 'author', v);
-                                          setEditingKey(null);
-                                        }}
-                                        onCancel={() => setEditingKey(null)}
-                                        placeholder=""
-                                      />
-                                    ) : (
-                                      <span>{ex.author}</span>
-                                    )}
-                                  </div>
-                                )}
-
-                                {(editing || ex.title) && (
-                                  <div>
-                                    <span className="font-medium">Título:</span>{' '}
-                                    {editing ? (
-                                      <InlineEditable
-                                        value={ex.title ?? ''}
-                                        editing
-                                        saveStrategy="manual"
-                                        onChange={(v) => {
-                                          updateExampleField(defIndex, exIndex, 'title', v);
-                                          setEditingKey(null);
-                                        }}
-                                        onCancel={() => setEditingKey(null)}
-                                        placeholder=""
-                                      />
-                                    ) : (
-                                      <span>{ex.title}</span>
-                                    )}
-                                  </div>
-                                )}
-
-                                {(editing || ex.source) && (
-                                  <div>
-                                    <span className="font-medium">Fuente:</span>{' '}
-                                    {editing ? (
-                                      <InlineEditable
-                                        value={ex.source ?? ''}
-                                        editing
-                                        saveStrategy="manual"
-                                        onChange={(v) => {
-                                          updateExampleField(defIndex, exIndex, 'source', v);
-                                          setEditingKey(null);
-                                        }}
-                                        onCancel={() => setEditingKey(null)}
-                                        placeholder=""
-                                      />
-                                    ) : (
-                                      <span>{ex.source}</span>
-                                    )}
-                                  </div>
-                                )}
-
-                                {(editing || ex.date) && (
-                                  <div>
-                                    <span className="font-medium">Fecha:</span>{' '}
-                                    {editing ? (
-                                      <InlineEditable
-                                        value={ex.date ?? ''}
-                                        editing
-                                        saveStrategy="manual"
-                                        onChange={(v) => {
-                                          updateExampleField(defIndex, exIndex, 'date', v);
-                                          setEditingKey(null);
-                                        }}
-                                        onCancel={() => setEditingKey(null)}
-                                        placeholder=""
-                                      />
-                                    ) : (
-                                      <span>{ex.date}</span>
-                                    )}
-                                  </div>
-                                )}
-
-                                {(editing || ex.page) && (
-                                  <div>
-                                    <span className="font-medium">Página:</span>{' '}
-                                    {editing ? (
-                                      <InlineEditable
-                                        value={ex.page ? String(ex.page) : ''}
-                                        editing
-                                        saveStrategy="manual"
-                                        onChange={(v) => {
-                                          updateExampleField(defIndex, exIndex, 'page', v);
-                                          setEditingKey(null);
-                                        }}
-                                        onCancel={() => setEditingKey(null)}
-                                        placeholder=""
-                                      />
-                                    ) : (
-                                      <span>{ex.page}</span>
-                                    )}
-                                  </div>
-                                )}
+                          {isExampleActive && draft ? (
+                            <>
+                              <div className="mb-4">
+                                <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                  Texto del ejemplo
+                                </label>
+                                <textarea
+                                  autoFocus
+                                  value={draft.value}
+                                  onChange={(event) =>
+                                    setExampleDraft((prev) =>
+                                      prev ? { ...prev, value: event.target.value } : prev
+                                    )
+                                  }
+                                  rows={4}
+                                  className="min-h-[120px] w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                  placeholder="Escribe el ejemplo..."
+                                />
                               </div>
-                            );
-                          })()}
 
-                          {/* acciones abajo a la derecha */}
-                          <div className="absolute right-3 bottom-3 flex gap-2">
-                            <button
-                              onClick={() => toggle(key)}
-                              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                              aria-label="Editar ejemplo"
-                              title="Editar ejemplo"
-                            >
-                              <svg
-                                className="h-6 w-6"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                                />
-                              </svg>
-                            </button>
-                            <button
-                              onClick={() => handleDeleteExample(defIndex, exIndex)}
-                              className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 hover:bg-red-100"
-                              aria-label="Eliminar ejemplo"
-                              title="Eliminar ejemplo"
-                            >
-                              <svg
-                                className="h-6 w-6"
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
-                                />
-                              </svg>
-                            </button>
-                          </div>
+                              <div className="grid grid-cols-1 gap-3 text-sm md:grid-cols-2">
+                                <div>
+                                  <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                    Autor
+                                  </label>
+                                  <input
+                                    value={draft.author}
+                                    onChange={(event) =>
+                                      setExampleDraft((prev) =>
+                                        prev ? { ...prev, author: event.target.value } : prev
+                                      )
+                                    }
+                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    placeholder="Nombre del autor"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                    Título
+                                  </label>
+                                  <input
+                                    value={draft.title}
+                                    onChange={(event) =>
+                                      setExampleDraft((prev) =>
+                                        prev ? { ...prev, title: event.target.value } : prev
+                                      )
+                                    }
+                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    placeholder="Título de la obra / artículo"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                    Fuente
+                                  </label>
+                                  <input
+                                    value={draft.source}
+                                    onChange={(event) =>
+                                      setExampleDraft((prev) =>
+                                        prev ? { ...prev, source: event.target.value } : prev
+                                      )
+                                    }
+                                    className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                    placeholder="Revista, libro, medio..."
+                                  />
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-3 md:grid-cols-2">
+                                  <div>
+                                    <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                      Fecha
+                                    </label>
+                                    <input
+                                      value={draft.date}
+                                      onChange={(event) =>
+                                        setExampleDraft((prev) =>
+                                          prev ? { ...prev, date: event.target.value } : prev
+                                        )
+                                      }
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                      placeholder="1998, s. XIX, etc."
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="text-xs font-semibold uppercase tracking-wide text-blue-900">
+                                      Página
+                                    </label>
+                                    <input
+                                      value={draft.page}
+                                      onChange={(event) =>
+                                        setExampleDraft((prev) =>
+                                          prev ? { ...prev, page: event.target.value } : prev
+                                        )
+                                      }
+                                      className="mt-1 w-full rounded-lg border border-blue-200 bg-white px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                      placeholder="p. 42"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="absolute right-3 bottom-3 flex gap-2">
+                                <button
+                                  type="button"
+                                  onClick={saveExampleDraft}
+                                  className="inline-flex items-center rounded-lg bg-duech-blue px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800"
+                                >
+                                  Guardar ejemplo
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => closeExampleEditor(activeExample?.isNew ?? false)}
+                                  className="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                                >
+                                  Cancelar
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="mb-3 text-gray-700">
+                                <MarkdownRenderer content={ex.value || '*Ejemplo vacío*'} />
+                              </div>
+
+                              {(() => {
+                                const hasAnyMeta = !!(
+                                  ex.author ||
+                                  ex.title ||
+                                  ex.source ||
+                                  ex.date ||
+                                  ex.page
+                                );
+                                if (!hasAnyMeta) return null;
+
+                                return (
+                                  <div className="grid grid-cols-1 gap-x-6 gap-y-1 text-sm text-gray-600 md:grid-cols-2">
+                                    {ex.author && (
+                                      <div>
+                                        <span className="font-medium">Autor:</span> {ex.author}
+                                      </div>
+                                    )}
+                                    {ex.title && (
+                                      <div>
+                                        <span className="font-medium">Título:</span> {ex.title}
+                                      </div>
+                                    )}
+                                    {ex.source && (
+                                      <div>
+                                        <span className="font-medium">Fuente:</span> {ex.source}
+                                      </div>
+                                    )}
+                                    {ex.date && (
+                                      <div>
+                                        <span className="font-medium">Fecha:</span> {ex.date}
+                                      </div>
+                                    )}
+                                    {ex.page && (
+                                      <div>
+                                        <span className="font-medium">Página:</span> {ex.page}
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })()}
+
+                              <div className="absolute right-3 bottom-3 flex gap-2">
+                                <button
+                                  onClick={() => openExampleEditor(defIndex, exIndex)}
+                                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                                  aria-label="Editar ejemplo"
+                                  title="Editar ejemplo"
+                                >
+                                  <svg
+                                    className="h-6 w-6"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteExample(defIndex, exIndex)}
+                                  className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 hover:bg-red-100"
+                                  aria-label="Eliminar ejemplo"
+                                  title="Eliminar ejemplo"
+                                >
+                                  <svg
+                                    className="h-6 w-6"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            </>
+                          )}
                         </div>
                       );
                     })}
@@ -866,54 +968,51 @@ export default function EditorClient({ initialWord, initialLetter }: Props) {
 
                 {/* variante */}
                 <div className="mt-4">
-                  <span className="text-sm font-medium text-gray-900">Variante: </span>
-                  {def.variant ? (
-                    <>
-                      <InlineEditable
-                        value={def.variant}
-                        editing={isEditing(`def:${defIndex}:variant`)}
-                        saveStrategy="manual"
-                        onChange={(v) => {
-                          patchDefLocal(defIndex, { variant: v.trim() ? v : null });
-                          setEditingKey(null);
-                        }}
-                        onCancel={() => setEditingKey(null)}
-                      />
-                      <button
-                        onClick={() => toggle(`def:${defIndex}:variant`)}
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
-                        aria-label="Editar variante"
-                        title="Editar variante"
-                      >
-                        <svg
-                          className="h-6 w-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth={2}
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                          />
-                        </svg>
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => toggle(`def:${defIndex}:variant`)}
-                      className="text-sm text-blue-600 hover:text-blue-800"
-                    >
-                      + Añadir variante
-                    </button>
-                  )}
+          <span className="text-sm font-medium text-gray-900">Variante: </span>
+          {isEditing(`def:${defIndex}:variant`) ? (
+            <div className="flex items-center gap-2">
+              <input
+                value={def.variant ?? ''}
+                onChange={(event) =>
+                  patchDefLocal(defIndex, { variant: event.target.value || null })
+                }
+                className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                placeholder="Añade una variante..."
+              />
+              <button
+                type="button"
+                onClick={() => toggle(`def:${defIndex}:variant`)}
+                className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
+              >
+                Listo
+              </button>
+            </div>
+          ) : def.variant ? (
+            <button
+              type="button"
+              onClick={() => toggle(`def:${defIndex}:variant`)}
+              className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
+            >
+              {def.variant}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                patchDefLocal(defIndex, { variant: '' });
+                toggle(`def:${defIndex}:variant`);
+              }}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              + Añadir variante
+            </button>
+          )}
                 </div>
 
                 {/* botones agregar/eliminar definición */}
                 <div className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4">
                   <button
-                    onClick={handleAddDefinition}
+                    onClick={() => handleAddDefinition(defIndex)}
                     aria-label="Agregar definición"
                     title="Agregar definición"
                     className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
