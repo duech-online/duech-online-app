@@ -16,7 +16,7 @@ interface SearchFilters {
   styles: string[];
   origins: string[];
   letters: string[];
-  status: string;
+  status: string | undefined;
   assignedTo: string[];
 }
 
@@ -151,7 +151,9 @@ function parseSearchParams(searchParams: URLSearchParams): ParseResult {
   const styles = parseList(searchParams.get('styles'));
   const origins = parseList(searchParams.get('origins'));
   const letters = parseList(searchParams.get('letters'));
-  const status = searchParams.get('status') ?? '';
+  const statusParam = searchParams.get('status');
+  // If status is explicitly provided (even as empty), use it. Otherwise undefined means show all.
+  const status = statusParam !== null ? statusParam : undefined;
   const assignedTo = parseList(searchParams.get('assignedTo'));
 
   if (
