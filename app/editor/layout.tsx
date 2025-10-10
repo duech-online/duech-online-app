@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import HeaderAuth from '@/app/ui/header-auth';
 
 export default function EditorLayout({
   children,
@@ -34,7 +35,7 @@ export default function EditorLayout({
 
             <div className="flex items-center space-x-8">
               <Link
-                href="/editor/buscar"
+                href="/editor"
                 className="text-lg font-medium transition-colors"
                 style={{ color: '#ffffff' }}
               >
@@ -47,6 +48,7 @@ export default function EditorLayout({
               >
                 <span className="hover:text-yellow-300">Ver Diccionario Público</span>
               </Link>
+              <HeaderAuth />
             </div>
           </div>
         </nav>
