@@ -104,9 +104,9 @@ export async function searchDictionary(
     // - If status is '' (empty string), it means editor with no filter → don't append (show all)
     // - If status has a value, append it to filter by that specific status
     if (status === undefined) {
-      params.append('status', '');  // Public search: only published
+      params.append('status', 'published'); // Public search: only published
     } else if (status !== '') {
-      params.append('status', status);  // Specific status selected
+      params.append('status', status); // Specific status selected
     }
     // If status is '', don't append anything (editor: show all statuses)
 

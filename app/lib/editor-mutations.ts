@@ -22,7 +22,7 @@ export async function updateWordByLemma(
   }
 
   // Update word metadata (lemma, root, and optionally status/assignedTo)
-  const updateData: any = {
+  const updateData: Partial<typeof words.$inferInsert> = {
     lemma: updatedWord.lemma,
     root: updatedWord.root || null,
     updatedAt: new Date(),
@@ -36,10 +36,7 @@ export async function updateWordByLemma(
     updateData.assignedTo = options.assignedTo;
   }
 
-  await db
-    .update(words)
-    .set(updateData)
-    .where(eq(words.id, existingWord.id));
+  await db.update(words).set(updateData).where(eq(words.id, existingWord.id));
 
   // Delete all existing meanings for this word
   await db.delete(meanings).where(eq(meanings.wordId, existingWord.id));
