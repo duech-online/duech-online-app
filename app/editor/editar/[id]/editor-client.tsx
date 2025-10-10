@@ -34,7 +34,12 @@ type ExampleDraft = {
   page: string;
 };
 
-export default function EditorClient({ initialWord, initialLetter, initialStatus, initialAssignedTo }: Props) {
+export default function EditorClient({
+  initialWord,
+  initialLetter,
+  initialStatus,
+  initialAssignedTo,
+}: Props) {
   const [word, setWord] = useState<Word>(initialWord);
   const [letter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
@@ -426,7 +431,9 @@ export default function EditorClient({ initialWord, initialLetter, initialStatus
               >
                 <option value="">Sin asignar</option>
                 {users
-                  .filter((u) => u.role === 'lexicographer' || u.role === 'editor' || u.role === 'admin')
+                  .filter(
+                    (u) => u.role === 'lexicographer' || u.role === 'editor' || u.role === 'admin'
+                  )
                   .map((u) => (
                     <option key={u.id} value={u.id}>
                       {u.username}
@@ -800,7 +807,8 @@ export default function EditorClient({ initialWord, initialLetter, initialStatus
                     <div className="space-y-2">
                       {exs.map((ex, exIndex) => {
                         const isExampleActive =
-                          activeExample?.defIndex === defIndex && activeExample?.exIndex === exIndex;
+                          activeExample?.defIndex === defIndex &&
+                          activeExample?.exIndex === exIndex;
                         const draft = isExampleActive ? exampleDraft : null;
 
                         return (
@@ -922,7 +930,9 @@ export default function EditorClient({ initialWord, initialLetter, initialStatus
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => closeExampleEditor(activeExample?.isNew ?? false)}
+                                    onClick={() =>
+                                      closeExampleEditor(activeExample?.isNew ?? false)
+                                    }
                                     className="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
                                   >
                                     Cancelar
@@ -1077,7 +1087,12 @@ export default function EditorClient({ initialWord, initialLetter, initialStatus
                       title="Agregar definición"
                       className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                     >
-                      <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <svg
+                        className="h-7 w-7"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
                         <path
                           d="M12 5v14M5 12h14"
                           strokeWidth={2.5}
@@ -1093,7 +1108,12 @@ export default function EditorClient({ initialWord, initialLetter, initialStatus
                       title="Eliminar definición"
                       className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
                     >
-                      <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <svg
+                        className="h-7 w-7"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                      >
                         <path
                           d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
                           strokeWidth={2.2}
@@ -1112,7 +1132,7 @@ export default function EditorClient({ initialWord, initialLetter, initialStatus
               <button
                 type="button"
                 onClick={() => handleAddDefinition()}
-                className="bg-duech-blue rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                className="bg-duech-blue rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:ring-2 focus:ring-blue-300 focus:outline-none"
               >
                 Añadir definición
               </button>

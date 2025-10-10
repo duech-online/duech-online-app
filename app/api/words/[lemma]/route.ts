@@ -140,18 +140,23 @@ export async function POST(request: NextRequest) {
     const values = normalizeWordDefinitions(payload.values);
 
     // Ensure at least one definition exists
-    const finalValues = values.length > 0 ? values : [{
-      number: 1,
-      meaning: 'Definición pendiente',
-      origin: null,
-      categories: [],
-      remission: null,
-      styles: null,
-      observation: null,
-      example: [],
-      variant: null,
-      expressions: null,
-    }];
+    const finalValues =
+      values.length > 0
+        ? values
+        : [
+            {
+              number: 1,
+              meaning: 'Definición pendiente',
+              origin: null,
+              categories: [],
+              remission: null,
+              styles: null,
+              observation: null,
+              example: [],
+              variant: null,
+              expressions: null,
+            },
+          ];
 
     const word: Word = {
       lemma,

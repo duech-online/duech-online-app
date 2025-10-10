@@ -213,8 +213,7 @@ function EditorContent() {
       return false;
     }
 
-    const rawAssignedTo =
-      newWordAssignedTo.length > 0 ? parseInt(newWordAssignedTo[0], 10) : null;
+    const rawAssignedTo = newWordAssignedTo.length > 0 ? parseInt(newWordAssignedTo[0], 10) : null;
     const assignedToValue =
       typeof rawAssignedTo === 'number' && Number.isInteger(rawAssignedTo) ? rawAssignedTo : null;
     const trimmedRoot = newWordRoot.trim();
