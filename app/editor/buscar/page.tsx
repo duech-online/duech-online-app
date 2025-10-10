@@ -223,7 +223,7 @@ function EditorContent() {
     const letterToSend = trimmedLetter || autoLetter;
 
     try {
-      const response = await fetch('/api/words', {
+      const response = await fetch(`/api/words/${encodeURIComponent(trimmedLemma)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
