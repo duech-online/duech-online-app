@@ -23,18 +23,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ✅ BUSCAR por username O email
     const userResult = await db
       .select()
       .from(users)
       .where(or(eq(users.username, email), eq(users.email, email)))
       .limit(1);
 
-    console.log('🔍 Buscando usuario con:', email);
-    console.log('📊 Resultado de búsqueda:', userResult.length ? 'ENCONTRADO' : 'NO ENCONTRADO');
-
     if (userResult.length === 0) {
-      console.log('❌ Usuario no encontrado');
       return NextResponse.json(
         { error: 'Credenciales inválidas' },
         { status: 401 }
@@ -42,22 +37,15 @@ export async function POST(request: NextRequest) {
     }
 
     const dbUser = userResult[0];
-    console.log('✅ Usuario encontrado:', dbUser.username, dbUser.email);
 
-    // Verify password
-    console.log('🔐 Comparando contraseña...');
     const isPasswordValid = await bcrypt.compare(password, dbUser.passwordHash);
-    console.log('📋 Resultado comparación:', isPasswordValid);
 
     if (!isPasswordValid) {
-      console.log('❌ Contraseña incorrecta');
       return NextResponse.json(
         { error: 'Credenciales inválidas' },
         { status: 401 }
       );
     }
-
-    console.log('🎉 Login exitoso');
 
     const userData = {
       id: dbUser.id,
