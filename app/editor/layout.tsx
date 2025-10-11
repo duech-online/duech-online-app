@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import HeaderAuth from '@/app/ui/header-auth';
+import LogoutButton from '@/app/ui/logout-button';
+import { getSession } from '@/app/lib/auth';
 
-export default function EditorLayout({
+export default async function EditorLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isAuthenticated = await getSession();
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-duech-blue shadow-lg">
@@ -48,7 +51,12 @@ export default function EditorLayout({
               >
                 <span className="hover:text-yellow-300">Ver Diccionario Público</span>
               </Link>
-              <HeaderAuth />
+              {isAuthenticated && (
+              <div className="flex items-center space-x-4">
+                <HeaderAuth />
+                <LogoutButton />
+              </div>
+              )}
             </div>
           </div>
         </nav>
