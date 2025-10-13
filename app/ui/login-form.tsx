@@ -2,9 +2,8 @@
 
 import { dictionary } from '../ui/fonts';
 import { Button } from '../ui/button';
-import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -60,11 +59,49 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const callbackUrl = searchParams.get('callbackUrl') || '/editor/buscar';
-  const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
+  
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [isPending, setIsPending] = useState<boolean>(false);
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsPending(true);
+    setErrorMessage('');
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        router.push(callbackUrl);
+        setTimeout(() => {
+          router.refresh();
+        }, 100);
+      } else {
+        setErrorMessage(data.error || 'Error en el login');
+      }
+    } catch (error) {
+      setErrorMessage('Error de conexión');
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pt-8 pb-4">
         <h1 className={`${dictionary.className} mb-3 text-2xl`}>Inicia sesión para continuar</h1>
         <div className="w-full">
@@ -102,8 +139,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <input type="hidden" name="redirectTo" value={callbackUrl} />
-        <Button className="mt-5 w-full" aria-disabled={isPending} type="submit">
+        <Button className="mt-5 w-full" disabled={isPending} type="submit">
           {isPending ? (
             'Iniciando sesión...'
           ) : (

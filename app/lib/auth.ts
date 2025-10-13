@@ -62,14 +62,21 @@ export function verifyToken(token: string): TokenPayload | null {
   }
 }
 
-export async function setSessionCookie(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
-  const token = createToken(user, maxAgeSeconds);
-  (await cookies()).set(SESSION_COOKIE, token, {
+export async function setSessionCookie(user: SessionUser) {
+  const userData = {
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    loggedInAt: new Date().toISOString()
+  };
+
+  (await cookies()).set(SESSION_COOKIE, JSON.stringify(userData), {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     path: '/',
-    maxAge: maxAgeSeconds,
+    maxAge: DEFAULT_EXP_SECONDS,
   });
 }
 
@@ -84,17 +91,31 @@ export async function clearSessionCookie() {
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  if (!token) return null;
-  const payload = verifyToken(token);
-  if (!payload) return null;
-  const { id, email, name, role } = payload;
-  return { id, email, name, role };
+  try {
+    const cookieStore = await cookies();
+    const sessionData = cookieStore.get(SESSION_COOKIE)?.value;
+    
+    if (!sessionData) {
+      return null;
+    }
+    const userData = JSON.parse(sessionData) as SessionUser;
+
+    if (!userData.id || !userData.email) {
+      return null;
+    }
+    return userData;
+    
+  } catch (error) {
+    return null;
+  }
 }
 
 export async function getSession(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE)?.value;
-  return !!token && !!verifyToken(token);
+  try {
+    const user = await getSessionUser();
+    const hasValidSession = !!user;
+    return hasValidSession;
+  } catch (error) {
+    return false;
+  }
 }
