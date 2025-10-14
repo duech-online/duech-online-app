@@ -61,7 +61,8 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const redirectTo = searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/editor/buscar';
+  const redirectTo =
+    searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/editor/buscar';
   const [errorMessage, setErrorMessage] = useState('');
   const [isPending, setIsPending] = useState(false);
 

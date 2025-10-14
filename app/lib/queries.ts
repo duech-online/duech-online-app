@@ -373,11 +373,7 @@ export async function getAvailableLetters(): Promise<Array<{ letter: string; cou
  * Find user by username
  */
 export async function getUserByUsername(username: string) {
-  const result = await db
-    .select()
-    .from(users)
-    .where(eq(users.username, username))
-    .limit(1);
+  const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
 
   return result.length > 0 ? result[0] : null;
 }
@@ -386,11 +382,7 @@ export async function getUserByUsername(username: string) {
  * Find user by email
  */
 export async function getUserByEmail(email: string) {
-  const result = await db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
+  const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
   return result.length > 0 ? result[0] : null;
 }
