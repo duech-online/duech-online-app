@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
         query: filters.query || undefined,
         categories: filters.categories.length > 0 ? filters.categories : undefined,
         styles: filters.styles.length > 0 ? filters.styles : undefined,
-        origin: filters.origins.length > 0 ? filters.origins.join('|') : undefined,
+        origins: filters.origins.length > 0 ? filters.origins : undefined,
         letter: filters.letters.length > 0 ? filters.letters[0] : undefined,
         status: filters.status || undefined,
         assignedTo: filters.assignedTo.length > 0 ? filters.assignedTo : undefined,

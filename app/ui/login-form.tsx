@@ -4,6 +4,7 @@ import { dictionary } from '../ui/fonts';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { authenticate } from '@/app/lib/actions';
 
 function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -60,44 +61,24 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
 export default function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const callbackUrl = searchParams.get('callbackUrl') || '/editor/buscar';
+  const redirectTo = searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/editor/buscar';
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isPending, setIsPending] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isPending, setIsPending] = useState<boolean>(false);
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setIsPending(true);
     setErrorMessage('');
 
-    try {
-      const formData = new FormData(event.currentTarget);
-      const email = formData.get('email') as string;
-      const password = formData.get('password') as string;
+    const formData = new FormData(e.currentTarget);
+    const result = await authenticate(undefined, formData);
 
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success) {
-        router.push(callbackUrl);
-        setTimeout(() => {
-          router.refresh();
-        }, 100);
-      } else {
-        setErrorMessage(data.error || 'Error en el login');
-      }
-    } catch (error) {
-      setErrorMessage('Error de conexión');
-    } finally {
+    if (result) {
+      // result is an error message string
+      setErrorMessage(result);
       setIsPending(false);
     }
+    // If result is undefined, authenticate() will redirect automatically
   };
 
   return (
@@ -139,7 +120,8 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <Button className="mt-5 w-full" disabled={isPending} type="submit">
+        <input type="hidden" name="redirectTo" value={redirectTo} />
+        <Button className="mt-5 w-full" aria-disabled={isPending} type="submit">
           {isPending ? (
             'Iniciando sesión...'
           ) : (
