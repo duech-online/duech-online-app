@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import { clearSessionCookie } from '@/app/lib/auth';
 
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     await clearSessionCookie();
-    const { searchParams } = new URL(request.url);
     const redirectTo = '/editor';
 
     // Always return JSON response for consistency

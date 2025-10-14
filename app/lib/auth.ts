@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers';
-import crypto from 'crypto';
 
 export type SessionUser = {
   id: string;
@@ -16,18 +15,37 @@ function getSecret() {
   return secret;
 }
 
-function base64url(input: Buffer | string) {
-  const buf = Buffer.isBuffer(input) ? input : Buffer.from(input);
-  return buf.toString('base64').replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
+function base64url(input: Uint8Array | string) {
+  const bytes = typeof input === 'string' ? new TextEncoder().encode(input) : input;
+  const base64 = btoa(String.fromCharCode(...bytes));
+  return base64.replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
-function sign(data: string, secret: string) {
-  return base64url(crypto.createHmac('sha256', secret).update(data).digest());
+function base64urlDecode(input: string): Uint8Array {
+  const base64 = input.replace(/-/g, '+').replace(/_/g, '/');
+  const paddedBase64 = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+  const binaryString = atob(paddedBase64);
+  const bytes = new Uint8Array(binaryString.length);
+  for (let i = 0; i < binaryString.length; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+}
+
+async function sign(data: string, secret: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const keyData = encoder.encode(secret);
+  const algorithm = { name: 'HMAC', hash: 'SHA-256' };
+
+  const key = await crypto.subtle.importKey('raw', keyData, algorithm, false, ['sign']);
+  const signature = await crypto.subtle.sign(algorithm.name, key, encoder.encode(data));
+
+  return base64url(new Uint8Array(signature));
 }
 
 export type TokenPayload = SessionUser & { iat: number; exp: number; role?: string };
 
-export function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
+export async function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
   const header = { alg: 'HS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
   const payload: TokenPayload = {
@@ -40,38 +58,33 @@ export function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECON
   };
   const encodedHeader = base64url(JSON.stringify(header));
   const encodedPayload = base64url(JSON.stringify(payload));
-  const signature = sign(`${encodedHeader}.${encodedPayload}`, getSecret());
+  const signature = await sign(`${encodedHeader}.${encodedPayload}`, getSecret());
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
 
-export function verifyToken(token: string): TokenPayload | null {
+export async function verifyToken(token: string): Promise<TokenPayload | null> {
   try {
     const [encodedHeader, encodedPayload, signature] = token.split('.');
     if (!encodedHeader || !encodedPayload || !signature) return null;
-    const expected = sign(`${encodedHeader}.${encodedPayload}`, getSecret());
+
+    const expected = await sign(`${encodedHeader}.${encodedPayload}`, getSecret());
     if (expected !== signature) return null;
-    const json = Buffer.from(
-      encodedPayload.replace(/-/g, '+').replace(/_/g, '/'),
-      'base64'
-    ).toString('utf8');
+
+    const payloadBytes = base64urlDecode(encodedPayload);
+    const json = new TextDecoder().decode(payloadBytes);
     const payload = JSON.parse(json) as TokenPayload;
+
     if (payload.exp < Math.floor(Date.now() / 1000)) return null;
     return payload;
-  } catch {
+  } catch (error) {
+    console.error('[Auth] Token verification error:', error);
     return null;
   }
 }
 
-export async function setSessionCookie(user: SessionUser) {
-  const userData = {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-    loggedInAt: new Date().toISOString()
-  };
-
-  (await cookies()).set(SESSION_COOKIE, JSON.stringify(userData), {
+export async function setSessionCookie(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
+  const token = await createToken(user, maxAgeSeconds);
+  (await cookies()).set(SESSION_COOKIE, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -91,31 +104,19 @@ export async function clearSessionCookie() {
 }
 
 export async function getSessionUser(): Promise<SessionUser | null> {
-  try {
-    const cookieStore = await cookies();
-    const sessionData = cookieStore.get(SESSION_COOKIE)?.value;
-    
-    if (!sessionData) {
-      return null;
-    }
-    const userData = JSON.parse(sessionData) as SessionUser;
-
-    if (!userData.id || !userData.email) {
-      return null;
-    }
-    return userData;
-    
-  } catch (error) {
-    return null;
-  }
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  if (!token) return null;
+  const payload = await verifyToken(token);
+  if (!payload) return null;
+  const { id, email, name, role } = payload;
+  return { id, email, name, role };
 }
 
 export async function getSession(): Promise<boolean> {
-  try {
-    const user = await getSessionUser();
-    const hasValidSession = !!user;
-    return hasValidSession;
-  } catch (error) {
-    return false;
-  }
+  const cookieStore = await cookies();
+  const token = cookieStore.get(SESSION_COOKIE)?.value;
+  if (!token) return false;
+  const valid = await verifyToken(token);
+  return !!valid;
 }

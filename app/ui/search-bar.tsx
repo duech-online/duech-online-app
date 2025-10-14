@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import FilterPill from '@/app/ui/filter-pill';
@@ -73,6 +73,8 @@ export default function SearchBar({
   additionalFilters,
 }: SearchBarProps) {
   const router = useRouter();
+  const isInitialMountRef = useRef(true);
+  const isSyncingFromPropsRef = useRef(false);
 
   const [query, setQuery] = useState(initialValue);
   const [filters, setFilters] = useState<InternalFilters>(() => ({
@@ -114,6 +116,12 @@ export default function SearchBar({
   }, [initialValue]);
 
   useEffect(() => {
+    // Skip on initial mount as state is already initialized
+    if (isInitialMountRef.current) {
+      isInitialMountRef.current = false;
+      return;
+    }
+
     const nextFilters: InternalFilters = {
       categories: initialCategories,
       styles: initialStyles,
@@ -127,23 +135,26 @@ export default function SearchBar({
       initialOrigins.length > 0 ||
       initialLetters.length > 0;
 
+    // Only update if filters actually changed (not just array references)
     if (!filtersEqual(filters, nextFilters)) {
+      isSyncingFromPropsRef.current = true;
       setFilters(nextFilters);
     }
 
     if (shouldAutoOpen) {
       setAdvancedOpen(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     categoriesSignature,
     stylesSignature,
     originsSignature,
     lettersSignature,
-    filters,
     initialCategories,
     initialStyles,
     initialOrigins,
     initialLetters,
+    // Note: 'filters' is intentionally excluded to prevent circular updates
   ]);
 
   useEffect(() => {
@@ -316,6 +327,12 @@ export default function SearchBar({
 
   useEffect(() => {
     if (!onStateChange) {
+      return;
+    }
+
+    // Don't call onStateChange when we're syncing from props to avoid circular updates
+    if (isSyncingFromPropsRef.current) {
+      isSyncingFromPropsRef.current = false;
       return;
     }
 
