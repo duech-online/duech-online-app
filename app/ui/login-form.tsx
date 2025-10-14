@@ -4,6 +4,7 @@ import { dictionary } from '../ui/fonts';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { authenticate } from '@/app/lib/actions';
 
 function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -59,8 +60,26 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const redirectTo = searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/editor/buscar';
-  const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isPending, setIsPending] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsPending(true);
+    setErrorMessage('');
+
+    const formData = new FormData(e.currentTarget);
+    const result = await authenticate(undefined, formData);
+
+    if (result) {
+      // result is an error message string
+      setErrorMessage(result);
+      setIsPending(false);
+    }
+    // If result is undefined, authenticate() will redirect automatically
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">

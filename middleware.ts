@@ -62,11 +62,6 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  const userSession = request.cookies.get('duech_session')?.value;
-
-    return NextResponse.next();
-  }
-
   // Protect editor routes for all other hosts (e.g., localhost:3000/editor)
   if (pathname.startsWith('/editor') && !isBypassPath(pathname)) {
     const isAuthenticated = await checkEditorAuthentication(request);
