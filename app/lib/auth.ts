@@ -89,7 +89,7 @@ export async function setSessionCookie(user: SessionUser, maxAgeSeconds = DEFAUL
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
     path: '/',
-    maxAge: maxAgeSeconds,
+    maxAge: DEFAULT_EXP_SECONDS,
   });
 }
 

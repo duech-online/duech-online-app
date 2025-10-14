@@ -2,9 +2,8 @@
 
 import { dictionary } from '../ui/fonts';
 import { Button } from '../ui/button';
-import { useActionState } from 'react';
-import { authenticate } from '@/app/lib/actions';
-import { useSearchParams } from 'next/navigation';
+import { useState } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 function AtSymbolIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -64,7 +63,7 @@ export default function LoginForm() {
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
 
   return (
-    <form action={formAction} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pt-8 pb-4">
         <h1 className={`${dictionary.className} mb-3 text-2xl`}>Inicia sesión para continuar</h1>
         <div className="w-full">

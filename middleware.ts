@@ -42,7 +42,6 @@ export async function middleware(request: NextRequest) {
   const { pathname } = url;
   const hostname = url.hostname;
 
-  // Requests coming from editor.localhost should be routed through /editor/…
   if (hostname === EDITOR_HOST) {
     if (isBypassPath(pathname)) {
       return NextResponse.next();
@@ -61,6 +60,9 @@ export async function middleware(request: NextRequest) {
       rewriteUrl.pathname = pathname === '/' ? '/editor/buscar' : `/editor${pathname}`;
       return NextResponse.rewrite(rewriteUrl);
     }
+  }
+
+  const userSession = request.cookies.get('duech_session')?.value;
 
     return NextResponse.next();
   }
@@ -87,7 +89,6 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configure which routes use this middleware
 export const config = {
   matcher: ['/(.*)'],
 };
