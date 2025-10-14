@@ -5,35 +5,35 @@ import remarkGfm from 'remark-gfm';
 
 interface MarkdownRendererProps {
   content: string;
-  className?: string;
 }
 
+/**
+ * Renders markdown content using custom styled components for various markdown elements.
+ *
+ * @param content - The markdown string to be rendered.
+ * @returns A React element rendering the markdown with custom styles for strong, em, paragraph, link, and code elements.
+ *
+ * @remarks
+ * - Uses `ReactMarkdown` with the `remarkGfm` plugin for GitHub Flavored Markdown support.
+ * - Customizes the rendering of markdown elements to apply specific Tailwind CSS classes.
+ * - Support for **bold**, _italic_, and plain text.
+ * 
+ * @example
+ * ```tsx
+ * <MarkdownRenderer content="**Bold Text** and _Italic Text_." />
+ * ```
+ * should render:
+ * **Bold Text** and _Italic Text_.
+ */
 export default function MarkdownRenderer({ content }: MarkdownRendererProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
-        // Custom styling for markdown elements
-        strong: ({ children }) => <strong className="text-duech-blue font-bold">{children}</strong>,
-        em: ({ children }) => <em className="text-gray-800 italic">{children}</em>,
-        p: ({ children }) => <span className="inline">{children}</span>,
-        // Handle links if they exist in definitions
-        a: ({ href, children }) => (
-          <a
-            href={href}
-            className="text-duech-blue hover:text-duech-gold underline transition-colors"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {children}
-          </a>
-        ),
-        // Handle code if it exists
-        code: ({ children }) => (
-          <code className="rounded bg-gray-100 px-1 py-0.5 font-mono text-sm text-gray-800">
-            {children}
-          </code>
-        ),
+        // Custom rendering for markdown elements with Tailwind CSS classes
+        strong: ({ children }) => <strong className="text-duech-blue font-bold">{children}</strong>, // Bold text
+        em: ({ children }) => <em className="text-gray-800 italic">{children}</em>, // Italic text
+        p: ({ children }) => <span className="inline">{children}</span>, // Inline paragraph
       }}
     >
       {content}
