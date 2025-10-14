@@ -1,6 +1,15 @@
 # DUECh Online - Dictionary of Chilean Spanish
 
-MVP web application for the Dictionary of Chilean Spanish Usage (DUECh).
+Web application for the Dictionary of Chilean Spanish Usage (DUECh).
+
+## Documentation
+
+This web application has an automatic documentation system using TypeDoc. To generate and view the documentation, run:
+
+```bash
+npm run docs
+```
+The documentation will be generated in the `docs` folder and opened in your default web browser.
 
 ## Description
 
