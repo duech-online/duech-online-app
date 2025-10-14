@@ -68,7 +68,7 @@ export async function setSessionCookie(user: SessionUser) {
     email: user.email,
     name: user.name,
     role: user.role,
-    loggedInAt: new Date().toISOString()
+    loggedInAt: new Date().toISOString(),
   };
 
   (await cookies()).set(SESSION_COOKIE, JSON.stringify(userData), {
@@ -94,7 +94,7 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   try {
     const cookieStore = await cookies();
     const sessionData = cookieStore.get(SESSION_COOKIE)?.value;
-    
+
     if (!sessionData) {
       return null;
     }
@@ -104,7 +104,6 @@ export async function getSessionUser(): Promise<SessionUser | null> {
       return null;
     }
     return userData;
-    
   } catch (error) {
     return null;
   }

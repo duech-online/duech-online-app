@@ -61,7 +61,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const callbackUrl = searchParams.get('callbackUrl') || '/editor/buscar';
-  
+
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isPending, setIsPending] = useState<boolean>(false);
 

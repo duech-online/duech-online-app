@@ -54,8 +54,7 @@ export default function HeaderAuth() {
       window.location.href = '/';
     }
   };
-  if (!user) 
-    return null;
+  if (!user) return null;
 
   return (
     <div className="flex items-center gap-3">
@@ -69,6 +68,5 @@ export default function HeaderAuth() {
         </button>
       </form>
     </div>
-    
   );
 }

@@ -52,10 +52,10 @@ export default async function EditorLayout({
                 <span className="hover:text-yellow-300">Ver Diccionario Público</span>
               </Link>
               {isAuthenticated && (
-              <div className="flex items-center space-x-4">
-                <HeaderAuth />
-                <LogoutButton />
-              </div>
+                <div className="flex items-center space-x-4">
+                  <HeaderAuth />
+                  <LogoutButton />
+                </div>
               )}
             </div>
           </div>

@@ -17,10 +17,7 @@ export async function POST(request: NextRequest) {
 
     // validate correct data
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Usuario y contraseña son requeridos' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Usuario y contraseña son requeridos' }, { status: 400 });
     }
 
     const userResult = await db
@@ -30,10 +27,7 @@ export async function POST(request: NextRequest) {
       .limit(1);
 
     if (userResult.length === 0) {
-      return NextResponse.json(
-        { error: 'Credenciales inválidas' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Credenciales inválidas' }, { status: 401 });
     }
 
     const dbUser = userResult[0];
@@ -41,10 +35,7 @@ export async function POST(request: NextRequest) {
     const isPasswordValid = await bcrypt.compare(password, dbUser.passwordHash);
 
     if (!isPasswordValid) {
-      return NextResponse.json(
-        { error: 'Credenciales inválidas' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Credenciales inválidas' }, { status: 401 });
     }
 
     const userData = {
@@ -52,7 +43,7 @@ export async function POST(request: NextRequest) {
       username: dbUser.username,
       email: dbUser.email,
       role: dbUser.role,
-      loggedInAt: new Date().toISOString()
+      loggedInAt: new Date().toISOString(),
     };
 
     const response = NextResponse.json({
@@ -73,11 +64,10 @@ export async function POST(request: NextRequest) {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       maxAge: 60 * 60 * 24,
-      path: '/', 
+      path: '/',
     });
 
     return response;
-
   } catch (error) {
     console.error('Error en login:', error);
     return NextResponse.json(
