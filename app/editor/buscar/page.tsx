@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Popup from 'reactjs-popup';
@@ -57,7 +57,7 @@ function EditorContent() {
   const [searchState, setSearchState] = useState<EditorSearchState>(() =>
     createDefaultSearchState()
   );
-  const [isInitialized, setIsInitialized] = useState(false);
+  const isInitializedRef = useRef(false);
 
   // For add word modal
   const [newWordRoot, setNewWordRoot] = useState('');
@@ -71,23 +71,7 @@ function EditorContent() {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const restoreFromCache = useCallback(() => {
-    const savedFilters = getEditorSearchFilters();
-
-    setSearchState({
-      query: savedFilters.query,
-      filters: {
-        categories: savedFilters.selectedCategories,
-        styles: savedFilters.selectedStyles,
-        origins: savedFilters.selectedOrigins,
-        letters: savedFilters.selectedLetters,
-      },
-      status: savedFilters.selectedStatus,
-      assignedTo: savedFilters.selectedAssignedTo,
-    });
-    setIsInitialized(true);
-  }, []);
-
+  // Load users and restore filters on mount (only once)
   useEffect(() => {
     const loadUsers = async () => {
       try {
@@ -97,18 +81,32 @@ function EditorContent() {
         }
       } catch (error) {
         console.error('Error fetching users:', error);
-      } finally {
-        restoreFromCache();
       }
     };
 
-    loadUsers();
-  }, [restoreFromCache]);
+    const restoreFilters = () => {
+      const savedFilters = getEditorSearchFilters();
+      setSearchState({
+        query: savedFilters.query,
+        filters: {
+          categories: savedFilters.selectedCategories,
+          styles: savedFilters.selectedStyles,
+          origins: savedFilters.selectedOrigins,
+          letters: savedFilters.selectedLetters,
+        },
+        status: savedFilters.selectedStatus,
+        assignedTo: savedFilters.selectedAssignedTo,
+      });
+      isInitializedRef.current = true;
+    };
 
-  useEffect(() => {
-    if (!isInitialized) {
-      return;
-    }
+    loadUsers();
+    restoreFilters();
+  }, []);
+
+  // Save filters function (called explicitly, not in useEffect)
+  const saveFilters = useCallback(() => {
+    if (!isInitializedRef.current) return;
 
     setEditorSearchFilters({
       query: searchState.query,
@@ -119,20 +117,41 @@ function EditorContent() {
       selectedStatus: searchState.status,
       selectedAssignedTo: searchState.assignedTo,
     });
-  }, [isInitialized, searchState]);
+  }, [searchState]);
 
   const handleSearchStateChange = useCallback(
     ({ query, filters }: { query: string; filters: EditorSearchState['filters'] }) => {
-      setSearchState((prev) => ({
-        ...prev,
-        query,
-        filters: {
-          categories: [...filters.categories],
-          styles: [...filters.styles],
-          origins: [...filters.origins],
-          letters: [...filters.letters],
-        },
-      }));
+      setSearchState((prev) => {
+        // Only update if values actually changed to prevent unnecessary re-renders
+        const filtersChanged =
+          prev.filters.categories.length !== filters.categories.length ||
+          prev.filters.categories.some((cat, idx) => cat !== filters.categories[idx]) ||
+          prev.filters.styles.length !== filters.styles.length ||
+          prev.filters.styles.some((style, idx) => style !== filters.styles[idx]) ||
+          prev.filters.origins.length !== filters.origins.length ||
+          prev.filters.origins.some((origin, idx) => origin !== filters.origins[idx]) ||
+          prev.filters.letters.length !== filters.letters.length ||
+          prev.filters.letters.some((letter, idx) => letter !== filters.letters[idx]);
+
+        const queryChanged = prev.query !== query;
+
+        if (!filtersChanged && !queryChanged) {
+          return prev;
+        }
+
+        return {
+          ...prev,
+          query,
+          filters: filtersChanged
+            ? {
+                categories: [...filters.categories],
+                styles: [...filters.styles],
+                origins: [...filters.origins],
+                letters: [...filters.letters],
+              }
+            : prev.filters,
+        };
+      });
     },
     []
   );
@@ -180,23 +199,48 @@ function EditorContent() {
         );
 
         setResults(searchData.results);
-        setSearchState((prev) => ({
-          ...prev,
-          query,
-          filters: {
-            categories: [...filters.categories],
-            styles: [...filters.styles],
-            origins: [...filters.origins],
-            letters: [...filters.letters],
-          },
-        }));
+
+        // Only update state if values changed
+        setSearchState((prev) => {
+          const filtersChanged =
+            prev.filters.categories.length !== filters.categories.length ||
+            prev.filters.categories.some((cat, idx) => cat !== filters.categories[idx]) ||
+            prev.filters.styles.length !== filters.styles.length ||
+            prev.filters.styles.some((style, idx) => style !== filters.styles[idx]) ||
+            prev.filters.origins.length !== filters.origins.length ||
+            prev.filters.origins.some((origin, idx) => origin !== filters.origins[idx]) ||
+            prev.filters.letters.length !== filters.letters.length ||
+            prev.filters.letters.some((letter, idx) => letter !== filters.letters[idx]);
+
+          const queryChanged = prev.query !== query;
+
+          if (!filtersChanged && !queryChanged) {
+            return prev;
+          }
+
+          return {
+            ...prev,
+            query,
+            filters: filtersChanged
+              ? {
+                  categories: [...filters.categories],
+                  styles: [...filters.styles],
+                  origins: [...filters.origins],
+                  letters: [...filters.letters],
+                }
+              : prev.filters,
+          };
+        });
+
+        // Save filters after successful search
+        setTimeout(() => saveFilters(), 0);
       } catch (error) {
         console.error('Error in search:', error);
       } finally {
         setLoading(false);
       }
     },
-    [searchState.assignedTo, searchState.status]
+    [saveFilters, searchState.assignedTo, searchState.status]
   );
 
   const handleClearAll = useCallback(() => {
@@ -296,38 +340,47 @@ function EditorContent() {
     searchState.filters.letters.length > 0 ||
     hasExtraFilters;
 
+  // Memoize filter components separately to prevent re-renders
+  const statusFilter = useMemo(
+    () => (
+      <SelectDropdown
+        key="status-filter"
+        label="Estado"
+        options={STATUS_OPTIONS}
+        selectedValue={searchState.status}
+        onChange={handleStatusChange}
+        placeholder="Seleccionar estado"
+      />
+    ),
+    [searchState.status, handleStatusChange]
+  );
+
+  const assignedFilter = useMemo(
+    () => (
+      <MultiSelectDropdown
+        key="assigned-filter"
+        label="Asignado a"
+        options={userOptions}
+        selectedValues={searchState.assignedTo}
+        onChange={handleAssignedChange}
+        placeholder="Seleccionar usuario"
+      />
+    ),
+    [searchState.assignedTo, userOptions, handleAssignedChange]
+  );
+
   const additionalFiltersConfig = useMemo(
     () => ({
       hasActive: hasExtraFilters,
       onClear: clearAdditionalFilters,
       render: () => (
         <>
-          <SelectDropdown
-            label="Estado"
-            options={STATUS_OPTIONS}
-            selectedValue={searchState.status}
-            onChange={handleStatusChange}
-            placeholder="Seleccionar estado"
-          />
-          <MultiSelectDropdown
-            label="Asignado a"
-            options={userOptions}
-            selectedValues={searchState.assignedTo}
-            onChange={handleAssignedChange}
-            placeholder="Seleccionar usuario"
-          />
+          {statusFilter}
+          {assignedFilter}
         </>
       ),
     }),
-    [
-      clearAdditionalFilters,
-      handleAssignedChange,
-      handleStatusChange,
-      hasExtraFilters,
-      searchState.assignedTo,
-      searchState.status,
-      userOptions,
-    ]
+    [clearAdditionalFilters, hasExtraFilters, statusFilter, assignedFilter]
   );
 
   return (

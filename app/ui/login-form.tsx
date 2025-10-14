@@ -60,7 +60,7 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/editor/buscar';
+  const redirectTo = searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/editor/buscar';
   const [errorMessage, formAction, isPending] = useActionState(authenticate, undefined);
 
   return (
@@ -102,7 +102,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <input type="hidden" name="redirectTo" value={callbackUrl} />
+        <input type="hidden" name="redirectTo" value={redirectTo} />
         <Button className="mt-5 w-full" aria-disabled={isPending} type="submit">
           {isPending ? (
             'Iniciando sesión...'

@@ -3,8 +3,9 @@
  */
 
 import { eq, ilike, or, and, sql, SQL } from 'drizzle-orm';
+import bcrypt from 'bcrypt';
 import { db } from './db';
-import { words, meanings } from './schema';
+import { words, meanings, users } from './schema';
 import { Word, SearchResult } from './definitions';
 import { dbWordToWord, dbWordToSearchResult } from './transformers';
 
@@ -161,29 +162,25 @@ export async function advancedSearch(params: {
   query?: string;
   categories?: string[];
   styles?: string[];
-  origin?: string;
+  origins?: string[];
   letter?: string;
   status?: string;
   assignedTo?: string[];
   limit?: number;
 }): Promise<SearchResult[]> {
-  const { query, categories, styles, origin, letter, status, assignedTo, limit = 50 } = params;
+  const { query, categories, styles, origins, letter, status, assignedTo, limit = 50 } = params;
 
   const conditions: SQL[] = [];
 
   // Filter by status
-  // If status is explicitly set, filter by it
-  // If status is undefined (not provided), show all statuses
-  // If status is empty string '', default to 'published' for public search
   if (status !== undefined && status !== '') {
     conditions.push(eq(words.status, status));
   } else if (status === '') {
     // Empty string means public search - only show published
     conditions.push(eq(words.status, 'published'));
   }
-  // If status is undefined, don't add any status filter (show all)
 
-  // Filter by assignedTo
+  // Filter by assignedTo (OR within assignedTo values)
   if (assignedTo && assignedTo.length > 0) {
     const assignedToIds = assignedTo.map((id) => parseInt(id, 10)).filter((id) => !isNaN(id));
     if (assignedToIds.length > 0) {
@@ -198,27 +195,33 @@ export async function advancedSearch(params: {
     conditions.push(or(ilike(words.lemma, searchPattern), ilike(meanings.meaning, searchPattern))!);
   }
 
-  // Filter by letter
+  // Filter by letter (OR within letters - if multiple letters provided)
   if (letter) {
     conditions.push(eq(words.letter, letter.toLowerCase()));
   }
 
-  // Filter by origin
-  if (origin) {
-    conditions.push(ilike(meanings.origin, `%${origin}%`));
+  // Filter by origins (OR within origins - any selected origin matches)
+  if (origins && origins.length > 0) {
+    const originConditions = origins.map((origin) => ilike(meanings.origin, `%${origin}%`));
+    conditions.push(or(...originConditions)!);
   }
 
-  // Filter by categories
+  // Filter by categories (OR within categories - any selected category matches)
   if (categories && categories.length > 0) {
     const categoryConditions = categories.map((cat) => sql`${cat} = ANY(${meanings.categories})`);
     conditions.push(or(...categoryConditions)!);
   }
 
-  // Filter by styles
+  // Filter by styles (OR within styles - any selected style matches)
   if (styles && styles.length > 0) {
     const styleConditions = styles.map((style) => sql`${style} = ANY(${meanings.styles})`);
     conditions.push(or(...styleConditions)!);
   }
+
+  // All conditions are combined with AND
+  // Within each filter type (categories, styles, assignedTo), values are OR'ed
+  // This means: (cat1 OR cat2) AND (style1 OR style2) AND letter AND query
+  const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
   // Execute query
   const results = await db
@@ -236,7 +239,7 @@ export async function advancedSearch(params: {
     })
     .from(words)
     .leftJoin(meanings, eq(words.id, meanings.wordId))
-    .where(and(...conditions))
+    .where(whereClause)
     .limit(limit);
 
   // Get full word data with meanings and determine match type
@@ -360,4 +363,83 @@ export async function getAvailableLetters(): Promise<Array<{ letter: string; cou
     letter: r.letter,
     count: Number(r.count),
   }));
+}
+
+/**
+ * USER AUTHENTICATION QUERIES
+ */
+
+/**
+ * Find user by username
+ */
+export async function getUserByUsername(username: string) {
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.username, username))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+/**
+ * Find user by email
+ */
+export async function getUserByEmail(email: string) {
+  const result = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, email))
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+/**
+ * Create a new user with bcrypt password hashing
+ */
+export async function createDatabaseUser(
+  username: string,
+  email: string,
+  password: string,
+  role: string = 'lexicographer'
+) {
+  // Check if username or email already exists
+  const existingByUsername = await getUserByUsername(username);
+  if (existingByUsername) {
+    throw new Error('Username already exists');
+  }
+
+  if (email) {
+    const existingByEmail = await getUserByEmail(email);
+    if (existingByEmail) {
+      throw new Error('Email already exists');
+    }
+  }
+
+  // Hash password with bcrypt (salt rounds: 10)
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  // Insert user
+  const result = await db
+    .insert(users)
+    .values({
+      username,
+      email: email || null,
+      passwordHash,
+      role,
+    })
+    .returning();
+
+  return result[0];
+}
+
+/**
+ * Verify password against bcrypt hash
+ */
+export async function verifyUserPassword(
+  dbPasswordHash: string,
+  password: string
+): Promise<boolean> {
+  return await bcrypt.compare(password, dbPasswordHash);
 }
