@@ -9,6 +9,7 @@ This web application has an automatic documentation system using TypeDoc. To gen
 ```bash
 npm run docs
 ```
+
 The documentation will be generated in the `docs` folder and opened in your default web browser.
 
 ## Description
