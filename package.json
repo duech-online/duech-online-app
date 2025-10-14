@@ -10,6 +10,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "drizzle-orm": "^0.44.6",
     "lru-cache": "^11.1.0",
     "next": "15.5.0",
