@@ -4,7 +4,8 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
-import { CategorySelector, StyleSelector, CategoryChip, StyleChip } from '@/app/ui/edit-controls';
+import { MultiSelector } from '@/app/ui/multi-selector';
+import { Chip } from '@/app/ui/chip';
 import { Button } from '@/app/ui/button';
 import {
   PencilIcon,
@@ -525,7 +526,7 @@ export default function EditorClient({
                     ) : (
                       <div className="flex flex-wrap items-center gap-2">
                         {def.categories.map((cat, i) => (
-                          <CategoryChip
+                          <Chip
                             key={`${cat}-${i}`}
                             code={cat}
                             label={GRAMMATICAL_CATEGORIES[cat] || cat}
@@ -533,6 +534,7 @@ export default function EditorClient({
                               const next = def.categories.filter((c) => c !== code);
                               patchDefLocal(defIndex, { categories: next });
                             }}
+                            variant="category"
                           />
                         ))}
 
@@ -631,15 +633,16 @@ export default function EditorClient({
                     ) : (
                       <div className="flex flex-wrap items-center gap-2">
                         {def.styles.map((s) => (
-                          <StyleChip
+                          <Chip
                             className="bg-duech-gold inline-block rounded-full px-4 py-2 text-sm font-semibold text-gray-900"
                             key={s}
                             code={s}
                             label={USAGE_STYLES[s] || s}
-                            onRemove={(code) => {
+                            onRemove={(code: string) => {
                               const next = (def.styles || []).filter((x) => x !== code);
                               patchDefLocal(defIndex, { styles: next.length ? next : null });
                             }}
+                            variant="style"
                           />
                         ))}
 
@@ -1017,24 +1020,32 @@ export default function EditorClient({
 
       {/* modales multi-select */}
       {editingCategories !== null && (
-        <CategorySelector
+        <MultiSelector
           isOpen
           onClose={() => setEditingCategories(null)}
-          onSave={(cats) => {
+          onSave={(cats: string[]) => {
             patchDefLocal(editingCategories, { categories: cats });
           }}
-          selectedCategories={word.values[editingCategories].categories}
+          selectedItems={word.values[editingCategories].categories}
+          title="Seleccionar categorías gramaticales"
+          options={GRAMMATICAL_CATEGORIES}
+          maxWidth="2xl"
+          columns={3}
         />
       )}
 
       {editingStyles !== null && (
-        <StyleSelector
+        <MultiSelector
           isOpen
           onClose={() => setEditingStyles(null)}
-          onSave={(styles) => {
+          onSave={(styles: string[]) => {
             patchDefLocal(editingStyles, { styles: styles.length ? styles : null });
           }}
-          selectedStyles={word.values[editingStyles].styles || []}
+          selectedItems={word.values[editingStyles].styles || []}
+          title="Seleccionar estilos de uso"
+          options={USAGE_STYLES}
+          maxWidth="lg"
+          columns={2}
         />
       )}
     </div>

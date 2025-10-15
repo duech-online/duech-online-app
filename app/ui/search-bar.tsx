@@ -3,9 +3,8 @@
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { MultiSelectDropdown } from '@/app/ui/dropdown';
-import FilterPill from '@/app/ui/filter-pill';
 import { getSearchMetadata } from '@/app/lib/dictionary';
-import { SearchIcon, SettingsIcon } from '@/app/ui/icons';
+import { CloseIcon, SearchIcon, SettingsIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES, SearchFilters } from '@/app/lib/definitions';
 
@@ -315,13 +314,25 @@ export default function SearchBar({
     return (
       <div className="mt-4 flex flex-wrap gap-2">
         {pills.map((pill) => (
-          <FilterPill
+          <Button
             key={`${pill.key}-${pill.value}`}
-            label={pill.label}
-            value={pill.value}
-            onRemove={(value) => removeFilterValue(pill.key, value)}
-            variant={pill.variant}
-          />
+            type="button"
+            onClick={() => removeFilterValue(pill.key, pill.value)}
+            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium ${
+              pill.variant === 'category'
+                ? 'border-blue-300 bg-blue-100 text-blue-800'
+                : pill.variant === 'style'
+                  ? 'border-green-300 bg-green-100 text-green-800'
+                  : pill.variant === 'origin'
+                    ? 'border-purple-300 bg-purple-100 text-purple-800'
+                    : pill.variant === 'letter'
+                      ? 'border-orange-300 bg-orange-100 text-orange-800'
+                      : 'border-gray-300 bg-gray-100 text-gray-800'
+            } `}
+          >
+            <span>{pill.label}</span>
+            <CloseIcon className="h-3 w-3" />
+          </Button>
         ))}
       </div>
     );
