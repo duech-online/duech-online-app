@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Popup from 'reactjs-popup';
 import { SelectDropdown, MultiSelectDropdown } from '@/app/ui/dropdown';
+import { Button } from '@/app/ui/button';
 import SearchBar from '@/app/ui/search-bar';
 import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
@@ -388,9 +389,9 @@ function EditorContent() {
         <h1 className="text-duech-blue text-4xl font-bold">Editor de Diccionario</h1>
         <Popup
           trigger={
-            <button className="bg-duech-blue rounded-full px-8 py-3 text-lg font-semibold text-white shadow-lg hover:bg-blue-800">
+            <Button className="bg-duech-blue rounded-full px-8 py-3 text-lg font-semibold text-white shadow-lg hover:bg-blue-800">
               Agregar palabra
-            </button>
+            </Button>
           }
           position="center center"
           modal
@@ -405,12 +406,12 @@ function EditorContent() {
           {
             ((close: () => void) => (
               <div className="relative w-[500px] rounded-lg bg-white p-6 shadow-xl">
-                <button
+                <Button
                   className="absolute top-3 right-3 text-2xl leading-none font-light text-gray-400 hover:text-gray-600"
                   onClick={close}
                 >
                   &times;
-                </button>
+                </Button>
 
                 <h3 className="text-duech-blue mb-4 text-xl font-semibold">Agregar palabra</h3>
 
@@ -468,7 +469,7 @@ function EditorContent() {
                 />
 
                 <div className="mt-5 flex justify-end">
-                  <button
+                  <Button
                     className="bg-duech-blue rounded px-6 py-2 font-semibold text-white transition-colors hover:bg-blue-800"
                     onClick={async () => {
                       const created = await handleAddWord();
@@ -478,7 +479,7 @@ function EditorContent() {
                     }}
                   >
                     Guardar
-                  </button>
+                  </Button>
                 </div>
               </div>
             )) as unknown as React.ReactNode
