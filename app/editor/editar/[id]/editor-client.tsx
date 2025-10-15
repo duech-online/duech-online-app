@@ -6,7 +6,14 @@ import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
 import { CategorySelector, StyleSelector, CategoryChip, StyleChip } from '@/app/ui/edit-controls';
 import { Button } from '@/app/ui/button';
-import { PencilIcon, TrashIcon, PlusIcon, SpinnerIcon, CheckCircleIcon, ExclamationCircleIcon } from '@/app/ui/icons';
+import {
+  PencilIcon,
+  TrashIcon,
+  PlusIcon,
+  SpinnerIcon,
+  CheckCircleIcon,
+  ExclamationCircleIcon,
+} from '@/app/ui/icons';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
@@ -372,7 +379,7 @@ export default function EditorClient({
 
             <button
               onClick={() => toggle('lemma')}
-              className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
+              className="text-duech-blue ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
               aria-label="Editar lema"
               title="Editar lema"
             >
@@ -443,7 +450,7 @@ export default function EditorClient({
           </span>
           <button
             onClick={() => toggle('root')}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
+            className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
             aria-label="Editar raíz"
             title="Editar raíz"
           >
@@ -489,7 +496,7 @@ export default function EditorClient({
                         </span>
                         <button
                           onClick={() => toggle(`def:${defIndex}:origin`)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
+                          className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                           aria-label="Editar origen"
                           title="Editar origen"
                         >
@@ -566,7 +573,7 @@ export default function EditorClient({
                         </Link>
                         <button
                           onClick={() => toggle(`def:${defIndex}:remission`)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
+                          className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                           aria-label="Editar remisión"
                           title="Editar remisión"
                         >
@@ -602,7 +609,7 @@ export default function EditorClient({
                         <MarkdownRenderer content={def.meaning} />
                         <button
                           onClick={() => toggle(`def:${defIndex}:meaning`)}
-                          className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
+                          className="text-duech-blue mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                           aria-label="Editar significado"
                           title="Editar significado"
                         >
@@ -696,7 +703,7 @@ export default function EditorClient({
                           patchDefLocal(defIndex, { observation: '' });
                           toggle(`def:${defIndex}:observation`);
                         }}
-                        className="text-sm text-duech-blue hover:text-blue-800"
+                        className="text-duech-blue text-sm hover:text-blue-800"
                       >
                         + Añadir observación
                       </button>
@@ -904,7 +911,7 @@ export default function EditorClient({
                                 <div className="absolute right-3 bottom-3 flex gap-2">
                                   <button
                                     onClick={() => openExampleEditor(defIndex, exIndex)}
-                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
+                                    className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                                     aria-label="Editar ejemplo"
                                     title="Editar ejemplo"
                                   >
@@ -999,7 +1006,7 @@ export default function EditorClient({
               <Button
                 type="button"
                 onClick={() => handleAddDefinition()}
-                className="bg-duech-blue text-white hover:bg-blue-800 rounded-full px-6 py-2 text-sm"
+                className="bg-duech-blue rounded-full px-6 py-2 text-sm text-white hover:bg-blue-800"
               >
                 Añadir definición
               </Button>

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import type { Example } from '@/app/lib/definitions';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 
-
 /**
  * Selector múltiple para categorías gramaticales
  */
