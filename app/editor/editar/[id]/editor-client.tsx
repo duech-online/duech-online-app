@@ -377,14 +377,14 @@ export default function EditorClient({
               LETRA {letter.toUpperCase()}
             </span>
 
-            <button
+            <Button
               onClick={() => toggle('lemma')}
               className="text-duech-blue ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
               aria-label="Editar lema"
               title="Editar lema"
             >
               <PencilIcon className="h-6 w-6" />
-            </button>
+            </Button>
           </div>
 
           {/* selects locales */}
@@ -448,14 +448,14 @@ export default function EditorClient({
               placeholder="+ Añadir raíz"
             />
           </span>
-          <button
+          <Button
             onClick={() => toggle('root')}
             className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
             aria-label="Editar raíz"
             title="Editar raíz"
           >
             <PencilIcon className="h-6 w-6" />
-          </button>
+          </Button>
         </div>
 
         {/* definiciones */}
@@ -494,34 +494,34 @@ export default function EditorClient({
                         <span className="text-sm text-gray-600">
                           <span className="font-medium">Origen:</span> {def.origin}
                         </span>
-                        <button
+                        <Button
                           onClick={() => toggle(`def:${defIndex}:origin`)}
                           className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                           aria-label="Editar origen"
                           title="Editar origen"
                         >
                           <PencilIcon className="h-6 w-6" />
-                        </button>
+                        </Button>
                       </>
                     ) : (
-                      <button
+                      <Button
                         onClick={() => toggle(`def:${defIndex}:origin`)}
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         + Añadir origen
-                      </button>
+                      </Button>
                     )}
                   </div>
 
                   {/* categorías */}
                   <div className="mb-3">
                     {!def.categories || def.categories.length === 0 ? (
-                      <button
+                      <Button
                         onClick={() => setEditingCategories(defIndex)}
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         + Añadir categorías
-                      </button>
+                      </Button>
                     ) : (
                       <div className="flex flex-wrap items-center gap-2">
                         {def.categories.map((cat, i) => (
@@ -536,14 +536,14 @@ export default function EditorClient({
                           />
                         ))}
 
-                        <button
+                        <Button
                           onClick={() => setEditingCategories(defIndex)}
                           aria-label="Editar categorías"
                           title="Editar categorías"
                           className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
                         >
                           <PlusIcon className="h-5 w-5" />
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -571,22 +571,22 @@ export default function EditorClient({
                         >
                           {def.remission}
                         </Link>
-                        <button
+                        <Button
                           onClick={() => toggle(`def:${defIndex}:remission`)}
                           className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                           aria-label="Editar remisión"
                           title="Editar remisión"
                         >
                           <PencilIcon className="h-6 w-6" />
-                        </button>
+                        </Button>
                       </>
                     ) : (
-                      <button
+                      <Button
                         onClick={() => toggle(`def:${defIndex}:remission`)}
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         + Añadir remisión
-                      </button>
+                      </Button>
                     )}
                   </div>
 
@@ -607,14 +607,14 @@ export default function EditorClient({
                     ) : (
                       <div className="text-xl leading-relaxed text-gray-900">
                         <MarkdownRenderer content={def.meaning} />
-                        <button
+                        <Button
                           onClick={() => toggle(`def:${defIndex}:meaning`)}
                           className="text-duech-blue mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                           aria-label="Editar significado"
                           title="Editar significado"
                         >
                           <PencilIcon className="h-6 w-6" />
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -622,12 +622,12 @@ export default function EditorClient({
                   {/* estilos de uso */}
                   <div className="mb-3">
                     {!def.styles || def.styles.length === 0 ? (
-                      <button
+                      <Button
                         onClick={() => setEditingStyles(defIndex)}
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         + Añadir estilos de uso
-                      </button>
+                      </Button>
                     ) : (
                       <div className="flex flex-wrap items-center gap-2">
                         {def.styles.map((s) => (
@@ -643,14 +643,14 @@ export default function EditorClient({
                           />
                         ))}
 
-                        <button
+                        <Button
                           onClick={() => setEditingStyles(defIndex)}
                           aria-label="Editar estilos de uso"
                           title="Editar estilos de uso"
                           className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
                         >
                           <PlusIcon className="h-5 w-5" />
-                        </button>
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -689,15 +689,15 @@ export default function EditorClient({
                         </div>
                       </div>
                     ) : def.observation ? (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => toggle(`def:${defIndex}:observation`)}
                         className="w-full rounded-md bg-blue-50 px-4 py-3 text-left text-sm text-blue-800 hover:bg-blue-100"
                       >
                         <span className="font-semibold">Observación:</span> {def.observation}
-                      </button>
+                      </Button>
                     ) : (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => {
                           patchDefLocal(defIndex, { observation: '' });
@@ -706,7 +706,7 @@ export default function EditorClient({
                         className="text-duech-blue text-sm hover:text-blue-800"
                       >
                         + Añadir observación
-                      </button>
+                      </Button>
                     )}
                   </div>
 
@@ -716,14 +716,14 @@ export default function EditorClient({
                       <h3 className="text-sm font-medium text-gray-900">
                         Ejemplo{exs.length > 1 ? 's' : ''}
                       </h3>
-                      <button
+                      <Button
                         onClick={() => handleAddExample(defIndex)}
                         aria-label="Agregar ejemplo"
                         title="Agregar ejemplo"
                         className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 text-blue-600 hover:bg-blue-50"
                       >
                         <PlusIcon className="h-5 w-5" />
-                      </button>
+                      </Button>
                     </div>
 
                     <div className="space-y-2">
@@ -909,22 +909,22 @@ export default function EditorClient({
                                 })()}
 
                                 <div className="absolute right-3 bottom-3 flex gap-2">
-                                  <button
+                                  <Button
                                     onClick={() => openExampleEditor(defIndex, exIndex)}
                                     className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
                                     aria-label="Editar ejemplo"
                                     title="Editar ejemplo"
                                   >
                                     <PencilIcon className="h-6 w-6" />
-                                  </button>
-                                  <button
+                                  </Button>
+                                  <Button
                                     onClick={() => handleDeleteExample(defIndex, exIndex)}
                                     className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 hover:bg-red-100"
                                     aria-label="Eliminar ejemplo"
                                     title="Eliminar ejemplo"
                                   >
                                     <TrashIcon className="h-6 w-6" />
-                                  </button>
+                                  </Button>
                                 </div>
                               </>
                             )}
@@ -947,24 +947,24 @@ export default function EditorClient({
                           className="w-64 rounded-lg border border-blue-200 px-3 py-2 text-sm text-gray-800 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                           placeholder="Añade una variante..."
                         />
-                        <button
+                        <Button
                           type="button"
                           onClick={() => toggle(`def:${defIndex}:variant`)}
                           className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
                         >
                           Listo
-                        </button>
+                        </Button>
                       </div>
                     ) : def.variant ? (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => toggle(`def:${defIndex}:variant`)}
                         className="rounded px-2 py-1 text-sm text-blue-700 hover:bg-blue-50"
                       >
                         {def.variant}
-                      </button>
+                      </Button>
                     ) : (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => {
                           patchDefLocal(defIndex, { variant: '' });
@@ -973,29 +973,29 @@ export default function EditorClient({
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         + Añadir variante
-                      </button>
+                      </Button>
                     )}
                   </div>
 
                   {/* botones agregar/eliminar definición */}
                   <div className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4">
-                    <button
+                    <Button
                       onClick={() => handleAddDefinition(defIndex)}
                       aria-label="Agregar definición"
                       title="Agregar definición"
                       className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                     >
                       <PlusIcon className="h-7 w-7" />
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                       onClick={() => handleDeleteDefinition(defIndex)}
                       aria-label="Eliminar definición"
                       title="Eliminar definición"
                       className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
                     >
                       <TrashIcon className="h-7 w-7" />
-                    </button>
+                    </Button>
                   </div>
                 </section>
               );
