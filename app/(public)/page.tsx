@@ -1,8 +1,12 @@
-import Link from 'next/link';
+'use client';
+import { useRouter } from 'next/navigation';
+import { ArrowRightIcon } from '@/app/ui/icons';
+import { Button } from '@/app/ui/button';
 import SearchBar from '@/app/ui/search-bar';
 import WordOfTheDay from '@/app/ui/word-of-the-day';
 
 export default function Home() {
+  const router = useRouter();
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-16 text-center">
@@ -99,20 +103,9 @@ export default function Home() {
           Personaliza tus búsquedas con filtros por categoría, estilo de uso, origen o letra inicial
           directamente desde la barra de búsqueda.
         </p>
-        <Link
-          href="/buscar"
-          className="bg-duech-blue inline-flex transform items-center rounded-lg px-8 py-4 text-lg font-semibold text-white shadow-lg transition-all duration-200 hover:scale-105 hover:bg-blue-800"
-        >
-          Abrir buscador
-          <svg className="ml-3 h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 7l5 5m0 0l-5 5m5-5H6"
-            />
-          </svg>
-        </Link>
+        <Button onClick={() => router.push('/buscar')} className="px-8 py-4 text-lg font-semibold">
+          Abrir buscador <ArrowRightIcon className="ml-3 h-6 w-6 text-gray-50" />
+        </Button>
       </div>
     </div>
   );
