@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import HeaderAuth from '@/app/ui/header-auth';
-import LogoutButton from '@/app/ui/logout-button';
 import { getSession } from '@/app/lib/auth';
 
 export default async function EditorLayout({
@@ -54,7 +53,6 @@ export default async function EditorLayout({
               {isAuthenticated && (
                 <div className="flex items-center space-x-4">
                   <HeaderAuth />
-                  <LogoutButton />
                 </div>
               )}
             </div>
