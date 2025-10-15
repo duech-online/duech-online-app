@@ -1,12 +1,12 @@
 'use client';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRightIcon } from '@/app/ui/icons';
+import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 import SearchBar from '@/app/ui/search-bar';
 import WordOfTheDay from '@/app/ui/word-of-the-day';
 
 export default function Home() {
-  const router = useRouter();
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-16 text-center">
@@ -30,19 +30,7 @@ export default function Home() {
 
         <div className="border-duech-blue card-hover rounded-xl border-t-4 bg-white p-8 shadow-lg">
           <h2 className="text-duech-blue mb-6 flex items-center text-2xl font-bold">
-            <svg
-              className="text-duech-gold mr-3 h-8 w-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <InformationCircleIcon className="mr-3 h-6 w-6 flex-shrink-0" />
             Acerca del DUECh
           </h2>
           <p className="mb-6 text-lg leading-relaxed text-gray-800">
@@ -52,45 +40,15 @@ export default function Home() {
           </p>
           <div className="space-y-4">
             <div className="flex items-center text-gray-700">
-              <svg
-                className="text-duech-gold mr-3 h-6 w-6 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <CheckCircleIcon className="text-duech-gold mr-3 h-6 w-6 flex-shrink-0" />
               <span className="font-medium">Definiciones completas y contextualizadas</span>
             </div>
             <div className="flex items-center text-gray-700">
-              <svg
-                className="text-duech-gold mr-3 h-6 w-6 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <CheckCircleIcon className="text-duech-gold mr-3 h-6 w-6 flex-shrink-0" />
               <span className="font-medium">Ejemplos de uso real y contextual</span>
             </div>
             <div className="flex items-center text-gray-700">
-              <svg
-                className="text-duech-gold mr-3 h-6 w-6 flex-shrink-0"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <CheckCircleIcon className="text-duech-gold mr-3 h-6 w-6 flex-shrink-0" />
               <span className="font-medium">Categorías gramaticales y estilos de uso</span>
             </div>
           </div>
@@ -103,7 +61,11 @@ export default function Home() {
           Personaliza tus búsquedas con filtros por categoría, estilo de uso, origen o letra inicial
           directamente desde la barra de búsqueda.
         </p>
-        <Button onClick={() => router.push('/buscar')} className="px-8 py-4 text-lg font-semibold">
+
+        <Button
+          href="/buscar"
+          className="bg-duech-blue px-8 py-4 font-semibold text-white hover:bg-blue-800"
+        >
           Abrir buscador <ArrowRightIcon className="ml-3 h-6 w-6 text-gray-50" />
         </Button>
       </div>
