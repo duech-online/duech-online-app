@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
 import FilterPill from '@/app/ui/filter-pill';
 import { getSearchMetadata } from '@/app/lib/dictionary';
+import { SearchIcon, SettingsIcon } from '@/app/ui/icons';
+import { Button } from '@/app/ui/button';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES, SearchFilters } from '@/app/lib/definitions';
 
 interface SearchBarProps {
@@ -352,41 +354,26 @@ export default function SearchBar({
           className="focus:border-duech-blue w-full rounded-xl border-2 border-gray-300 bg-white px-6 py-4 pr-28 text-lg text-gray-900 shadow-lg transition-all duration-200 focus:ring-4 focus:ring-blue-200 focus:outline-none"
         />
         <div className="absolute inset-y-0 right-3 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setAdvancedOpen((prev) => !prev)}
-            className="hover:text-duech-blue rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
-            aria-label={advancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'}
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.89 3.31.877 2.42 2.42a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.89 1.543-.877 3.31-2.42 2.42a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.89-3.31-.877-2.42-2.42a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.89-1.543.877-3.31 2.42-2.42.996.575 2.275.126 2.572-1.065z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-          </button>
-          <button
-            type="submit"
-            className="hover:text-duech-blue rounded-lg bg-gray-100 p-3 text-gray-600 transition-colors hover:bg-blue-50"
-            aria-label="Buscar"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
+          <div className="absolute inset-y-0 right-3 flex items-center gap-2">
+            <Button
+              type="button"
+              onClick={() => setAdvancedOpen((prev) => !prev)}
+              aria-label={
+                advancedOpen ? 'Ocultar opciones avanzadas' : 'Mostrar opciones avanzadas'
+              }
+              className="hover:text-duech-blue bg-gray-100 p-3 text-gray-600 hover:bg-blue-50"
+            >
+              <SettingsIcon className="h-6 w-6" />
+            </Button>
+
+            <Button
+              type="submit"
+              aria-label="Buscar"
+              className="hover:text-duech-blue bg-gray-100 p-3 text-gray-600 hover:bg-blue-50"
+            >
+              <SearchIcon className="h-6 w-6" />
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -443,20 +430,21 @@ export default function SearchBar({
           {renderFilterPills()}
 
           <div className="mt-6 flex flex-wrap justify-end gap-3">
-            <button
+            <Button
               type="button"
               onClick={clearFilters}
-              className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100"
               disabled={!hasActiveFilters}
+              className="border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
             >
               Limpiar filtros
-            </button>
-            <button
+            </Button>
+
+            <Button
               type="submit"
-              className="bg-duech-blue rounded-lg px-5 py-2 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-900"
+              className="bg-duech-blue px-5 py-2 text-sm font-semibold text-white shadow hover:bg-blue-900"
             >
               Buscar con filtros
-            </button>
+            </Button>
           </div>
         </div>
       )}
