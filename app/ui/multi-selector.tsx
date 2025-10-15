@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/app/ui/button';
 
 /**
  * Selector múltiple genérico para opciones (categorías, estilos, etc.)
@@ -66,18 +67,18 @@ export function MultiSelector({
           ))}
         </div>
         <div className="mt-6 flex justify-end gap-3">
-          <button
+          <Button
             onClick={onClose}
             className="rounded-lg bg-gray-200 px-4 py-2 text-gray-800 hover:bg-gray-300"
           >
             Cancelar
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleSave}
             className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             Guardar
-          </button>
+          </Button>
         </div>
       </div>
     </div>
