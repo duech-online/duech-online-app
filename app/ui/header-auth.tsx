@@ -28,7 +28,7 @@ export default function HeaderAuth() {
     e.preventDefault();
     try {
       const currentPath = window.location.pathname;
-      const logoutUrl = `/api/logout?redirect=${encodeURIComponent(currentPath)}`;
+      const logoutUrl = `/api/auth/logout?redirect=${encodeURIComponent(currentPath)}`;
 
       const response = await fetch(logoutUrl, {
         method: 'POST',

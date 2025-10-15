@@ -1,40 +1,24 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { clearSessionCookie } from '@/app/lib/auth';
 
-export async function POST(_request: Request) {
+/**
+ * POST /api/logout
+ * Clears the session cookie and logs the user out
+ */
+export async function POST(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const redirect = searchParams.get('redirect') || '/';
+
+    // Clear the session cookie
     await clearSessionCookie();
-    const redirectTo = '/editor';
 
-    // Always return JSON response for consistency
-    const response = NextResponse.json({
+    return NextResponse.json({
       success: true,
-      redirectTo: redirectTo,
+      redirectTo: redirect,
     });
-
-    // Ensure the cookie is cleared in the response as well
-    response.cookies.delete('duech_session');
-
-    return response;
   } catch (error) {
-    console.error('Logout error:', error);
-
-    // Return JSON error response
-    const response = NextResponse.json(
-      {
-        success: false,
-        redirectTo: '/',
-        error: 'Logout failed',
-      },
-      { status: 500 }
-    );
-
-    response.cookies.delete('duech_session');
-    return response;
+    console.error('Error during logout:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
-}
-
-// Also handle GET requests in case the form submission method gets confused
-export async function GET(request: Request) {
-  return POST(request);
 }
