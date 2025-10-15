@@ -1,6 +1,4 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 import SearchBar from '@/app/ui/search-bar';

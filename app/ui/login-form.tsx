@@ -3,13 +3,12 @@
 import { dictionary } from '@/app/ui/fonts';
 import { Button } from '@/app/ui/button';
 import { useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { authenticate } from '@/app/lib/actions';
 import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon, ArrowRightIcon } from '@/app/ui/icons';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const redirectTo =
     searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/editor/buscar';
   const [errorMessage, setErrorMessage] = useState('');
