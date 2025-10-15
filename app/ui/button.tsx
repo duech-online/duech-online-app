@@ -24,7 +24,13 @@ function Spinner({ className = '' }: { className?: string }) {
   );
 }
 
-export function Button({ children, className = '', loading = false, disabled = false, ...rest }: ButtonProps) {
+export function Button({
+  children,
+  className = '',
+  loading = false,
+  disabled = false,
+  ...rest
+}: ButtonProps) {
   return (
     <button
       {...rest}
