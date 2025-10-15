@@ -118,11 +118,11 @@ export function MultiSelectDropdown({
     selectedOptions.length === 0
       ? placeholder
       : selectedOptions.length <= maxDisplay
-      ? selectedOptions.map((o) => o.label).join(', ')
-      : `${selectedOptions
-          .slice(0, maxDisplay)
-          .map((o) => o.label)
-          .join(', ')} +${selectedOptions.length - maxDisplay} más`;
+        ? selectedOptions.map((o) => o.label).join(', ')
+        : `${selectedOptions
+            .slice(0, maxDisplay)
+            .map((o) => o.label)
+            .join(', ')} +${selectedOptions.length - maxDisplay} más`;
 
   const toggleValue = (value: string) => {
     const values = selectedValues.includes(value)
@@ -157,9 +157,7 @@ export function MultiSelectDropdown({
               </span>
             )}
             <ChevronDownIcon
-              className={`h-5 w-5 text-gray-400 transition-transform ${
-                isOpen ? 'rotate-180' : ''
-              }`}
+              className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
             />
           </div>
         </div>
