@@ -4,6 +4,7 @@ import { getWordByLemma } from '@/app/lib/queries';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 import { Example } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
+import { BackIcon } from '@/app/ui/icons';
 
 export default async function WordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -189,14 +190,7 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
               href="/buscar"
               className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
             >
-              <svg className="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
+              <BackIcon className="mr-2 h-5 w-5" />
               Volver a búsqueda
             </Link>
           </div>
