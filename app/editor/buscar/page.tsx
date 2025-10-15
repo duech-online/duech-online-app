@@ -504,31 +504,8 @@ function EditorContent() {
             hasExtraFilters
           }
         />
-
-        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:justify-end">
-          <button
-            type="button"
-            onClick={() => {
-              if (!canExecuteSearch) return;
-              executeSearch({ query: trimmedQuery, filters: searchState.filters });
-            }}
-            disabled={!canExecuteSearch || loading}
-            className="bg-duech-blue rounded-lg px-6 py-2 text-sm font-semibold text-white shadow transition-colors hover:bg-blue-900 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {loading ? 'Buscando…' : 'Buscar'}
-          </button>
-          <button
-            type="button"
-            onClick={handleClearAll}
-            disabled={!hasAnyState}
-            className="rounded-lg border border-gray-300 px-6 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            Limpiar búsqueda
-          </button>
-        </div>
       </div>
 
-      {/* Results Section */}
       <div>
         {loading ? (
           <div className="space-y-4">
