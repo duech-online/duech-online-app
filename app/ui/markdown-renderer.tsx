@@ -15,7 +15,7 @@ interface MarkdownRendererProps {
  * @remarks
  * - Customizes the rendering of markdown elements to apply specific Tailwind CSS classes.
  * - Support only for **bold**, _italic_, and plain text.
- * 
+ *
  * @example
  * ```tsx
  * <MarkdownRenderer content="**Bold Text** and _Italic Text_." />
