@@ -1,7 +1,7 @@
 'use client';
 
-import { dictionary } from '../ui/fonts';
-import { Button } from '../ui/button';
+import { dictionary } from '@/app/ui/fonts';
+import { Button } from '@/app/ui/button';
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { authenticate } from '@/app/lib/actions';
@@ -122,14 +122,8 @@ export default function LoginForm() {
           </div>
         </div>
         <input type="hidden" name="redirectTo" value={redirectTo} />
-        <Button className="mt-5 w-full" aria-disabled={isPending} type="submit">
-          {isPending ? (
-            'Iniciando sesión...'
-          ) : (
-            <>
-              Entrar <ArrowRightIcon className="ml-2 h-5 w-5 text-gray-50" />
-            </>
-          )}
+        <Button className="mt-5 w-full" type="submit" loading={isPending}>
+          Entrar <ArrowRightIcon className="ml-2 h-5 w-5 text-gray-50" />
         </Button>
         <div className="flex h-8 items-end space-x-1" aria-live="polite" aria-atomic="true">
           {errorMessage && (

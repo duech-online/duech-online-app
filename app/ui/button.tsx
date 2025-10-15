@@ -1,6 +1,11 @@
 'use client';
 import React from 'react';
 
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  loading?: boolean;
+}
+
 function Spinner({ className = '' }: { className?: string }) {
   return (
     <svg
@@ -19,19 +24,11 @@ function Spinner({ className = '' }: { className?: string }) {
   );
 }
 
-type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: React.ReactNode;
-  loading?: boolean;
-};
-
-export function Button({ children, className = '', loading = false, ...rest }: Props) {
-  const disabled =
-    loading || rest.disabled || rest['aria-disabled'] === true || rest['aria-disabled'] === 'true';
-
+export function Button({ children, className = '', loading = false, disabled = false, ...rest }: ButtonProps) {
   return (
     <button
       {...rest}
-      disabled={disabled}
+      disabled={disabled || loading}
       className={`bg-duech-blue rounded-md px-4 py-2 font-medium text-white hover:bg-blue-800 disabled:opacity-60 ${className}`}
     >
       <div className="flex items-center justify-center">
