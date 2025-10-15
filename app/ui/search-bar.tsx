@@ -2,7 +2,7 @@
 
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
+import { MultiSelectDropdown } from '@/app/ui/dropdown';
 import FilterPill from '@/app/ui/filter-pill';
 import { getSearchMetadata } from '@/app/lib/dictionary';
 import { SearchIcon, SettingsIcon } from '@/app/ui/icons';
