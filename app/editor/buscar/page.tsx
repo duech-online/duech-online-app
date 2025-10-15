@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback, useMemo, useRef, Suspense } from 'rea
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Popup from 'reactjs-popup';
-import MultiSelectDropdown from '@/app/ui/multi-select-dropdown';
-import SelectDropdown from '@/app/ui/select-dropdown';
+import { SelectDropdown, MultiSelectDropdown } from '@/app/ui/dropdown';
 import SearchBar from '@/app/ui/search-bar';
 import { searchDictionary } from '@/app/lib/dictionary';
 import { SearchResult } from '@/app/lib/definitions';
