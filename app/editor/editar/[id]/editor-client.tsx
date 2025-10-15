@@ -5,6 +5,8 @@ import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
 import { CategorySelector, StyleSelector, CategoryChip, StyleChip } from '@/app/ui/edit-controls';
+import { Button } from '@/app/ui/button';
+import { PencilIcon, TrashIcon, PlusIcon, SpinnerIcon, CheckCircleIcon, ExclamationCircleIcon } from '@/app/ui/icons';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
@@ -310,49 +312,22 @@ export default function EditorClient({
       saving: {
         bg: 'bg-blue-50',
         text: 'text-blue-700',
-        icon: (
-          <svg
-            className="h-4 w-4 animate-spin"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-          >
-            <circle className="opacity-25" cx="12" cy="12" r="10" strokeWidth="4" />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            />
-          </svg>
-        ),
+        icon: <SpinnerIcon className="h-4 w-4" />,
         label: 'Guardando...',
       },
       saved: {
         bg: 'bg-green-50',
         text: 'text-green-700',
-        icon: (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        ),
+        icon: <CheckCircleIcon className="h-4 w-4" />,
         label: 'Guardado',
       },
       error: {
         bg: 'bg-red-50',
         text: 'text-red-700',
-        icon: (
-          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        ),
+        icon: <ExclamationCircleIcon className="h-4 w-4" />,
         label: 'Error al guardar',
       },
-    };
+    } as const;
 
     const config = statusConfig[saveStatus];
 
@@ -397,23 +372,11 @@ export default function EditorClient({
 
             <button
               onClick={() => toggle('lemma')}
-              className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+              className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
               aria-label="Editar lema"
               title="Editar lema"
             >
-              <svg
-                className="h-6 w-6"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                />
-              </svg>
+              <PencilIcon className="h-6 w-6" />
             </button>
           </div>
 
@@ -480,23 +443,11 @@ export default function EditorClient({
           </span>
           <button
             onClick={() => toggle('root')}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
             aria-label="Editar raíz"
             title="Editar raíz"
           >
-            <svg
-              className="h-6 w-6"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-              />
-            </svg>
+            <PencilIcon className="h-6 w-6" />
           </button>
         </div>
 
@@ -538,23 +489,11 @@ export default function EditorClient({
                         </span>
                         <button
                           onClick={() => toggle(`def:${defIndex}:origin`)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
                           aria-label="Editar origen"
                           title="Editar origen"
                         >
-                          <svg
-                            className="h-6 w-6"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                            />
-                          </svg>
+                          <PencilIcon className="h-6 w-6" />
                         </button>
                       </>
                     ) : (
@@ -596,7 +535,7 @@ export default function EditorClient({
                           title="Editar categorías"
                           className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
                         >
-                          +
+                          <PlusIcon className="h-5 w-5" />
                         </button>
                       </div>
                     )}
@@ -627,23 +566,11 @@ export default function EditorClient({
                         </Link>
                         <button
                           onClick={() => toggle(`def:${defIndex}:remission`)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
                           aria-label="Editar remisión"
                           title="Editar remisión"
                         >
-                          <svg
-                            className="h-6 w-6"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                            />
-                          </svg>
+                          <PencilIcon className="h-6 w-6" />
                         </button>
                       </>
                     ) : (
@@ -675,23 +602,11 @@ export default function EditorClient({
                         <MarkdownRenderer content={def.meaning} />
                         <button
                           onClick={() => toggle(`def:${defIndex}:meaning`)}
-                          className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                          className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
                           aria-label="Editar significado"
                           title="Editar significado"
                         >
-                          <svg
-                            className="h-6 w-6"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth={2}
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                            />
-                          </svg>
+                          <PencilIcon className="h-6 w-6" />
                         </button>
                       </div>
                     )}
@@ -727,7 +642,7 @@ export default function EditorClient({
                           title="Editar estilos de uso"
                           className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 leading-none text-blue-600 hover:bg-blue-50"
                         >
-                          +
+                          <PlusIcon className="h-5 w-5" />
                         </button>
                       </div>
                     )}
@@ -752,7 +667,7 @@ export default function EditorClient({
                           placeholder="Añade una observación…"
                         />
                         <div className="flex justify-end gap-2">
-                          <button
+                          <Button
                             type="button"
                             onClick={() => {
                               if (!def.observation?.trim()) {
@@ -760,10 +675,10 @@ export default function EditorClient({
                               }
                               toggle(`def:${defIndex}:observation`);
                             }}
-                            className="rounded-lg border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-100"
+                            className="bg-gray-200 text-gray-800 hover:bg-gray-300"
                           >
                             Cerrar
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ) : def.observation ? (
@@ -781,7 +696,7 @@ export default function EditorClient({
                           patchDefLocal(defIndex, { observation: '' });
                           toggle(`def:${defIndex}:observation`);
                         }}
-                        className="text-sm text-blue-600 hover:text-blue-800"
+                        className="text-sm text-duech-blue hover:text-blue-800"
                       >
                         + Añadir observación
                       </button>
@@ -800,7 +715,7 @@ export default function EditorClient({
                         title="Agregar ejemplo"
                         className="inline-flex size-9 items-center justify-center rounded-full border-2 border-dashed border-blue-400 text-blue-600 hover:bg-blue-50"
                       >
-                        +
+                        <PlusIcon className="h-5 w-5" />
                       </button>
                     </div>
 
@@ -921,22 +836,22 @@ export default function EditorClient({
                                 </div>
 
                                 <div className="absolute right-3 bottom-3 flex gap-2">
-                                  <button
+                                  <Button
                                     type="button"
                                     onClick={saveExampleDraft}
-                                    className="bg-duech-blue inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800"
+                                    className="bg-duech-blue text-white hover:bg-blue-800"
                                   >
                                     Guardar ejemplo
-                                  </button>
-                                  <button
+                                  </Button>
+                                  <Button
                                     type="button"
                                     onClick={() =>
                                       closeExampleEditor(activeExample?.isNew ?? false)
                                     }
-                                    className="inline-flex items-center rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                                    className="bg-gray-200 text-gray-800 hover:bg-gray-300"
                                   >
                                     Cancelar
-                                  </button>
+                                  </Button>
                                 </div>
                               </>
                             ) : (
@@ -989,23 +904,11 @@ export default function EditorClient({
                                 <div className="absolute right-3 bottom-3 flex gap-2">
                                   <button
                                     onClick={() => openExampleEditor(defIndex, exIndex)}
-                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-700 hover:bg-blue-100"
+                                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-duech-blue hover:bg-blue-100"
                                     aria-label="Editar ejemplo"
                                     title="Editar ejemplo"
                                   >
-                                    <svg
-                                      className="h-6 w-6"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth={2}
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z"
-                                      />
-                                    </svg>
+                                    <PencilIcon className="h-6 w-6" />
                                   </button>
                                   <button
                                     onClick={() => handleDeleteExample(defIndex, exIndex)}
@@ -1013,19 +916,7 @@ export default function EditorClient({
                                     aria-label="Eliminar ejemplo"
                                     title="Eliminar ejemplo"
                                   >
-                                    <svg
-                                      className="h-6 w-6"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth={2}
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
-                                      />
-                                    </svg>
+                                    <TrashIcon className="h-6 w-6" />
                                   </button>
                                 </div>
                               </>
@@ -1087,19 +978,7 @@ export default function EditorClient({
                       title="Agregar definición"
                       className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                     >
-                      <svg
-                        className="h-7 w-7"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <path
-                          d="M12 5v14M5 12h14"
-                          strokeWidth={2.5}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <PlusIcon className="h-7 w-7" />
                     </button>
 
                     <button
@@ -1108,19 +987,7 @@ export default function EditorClient({
                       title="Eliminar definición"
                       className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
                     >
-                      <svg
-                        className="h-7 w-7"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                      >
-                        <path
-                          d="M19 7l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2L5 7m3 0V4a1 1 0 011-1h6a1 1 0 011 1v3M4 7h16M10 11v6m4-6v6"
-                          strokeWidth={2.2}
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <TrashIcon className="h-7 w-7" />
                     </button>
                   </div>
                 </section>
@@ -1129,13 +996,13 @@ export default function EditorClient({
           ) : (
             <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 px-6 py-10 text-center text-gray-600">
               <p>Esta palabra aún no tiene definiciones.</p>
-              <button
+              <Button
                 type="button"
                 onClick={() => handleAddDefinition()}
-                className="bg-duech-blue rounded-full px-6 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                className="bg-duech-blue text-white hover:bg-blue-800 rounded-full px-6 py-2 text-sm"
               >
                 Añadir definición
-              </button>
+              </Button>
             </div>
           )}
         </div>
