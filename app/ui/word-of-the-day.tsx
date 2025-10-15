@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { getWordOfTheDay } from '@/app/lib/dictionary';
 import { Word } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
