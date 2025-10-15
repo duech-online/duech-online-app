@@ -851,7 +851,7 @@ export default function EditorClient({
                                     onClick={saveExampleDraft}
                                     className="bg-duech-blue text-white hover:bg-blue-800"
                                   >
-                                    Guardar ejemplo
+                                    Guardar
                                   </Button>
                                   <Button
                                     type="button"
