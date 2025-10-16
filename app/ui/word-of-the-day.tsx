@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { getWordOfTheDay } from '@/app/lib/dictionary';
 import { Word, GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import { ArrowRightIcon, BookOpenIcon } from './icons';
 import { Button } from './button';
 import { Chip } from '@/app/ui/chip';
+import { isEditorModeClient } from '@/app/lib/editor-mode';
 
 export default function WordOfTheDay() {
+  const pathname = usePathname();
+  const editorMode = isEditorModeClient(pathname);
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -87,7 +91,6 @@ export default function WordOfTheDay() {
                 code={cat}
                 label={GRAMMATICAL_CATEGORIES[cat] || cat}
                 variant="category"
-                readOnly
               />
             ))}
           </div>
@@ -99,7 +102,7 @@ export default function WordOfTheDay() {
       </div>
 
       <Button
-        href={`/ver/${encodeURIComponent(word.word.lemma)}`}
+        href={editorMode ? `/editor/palabra/${encodeURIComponent(word.word.lemma)}` : `/palabra/${encodeURIComponent(word.word.lemma)}`}
         className="bg-duech-gold px-6 py-3 font-semibold text-gray-900 shadow-md hover:bg-yellow-500"
       >
         Ver definición completa

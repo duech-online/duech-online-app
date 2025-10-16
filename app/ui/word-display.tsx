@@ -388,7 +388,7 @@ export function WordDisplay({
   };
 
   const hasDefinitions = word.values.length > 0;
-  const searchPath = editorMode ? '/editor/buscar' : '/buscar';
+  const searchPath = '/buscar';
   const searchLabel = editorMode ? 'Buscar' : 'Buscar';
 
   return (
@@ -646,7 +646,7 @@ export function WordDisplay({
                           <p className="text-lg text-gray-800">
                             Ver:{' '}
                             <Link
-                              href={`/ver/${encodeURIComponent(def.remission)}`}
+                              href={`/palabra/${encodeURIComponent(def.remission)}`}
                               className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                             >
                               {def.remission}
@@ -675,7 +675,7 @@ export function WordDisplay({
                           <p className="text-lg text-gray-800">
                             Ver:{' '}
                             <Link
-                              href={`/ver/${encodeURIComponent(def.remission)}`}
+                              href={`/palabra/${encodeURIComponent(def.remission)}`}
                               className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                             >
                               {def.remission}
@@ -1056,17 +1056,6 @@ export function WordDisplay({
           </div>
         </div>
       )}
-
-      {/* Back to search button */}
-      <div className="mt-8 rounded-xl bg-white p-6 shadow-xl">
-        <Link
-          href={searchPath}
-          className="inline-flex items-center font-medium text-blue-600 hover:text-blue-800"
-        >
-          <BackIcon className="mr-2 h-5 w-5" />
-          Volver a búsqueda
-        </Link>
-      </div>
     </div>
   );
 }

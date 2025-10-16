@@ -97,8 +97,8 @@ export function AddWordModal({ availableUsers }: AddWordModalProps) {
       // Close modal
       close();
 
-      // Navigate to editor
-      router.push(`/editor/editar/${encodeURIComponent(createdLemma)}`);
+      // Navigate to word page
+      router.push(`/palabra/${encodeURIComponent(createdLemma)}`);
     } catch (error) {
       console.error('Error adding word:', error);
       alert(error instanceof Error ? error.message : 'Error al agregar la palabra');
