@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { clearSessionCookie } from '@/app/lib/auth';
+import { clearSessionCookie } from '@/lib/auth';
 
 /**
  * POST /api/logout

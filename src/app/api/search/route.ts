@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchWords } from '@/app/lib/queries';
-import { SearchResult } from '@/app/lib/definitions';
-import { applyRateLimit } from '@/app/lib/rate-limiting';
-import { db } from '@/app/lib/db';
-import { meanings } from '@/app/lib/schema';
+import { searchWords } from '@/lib/queries';
+import { SearchResult } from '@/lib/definitions';
+import { applyRateLimit } from '@/lib/rate-limiting';
+import { db } from '@/lib/db';
+import { meanings } from '@/lib/schema';
 import { sql } from 'drizzle-orm';
 
 const MAX_QUERY_LENGTH = 100;

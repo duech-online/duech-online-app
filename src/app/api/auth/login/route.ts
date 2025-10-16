@@ -1,8 +1,8 @@
 // app/api/auth/login/route.ts - VERSIÓN CORREGIDA
 import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcrypt';
-import { db } from '@/app/lib/db';
-import { users } from '@/app/lib/schema';
+import { db } from '@/lib/db';
+import { users } from '@/lib/schema';
 import { eq, or } from 'drizzle-orm';
 
 interface LoginRequest {

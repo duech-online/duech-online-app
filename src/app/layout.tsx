@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import '@/app/globals.css';
-import { dictionary } from '@/app/components/layout/fonts';
-import Header from '@/app/components/layout/header';
-import Footer from '@/app/components/layout/footer';
+import { dictionary } from '@/components/layout/fonts';
+import Header from '@/components/layout/header';
+import Footer from '@/components/layout/footer';
 
 export const metadata: Metadata = {
   title: 'Diccionario del uso español de Chile',
