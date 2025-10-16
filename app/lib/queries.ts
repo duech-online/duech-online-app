@@ -50,7 +50,7 @@ export async function getWordByLemma(
  * Advanced search with filters
  * Returns in frontend-compatible format
  */
-export async function advancedSearch(params: {
+export async function searchWords(params: {
   query?: string;
   categories?: string[];
   styles?: string[];
@@ -66,11 +66,13 @@ export async function advancedSearch(params: {
 
   // Filter by status
   if (status !== undefined && status !== '') {
+    // Specific status value provided - filter by it
     conditions.push(eq(words.status, status));
-  } else if (status === '') {
-    // Empty string means public search - only show published
+  } else if (status === undefined) {
+    // No status provided - default to published only (public search)
     conditions.push(eq(words.status, 'published'));
   }
+  // If status is '', don't add any status filter (show all statuses - editor mode)
 
   // Filter by assignedTo (OR within assignedTo values)
   if (assignedTo && assignedTo.length > 0) {

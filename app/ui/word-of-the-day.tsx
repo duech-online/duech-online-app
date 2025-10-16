@@ -51,9 +51,6 @@ export default async function WordOfTheDay({ editorMode }: WordOfTheDayProps) {
               labels={GRAMMATICAL_CATEGORIES}
               variant="category"
               editorMode={false}
-              addLabel=""
-              onAdd={() => {}}
-              onRemove={() => {}}
             />
           </div>
         )}
