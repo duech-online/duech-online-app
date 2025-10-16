@@ -21,7 +21,9 @@ function cleanExample(ex: Example) {
 /**
  * Normalize examples to array and clean them
  */
-function normalizeAndCleanExamples(example: Example | Example[] | undefined): ReturnType<typeof cleanExample>[] {
+function normalizeAndCleanExamples(
+  example: Example | Example[] | undefined
+): ReturnType<typeof cleanExample>[] {
   const examplesArray = Array.isArray(example) ? example : example ? [example] : [];
   return examplesArray.map(cleanExample);
 }
@@ -29,10 +31,7 @@ function normalizeAndCleanExamples(example: Example | Example[] | undefined): Re
 /**
  * Insert a meaning into the database
  */
-async function insertMeaning(
-  wordId: number,
-  def: Word['values'][number]
-) {
+async function insertMeaning(wordId: number, def: Word['values'][number]) {
   const cleanedExamples = normalizeAndCleanExamples(def.example);
 
   await db.insert(meanings).values({

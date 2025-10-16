@@ -3,6 +3,32 @@
 import React from 'react';
 import { Button } from '@/components/common/button';
 
+// Helper component for form input fields
+function FormInput({
+  label,
+  value,
+  onChange,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}) {
+  return (
+    <div>
+      <label className="mb-1 block text-sm font-medium">{label}</label>
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="w-full rounded border p-2"
+        placeholder={placeholder}
+      />
+    </div>
+  );
+}
+
 type ExampleDraft = {
   value: string;
   author: string;
@@ -45,51 +71,31 @@ export function ExampleEditorModal({
               placeholder="Texto del ejemplo"
             />
           </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Autor</label>
-            <input
-              type="text"
-              value={draft.author}
-              onChange={(e) => onDraftChange({ ...draft, author: e.target.value })}
-              className="w-full rounded border p-2"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Título</label>
-            <input
-              type="text"
-              value={draft.title}
-              onChange={(e) => onDraftChange({ ...draft, title: e.target.value })}
-              className="w-full rounded border p-2"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Fuente</label>
-            <input
-              type="text"
-              value={draft.source}
-              onChange={(e) => onDraftChange({ ...draft, source: e.target.value })}
-              className="w-full rounded border p-2"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Fecha</label>
-            <input
-              type="text"
-              value={draft.date}
-              onChange={(e) => onDraftChange({ ...draft, date: e.target.value })}
-              className="w-full rounded border p-2"
-            />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm font-medium">Página</label>
-            <input
-              type="text"
-              value={draft.page}
-              onChange={(e) => onDraftChange({ ...draft, page: e.target.value })}
-              className="w-full rounded border p-2"
-            />
-          </div>
+          <FormInput
+            label="Autor"
+            value={draft.author}
+            onChange={(value) => onDraftChange({ ...draft, author: value })}
+          />
+          <FormInput
+            label="Título"
+            value={draft.title}
+            onChange={(value) => onDraftChange({ ...draft, title: value })}
+          />
+          <FormInput
+            label="Fuente"
+            value={draft.source}
+            onChange={(value) => onDraftChange({ ...draft, source: value })}
+          />
+          <FormInput
+            label="Fecha"
+            value={draft.date}
+            onChange={(value) => onDraftChange({ ...draft, date: value })}
+          />
+          <FormInput
+            label="Página"
+            value={draft.page}
+            onChange={(value) => onDraftChange({ ...draft, page: value })}
+          />
         </div>
         <div className="mt-6 flex justify-end gap-3">
           <Button onClick={onCancel} className="rounded border px-4 py-2 hover:bg-gray-50">
