@@ -5,6 +5,7 @@ import { GRAMMATICAL_CATEGORIES, USAGE_STYLES } from '@/app/lib/definitions';
 import { Example } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import { BackIcon } from '@/app/ui/icons';
+import { Chip } from '@/app/ui/chip';
 
 export default async function WordDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -90,12 +91,13 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
                   {definition.categories.length > 0 && (
                     <div className="mb-4 flex flex-wrap gap-2">
                       {definition.categories.map((cat, catIndex) => (
-                        <span
+                        <Chip
                           key={catIndex}
-                          className="bg-duech-blue inline-block rounded-full px-4 py-2 text-sm font-semibold text-white"
-                        >
-                          {GRAMMATICAL_CATEGORIES[cat] || cat}
-                        </span>
+                          code={cat}
+                          label={GRAMMATICAL_CATEGORIES[cat] || cat}
+                          variant="category"
+                          readOnly
+                        />
                       ))}
                     </div>
                   )}
@@ -126,12 +128,13 @@ export default async function WordDetailPage({ params }: { params: Promise<{ id:
                   {definition.styles && definition.styles.length > 0 && (
                     <div className="mb-4 flex flex-wrap gap-2">
                       {definition.styles.map((style, styleIndex) => (
-                        <span
+                        <Chip
                           key={styleIndex}
-                          className="bg-duech-gold inline-block rounded-full px-4 py-2 text-sm font-semibold text-gray-900"
-                        >
-                          {USAGE_STYLES[style] || style}
-                        </span>
+                          code={style}
+                          label={USAGE_STYLES[style] || style}
+                          variant="style"
+                          readOnly
+                        />
                       ))}
                     </div>
                   )}

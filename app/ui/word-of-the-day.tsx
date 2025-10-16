@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { getWordOfTheDay } from '@/app/lib/dictionary';
-import { Word } from '@/app/lib/definitions';
+import { Word, GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import { ArrowRightIcon, BookOpenIcon } from './icons';
 import { Button } from './button';
+import { Chip } from '@/app/ui/chip';
 
 export default function WordOfTheDay() {
   const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
@@ -81,12 +82,13 @@ export default function WordOfTheDay() {
         {firstDefinition.categories.length > 0 && (
           <div className="mb-4 flex flex-wrap gap-2">
             {firstDefinition.categories.map((cat, index) => (
-              <span
+              <Chip
                 key={index}
-                className="bg-duech-blue inline-block rounded-full px-3 py-1 text-sm font-semibold text-white"
-              >
-                {cat}
-              </span>
+                code={cat}
+                label={GRAMMATICAL_CATEGORIES[cat] || cat}
+                variant="category"
+                readOnly
+              />
             ))}
           </div>
         )}
