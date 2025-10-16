@@ -1,9 +1,9 @@
 import { getWordOfTheDay } from '@/app/lib/dictionary';
 import { GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
-import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import { ArrowRightIcon, BookOpenIcon } from '@/app/ui/icons';
-import { Button } from '@/app/ui/button';
-import { ChipList } from '@/app/ui/chip';
+import MarkdownRenderer from '@/app/components/common/markdown-renderer';
+import { ArrowRightIcon, BookOpenIcon } from '@/app/components/common/icons';
+import { Button } from '@/app/components/common/button';
+import { ChipList } from '@/app/components/common/chip';
 
 interface WordOfTheDayProps {
   editorMode: boolean;

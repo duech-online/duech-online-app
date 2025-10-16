@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@/app/ui/button';
+import { Button } from '@/app/components/common/button';
 import { isEditorModeClient } from '@/app/lib/editor-mode';
 
 export default function Header() {

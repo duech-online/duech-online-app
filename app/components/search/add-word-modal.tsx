@@ -3,8 +3,8 @@
 import { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Popup from 'reactjs-popup';
-import { SelectDropdown, MultiSelectDropdown } from '@/app/ui/dropdown';
-import { Button } from '@/app/ui/button';
+import { SelectDropdown, MultiSelectDropdown } from '@/app/components/common/dropdown';
+import { Button } from '@/app/components/common/button';
 
 interface User {
   id: number;

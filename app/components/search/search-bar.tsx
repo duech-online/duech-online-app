@@ -2,10 +2,10 @@
 
 import { FormEvent, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MultiSelectDropdown } from '@/app/ui/dropdown';
+import { MultiSelectDropdown } from '@/app/components/common/dropdown';
 import { getSearchMetadata } from '@/app/lib/dictionary-client';
-import { CloseIcon, SearchIcon, SettingsIcon } from '@/app/ui/icons';
-import { Button } from '@/app/ui/button';
+import { CloseIcon, SearchIcon, SettingsIcon } from '@/app/components/common/icons';
+import { Button } from '@/app/components/common/button';
 import { usePathname } from 'next/navigation';
 import { isEditorModeClient } from '@/app/lib/editor-mode';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES, SearchFilters } from '@/app/lib/definitions';

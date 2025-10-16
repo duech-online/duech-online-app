@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { SelectDropdown, MultiSelectDropdown } from '@/app/ui/dropdown';
-import SearchBar from '@/app/ui/search-bar';
+import { SelectDropdown, MultiSelectDropdown } from '@/app/components/common/dropdown';
+import SearchBar from '@/app/components/search/search-bar';
 import { searchDictionary } from '@/app/lib/dictionary-client';
 import { SearchResult } from '@/app/lib/definitions';
 import { STATUS_OPTIONS } from '@/app/lib/definitions';
-import { WordCard } from '@/app/ui/word-card';
-import { AddWordModal } from '@/app/ui/add-word-modal';
+import { WordCard } from '@/app/components/search/word-card';
+import { AddWordModal } from '@/app/components/search/add-word-modal';
 import { useUrlSearchParams } from '@/app/hooks/useUrlSearchParams';
 import { useSearchState } from '@/app/hooks/useSearchState';
 import {
@@ -16,7 +16,7 @@ import {
   EmptySearchState,
   NoResultsState,
   SearchResultsCount,
-} from '@/app/ui/search-results-components';
+} from '@/app/components/search/search-results-components';
 import {
   arraysEqual,
   filtersChanged,

@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRightCircleIcon, EyeIcon } from '@/app/ui/icons';
+import { ArrowRightCircleIcon, EyeIcon } from '@/app/components/common/icons';
 import { STATUS_OPTIONS } from '@/app/lib/definitions';
-import { Button } from '@/app/ui/button';
+import { Button } from '@/app/components/common/button';
 
 interface WordCardProps {
   lemma: string;

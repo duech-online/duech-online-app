@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import { Button } from '@/app/ui/button';
-import { PencilIcon, PlusIcon, TrashIcon } from '@/app/ui/icons';
+import MarkdownRenderer from '@/app/components/common/markdown-renderer';
+import { Button } from '@/app/components/common/button';
+import { PencilIcon, PlusIcon, TrashIcon } from '@/app/components/common/icons';
 import { type Example } from '@/app/lib/definitions';
 
 interface ExampleDisplayProps {
