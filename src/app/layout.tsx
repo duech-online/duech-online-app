@@ -16,7 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={dictionary.className} style={{ backgroundColor: 'var(--background)' }}>
+      <body
+        className={dictionary.className}
+        style={{ backgroundColor: 'var(--background)' }}
+        suppressHydrationWarning
+      >
         <Header />
         <main className="min-h-screen bg-gray-50">{children}</main>
         <Footer />
