@@ -1,14 +1,12 @@
-'use client';
 import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 import SearchBar from '@/app/ui/search-bar';
 import WordOfTheDay from '@/app/ui/word-of-the-day';
-import { usePathname } from 'next/navigation';
-import { isEditorModeClient } from '@/app/lib/editor-mode';
+import { isEditorMode } from '@/app/lib/editor-mode-server';
 
-export default function Home() {
-  const pathname = usePathname();
-  const editorMode = isEditorModeClient(pathname);
+export default async function Home() {
+  const editorMode = await isEditorMode();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-16 text-center">
@@ -28,7 +26,7 @@ export default function Home() {
       </div>
 
       <div className="mb-16 grid gap-10 md:grid-cols-2">
-        <WordOfTheDay />
+        <WordOfTheDay editorMode={editorMode} />
 
         <div className="border-duech-blue card-hover rounded-xl border-t-4 bg-white p-8 shadow-lg">
           <h2 className="text-duech-blue mb-6 flex items-center text-2xl font-bold">

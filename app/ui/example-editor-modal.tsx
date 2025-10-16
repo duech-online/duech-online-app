@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Button } from '@/app/ui/button';
-import type { Example } from '@/app/lib/definitions';
 
 type ExampleDraft = {
     value: string;

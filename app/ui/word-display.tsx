@@ -5,7 +5,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
-import { MultiSelector } from '@/app/ui/multi-selector';
+import { MultiSelector } from '@/app/ui/multi-selector-modal';
 import { Chip } from '@/app/ui/chip';
 import { SelectDropdown } from '@/app/ui/dropdown';
 import { Button } from '@/app/ui/button';
@@ -38,6 +38,11 @@ interface WordDisplayProps {
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 type ActiveExample = { defIndex: number; exIndex: number; isNew?: boolean };
 
+const LETTER_OPTIONS = 'abcdefghijklmnñopqrstuvwxyz'.split('').map((letter) => ({
+  value: letter,
+  label: letter.toUpperCase(),
+}));
+
 export function WordDisplay({
   initialWord,
   initialLetter,
@@ -46,7 +51,7 @@ export function WordDisplay({
   editorMode = false,
 }: WordDisplayProps) {
   const [word, setWord] = useState<Word>(initialWord);
-  const [letter] = useState(initialLetter);
+  const [letter, setLetter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
   const [lastSavedLemma, setLastSavedLemma] = useState(initialWord.lemma);
   const [status, setStatus] = useState<string>(initialStatus || 'draft');
@@ -79,13 +84,15 @@ export function WordDisplay({
   // Debounced auto-save (editor mode only)
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wordRef = useRef(word);
+  const letterRef = useRef(letter);
   const statusRef = useRef(status);
   const assignedToRef = useRef(assignedTo);
 
   useEffect(() => {
     statusRef.current = status;
     assignedToRef.current = assignedTo;
-  }, [status, assignedTo]);
+    letterRef.current = letter;
+  }, [status, assignedTo, letter]);
 
   useEffect(() => {
     wordRef.current = word;
@@ -101,6 +108,7 @@ export function WordDisplay({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           word: wordRef.current,
+          letter: letterRef.current,
           status: statusRef.current,
           assignedTo: assignedToRef.current,
         }),
@@ -139,7 +147,7 @@ export function WordDisplay({
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [word, status, assignedTo, autoSave, editorMode]);
+  }, [word, letter, status, assignedTo, autoSave, editorMode]);
 
   // Helper functions
   const patchWordLocal = (patch: Partial<Word>) => {
@@ -422,11 +430,6 @@ export function WordDisplay({
                 word.lemma
               )}
             </h1>
-
-            <span className="text-duech-gold rounded-full bg-yellow-100 px-3 py-1 text-sm font-semibold uppercase">
-              LETRA {letter.toUpperCase()}
-            </span>
-
             {editorMode && (
               <Button
                 onClick={() => toggle('lemma')}
@@ -442,7 +445,17 @@ export function WordDisplay({
           {/* Editor controls */}
           {editorMode && (
             <div className="flex flex-wrap items-center gap-3 text-sm">
-              <div className="w-48">
+              <div className="w-24">
+                <SelectDropdown
+                  label="Letra"
+                  options={LETTER_OPTIONS}
+                  selectedValue={letter}
+                  onChange={(value) => setLetter(value.toLowerCase())}
+                  placeholder="Letra"
+                />
+              </div>
+
+              <div className="w-36">
                 <SelectDropdown
                   label="Asignado a"
                   options={[
@@ -463,7 +476,7 @@ export function WordDisplay({
                 />
               </div>
 
-              <div className="w-48">
+              <div className="w-32">
                 <SelectDropdown
                   label="Estado"
                   options={STATUS_OPTIONS}
