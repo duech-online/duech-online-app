@@ -9,7 +9,7 @@ export default function HeaderAuth() {
 
   const fetchUser = useCallback(async () => {
     try {
-      const res = await fetch('/api/me', { cache: 'no-store' });
+      const res = await fetch('/api/auth/me', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setUser(data.user ?? null);
