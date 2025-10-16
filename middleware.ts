@@ -4,6 +4,7 @@ import { createToken, verifyToken } from '@/app/lib/auth';
 
 const EDITOR_HOST = 'editor.localhost';
 const PUBLIC_ASSET_PATTERN = /\.(ico|png|jpg|jpeg|gif|svg|webp|js|css|txt|xml|map)$/i;
+const EDITOR_PATH_PREFIX = '/editor';
 const SESSION_COOKIE = 'duech_session';
 const EDITOR_ROLES = ['lexicographer', 'editor', 'admin', 'superadmin'];
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -24,6 +25,10 @@ function isBypassPath(pathname: string) {
     pathname.startsWith('/api') ||
     PUBLIC_ASSET_PATTERN.test(pathname)
   );
+}
+
+function isEditorPath(pathname: string) {
+  return pathname === EDITOR_PATH_PREFIX || pathname.startsWith(`${EDITOR_PATH_PREFIX}/`);
 }
 
 async function checkEditorAuthentication(request: NextRequest): Promise<boolean> {
@@ -73,39 +78,49 @@ export async function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const { pathname } = url;
   const hostname = url.hostname;
+
+  // Skip middleware for bypass paths (static files, API routes, etc.)
+  if (isBypassPath(pathname)) {
+    return NextResponse.next();
+  }
+
+  console.log('[Middleware] Hostname:', hostname, 'Path:', pathname);
+
   const devToken = await ensureDevSessionCookie(request);
   let response: NextResponse;
 
-  if (hostname === EDITOR_HOST) {
-    if (isBypassPath(pathname)) {
-      response = NextResponse.next();
-    } else {
-      const isAuthenticated = await checkEditorAuthentication(request);
-      if (!isAuthenticated) {
-        const loginUrl = new URL('/editor', request.url);
-        loginUrl.searchParams.set('redirectTo', pathname);
-        response = NextResponse.redirect(loginUrl);
-      } else if (!pathname.startsWith('/editor')) {
-        const rewriteUrl = new URL(request.url);
-        rewriteUrl.pathname = pathname === '/' ? '/editor/buscar' : `/editor${pathname}`;
-        response = NextResponse.rewrite(rewriteUrl);
-      } else {
-        response = NextResponse.next();
-      }
-    }
-  } else if (pathname.startsWith('/editor') && !isBypassPath(pathname)) {
-    const isAuthenticated = await checkEditorAuthentication(request);
+  const editorHost = hostname === EDITOR_HOST;
+  const editorPath = isEditorPath(pathname);
 
-    // If accessing login page (/editor) while authenticated, redirect to /editor/buscar
-    if (pathname === '/editor' && isAuthenticated) {
-      response = NextResponse.redirect(new URL('/editor/buscar', request.url));
-    } else if (pathname !== '/editor' && !isAuthenticated) {
-      // If accessing protected subroutes without auth, redirect to login
-      const loginUrl = new URL('/editor', request.url);
+  if (editorHost || editorPath) {
+    console.log('[Middleware] Editor context detected via', editorHost ? 'host' : 'path');
+    const isAuthenticated = await checkEditorAuthentication(request);
+    if (!isAuthenticated) {
+      const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirectTo', pathname);
       response = NextResponse.redirect(loginUrl);
     } else {
-      response = NextResponse.next();
+      // Create a new request with the custom header
+      const requestHeaders = new Headers(request.headers);
+      requestHeaders.set('x-editor-mode', 'true');
+
+      if (editorPath) {
+        const rewriteUrl = request.nextUrl.clone();
+        const targetPath = pathname.replace(/^\/editor(\/)?/, '/');
+        rewriteUrl.pathname = targetPath === '' ? '/' : targetPath;
+
+        response = NextResponse.rewrite(rewriteUrl, {
+          request: {
+            headers: requestHeaders,
+          },
+        });
+      } else {
+        response = NextResponse.next({
+          request: {
+            headers: requestHeaders,
+          },
+        });
+      }
     }
   } else {
     response = NextResponse.next();

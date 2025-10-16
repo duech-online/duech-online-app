@@ -1,5 +1,20 @@
+import { isEditorMode } from '@/app/lib/editor-mode-server';
+import { getUsers } from '@/app/lib/queries';
 import { SearchPage } from '@/app/ui/search-page';
 
-export default function PublicSearchPage() {
-  return <SearchPage title="Diccionario" placeholder="Buscar palabra en el diccionario..." />;
+export default async function SearchPageRoute() {
+  const editorMode = await isEditorMode();
+  const users = editorMode ? await getUsers() : [];
+  const title = editorMode ? 'Editor de Diccionario' : 'Diccionario';
+
+  console.log('[SearchPageRoute] Editor mode:', editorMode);
+
+  return (
+    <SearchPage
+      editorMode={editorMode}
+      title={title}
+      placeholder="Buscar palabra en el diccionario..."
+      initialUsers={users}
+    />
+  );
 }

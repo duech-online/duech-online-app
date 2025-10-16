@@ -3,8 +3,12 @@ import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/app/ui
 import { Button } from '@/app/ui/button';
 import SearchBar from '@/app/ui/search-bar';
 import WordOfTheDay from '@/app/ui/word-of-the-day';
+import { usePathname } from 'next/navigation';
+import { isEditorModeClient } from '@/app/lib/editor-mode';
 
 export default function Home() {
+  const pathname = usePathname();
+  const editorMode = isEditorModeClient(pathname);
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-16 text-center">
@@ -61,7 +65,7 @@ export default function Home() {
         </p>
 
         <Button
-          href="/buscar"
+          href={editorMode ? '/editor/buscar' : '/buscar'}
           className="bg-duech-blue px-8 py-4 font-semibold text-white hover:bg-blue-800"
         >
           Abrir buscador <ArrowRightIcon className="ml-3 h-6 w-6 text-gray-50" />

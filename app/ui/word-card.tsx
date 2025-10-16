@@ -30,8 +30,9 @@ export function WordCard({
   className = '',
 }: WordCardProps) {
   const isPublished = status === 'published';
-  const editUrl = `/editor/editar/${encodeURIComponent(lemma)}`;
-  const viewUrl = `/ver/${encodeURIComponent(lemma)}`;
+  const viewUrl = editorMode ? `/editor/palabra/${encodeURIComponent(lemma)}` : `/palabra/${encodeURIComponent(lemma)}`;
+  // In editor mode, we need the public domain URL for preview
+  const publicPreviewUrl = editorMode ? `/palabra/${encodeURIComponent(lemma)}` : undefined;
 
   // Get status label and color for editor mode
   const statusOption = STATUS_OPTIONS.find((opt) => opt.value === status);
@@ -101,23 +102,24 @@ export function WordCard({
         </div>
 
         <div className="flex flex-col gap-2">
-          {isPublished && (
-            <Button
-              href={viewUrl}
-              className="inline-flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
-              title="Ver en diccionario público"
-            >
-              <EyeIcon className="h-4 w-4" />
-              Ver público
-            </Button>
-          )}
           <Button
-            href={editUrl}
+            href={viewUrl}
             className="bg-duech-blue inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-800"
           >
             Editar
             <ArrowRightCircleIcon className="h-4 w-4" />
           </Button>
+          {isPublished && (
+            <Button
+              href={publicPreviewUrl}
+              target="_blank"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200"
+              title="Ver vista pública en nueva ventana"
+            >
+              Ver
+              <EyeIcon className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       </div>
     </div>

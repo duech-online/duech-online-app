@@ -1,18 +1,20 @@
+import { ReactNode } from 'react';
+import { isEditorMode } from '@/app/lib/editor-mode-server';
 import Header from '@/app/ui/header';
 import Footer from '@/app/ui/footer';
 
-export default function PublicLayout({
+export default async function PublicLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
+  const editorMode = await isEditorMode();
+
   return (
     <>
-      <Header />
-
+      <Header editorMode={editorMode} />
       <main className="min-h-screen bg-gray-50">{children}</main>
-
-      <Footer />
+      <Footer editorMode={editorMode} />
     </>
   );
 }
