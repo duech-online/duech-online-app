@@ -1,9 +1,10 @@
-name: Check format, lint, deps, and build
+name: CI Checks
 
 on:
   push:
     branches: ['main']
   pull_request:
+    branches: ['main']
   workflow_dispatch:
 
 jobs:
@@ -29,7 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Check dependencies with Knip
-        run: npm run deps:check
+        run: npm run check:deps
 
       - name: Build Next.js app
         run: npm run build
