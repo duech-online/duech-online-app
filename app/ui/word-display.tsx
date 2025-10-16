@@ -334,22 +334,23 @@ export function WordDisplay({
         {editorMode && isEditable && defIndex !== undefined && (
           <div className="example-buttons absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 opacity-0 transition-opacity duration-200">
             <div className="flex items-center gap-3">
-              <Button
-                onClick={() => handleAddExample(defIndex)}
-                aria-label="Agregar ejemplo"
-                title="Agregar ejemplo"
-                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-green-400 bg-white text-green-600 shadow hover:bg-green-50 focus:ring-2 focus:ring-green-300 focus:outline-none"
-              >
-                <PlusIcon className="h-5 w-5" />
-              </Button>
 
               <Button
                 onClick={() => openExampleEditor(defIndex, exIndex)}
                 aria-label="Editar ejemplo"
                 title="Editar ejemplo"
-                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-green-400 bg-white text-green-600 shadow hover:bg-green-50 focus:ring-2 focus:ring-green-300 focus:outline-none"
               >
                 <PencilIcon className="h-5 w-5" />
+              </Button>
+
+              <Button
+                onClick={() => handleAddExample(defIndex)}
+                aria-label="Agregar ejemplo"
+                title="Agregar ejemplo"
+                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              >
+                <PlusIcon className="h-5 w-5" />
               </Button>
 
               <Button
@@ -636,7 +637,7 @@ export function WordDisplay({
                         {editorMode && (
                           <Button
                             onClick={() => setEditingCategories(defIndex)}
-                            className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-2 py-1 text-blue-600 hover:bg-blue-100"
+                            className="inline-flex items-center justify-center rounded-md border-2 border-dashed border-blue-400 bg-white px-2 py-1 text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                           >
                             <PlusIcon className="h-5 w-5" />
                           </Button>
@@ -779,7 +780,7 @@ export function WordDisplay({
                         {editorMode && (
                           <Button
                             onClick={() => setEditingStyles(defIndex)}
-                            className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-2 py-1 text-blue-600 hover:bg-blue-100"
+                            className="inline-flex items-center justify-center rounded-md border-2 border-dashed border-blue-400 bg-white px-2 py-1 text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                           >
                             <PlusIcon className="h-5 w-5" />
                           </Button>
