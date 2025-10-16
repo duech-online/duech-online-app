@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import InlineEditable from '@/components/common/inline-editable';
+import InlineEditable from '@/components/word/inline-editable';
 import { SelectDropdown } from '@/components/common/dropdown';
 
 interface WordHeaderProps {

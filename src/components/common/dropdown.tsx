@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDownIcon } from '@/components/common/icons';
+import { ChevronDownIcon } from '@/components/icons';
 
 interface Option {
   value: string;
@@ -74,11 +74,10 @@ export function SelectDropdown({
               key={option.value}
               type="button"
               onClick={() => handleSelect(option.value)}
-              className={`w-full px-3 py-2 text-left transition-colors hover:bg-gray-50 ${
-                selectedValue === option.value
+              className={`w-full px-3 py-2 text-left transition-colors hover:bg-gray-50 ${selectedValue === option.value
                   ? 'bg-duech-blue bg-opacity-10 text-duech-blue font-medium'
                   : 'text-gray-700'
-              }`}
+                }`}
             >
               {option.label}
             </button>
@@ -120,9 +119,9 @@ export function MultiSelectDropdown({
       : selectedOptions.length <= maxDisplay
         ? selectedOptions.map((o) => o.label).join(', ')
         : `${selectedOptions
-            .slice(0, maxDisplay)
-            .map((o) => o.label)
-            .join(', ')} +${selectedOptions.length - maxDisplay} más`;
+          .slice(0, maxDisplay)
+          .map((o) => o.label)
+          .join(', ')} +${selectedOptions.length - maxDisplay} más`;
 
   const toggleValue = (value: string) => {
     const values = selectedValues.includes(value)

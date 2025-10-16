@@ -1,7 +1,7 @@
 import { getWordOfTheDay } from '@/lib/dictionary';
 import { GRAMMATICAL_CATEGORIES } from '@/lib/definitions';
-import MarkdownRenderer from '@/components/common/markdown-renderer';
-import { ArrowRightIcon, BookOpenIcon } from '@/components/common/icons';
+import MarkdownRenderer from '@/components/word/markdown-renderer';
+import { ArrowRightIcon, BookOpenIcon } from '@/components/icons';
 import { Button } from '@/components/common/button';
 import { ChipList } from '@/components/common/chip';
 

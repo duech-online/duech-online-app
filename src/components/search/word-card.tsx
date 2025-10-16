@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRightCircleIcon, EyeIcon } from '@/components/common/icons';
+import { ArrowRightCircleIcon, EyeIcon } from '@/components/icons';
 import { STATUS_OPTIONS } from '@/lib/definitions';
 import { Button } from '@/components/common/button';
 

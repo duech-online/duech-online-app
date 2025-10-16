@@ -2,12 +2,12 @@
 
 import React from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MultiSelector } from '@/components/common/multi-selector-modal';
+import { MultiSelector } from '@/components/word/multi-selector-modal';
 import { Button } from '@/components/common/button';
 import { DefinitionSection } from '@/components/word/word-definition';
 import { WordHeader } from '@/components/word/word-header';
 import { ExampleDisplay } from '@/components/word/word-example';
-import { SpinnerIcon, CheckCircleIcon, ExclamationCircleIcon } from '@/components/common/icons';
+import { SpinnerIcon, CheckCircleIcon, ExclamationCircleIcon } from '@/components/icons';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
