@@ -1,27 +1,28 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/app/ui/button';
+import { isEditorModeClient } from '@/app/lib/editor-mode';
 
-interface HeaderProps {
-    editorMode?: boolean;
-}
-
-export default function Header({ editorMode = false }: HeaderProps) {
+export default function Header() {
     const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
     const pathname = usePathname();
+    const editorMode = isEditorModeClient(pathname);
 
     const homeLink = editorMode ? '/editor' : '/';
-    const title = editorMode ? ' Editor' : '';
+    const title = editorMode ? 'DUECh Editor' : 'DUECh';
     const subtitle = editorMode
         ? 'Editor del Diccionario del uso del español de Chile'
         : 'Diccionario del uso del español de Chile';
 
     const fetchUser = useCallback(async () => {
-        if (!editorMode) return;
+        if (!editorMode) {
+            setUser(null);
+            return;
+        }
 
         try {
             const res = await fetch('/api/auth/me', { cache: 'no-store' });
@@ -38,7 +39,7 @@ export default function Header({ editorMode = false }: HeaderProps) {
 
     useEffect(() => {
         fetchUser();
-    }, [fetchUser, pathname]); // Re-fetch whenever pathname changes
+    }, [fetchUser, pathname]);
 
     const handleLogout = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,12 +62,10 @@ export default function Header({ editorMode = false }: HeaderProps) {
                     window.location.href = '/';
                 }
             } else {
-                // Fallback redirect
                 window.location.href = '/';
             }
         } catch (error) {
             console.error('Logout error:', error);
-            // Fallback redirect
             window.location.href = '/';
         }
     };
@@ -88,7 +87,7 @@ export default function Header({ editorMode = false }: HeaderProps) {
                                 className="object-contain"
                             />
                             <div>
-                                <div className="text-duech-gold">DUECh{title}</div>
+                                <div className="text-duech-gold">{title}</div>
                                 <div className="text-xs font-normal text-gray-200">{subtitle}</div>
                             </div>
                         </Link>
@@ -123,6 +122,15 @@ export default function Header({ editorMode = false }: HeaderProps) {
                         >
                             <span className="hover:text-yellow-300">Acerca</span>
                         </Link>
+                        {editorMode && (
+                            <Link
+                                href="/"
+                                className="text-lg font-medium transition-colors"
+                                style={{ color: '#ffffff' }}
+                            >
+                                <span className="hover:text-yellow-300">Diccionario Público</span>
+                            </Link>
+                        )}
                         {editorMode && user && (
                             <div className="flex items-center gap-3">
                                 <span className="text-sm text-white/80">{user.name || user.email}</span>
