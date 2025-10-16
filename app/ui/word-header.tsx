@@ -12,6 +12,12 @@ interface WordHeaderProps {
   editingLemma: boolean;
   onStartEditLemma: () => void;
   onCancelEditLemma: () => void;
+  // Root field
+  root: string;
+  onRootChange: (value: string | null) => void;
+  editingRoot: boolean;
+  onStartEditRoot: () => void;
+  onCancelEditRoot: () => void;
   // Editor controls
   letter: string;
   onLetterChange: (value: string) => void;
@@ -33,6 +39,11 @@ export function WordHeader({
   editingLemma,
   onStartEditLemma,
   onCancelEditLemma,
+  root,
+  onRootChange,
+  editingRoot,
+  onStartEditRoot,
+  onCancelEditRoot,
   letter,
   onLetterChange,
   letterOptions,
@@ -62,7 +73,7 @@ export function WordHeader({
 
       {/* Header */}
       <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex items-baseline gap-3">
+        <div className="flex flex-col gap-2">
           <h1 className="text-duech-blue text-5xl font-bold">
             <InlineEditable
               value={lemma}
@@ -75,6 +86,22 @@ export function WordHeader({
               placeholder="(lema)"
             />
           </h1>
+          <div className="flex items-center gap-2">
+            <span className="text-lg text-gray-700">Raíz:</span>
+            <span className="text-duech-blue font-semibold">
+              <InlineEditable
+                value={root}
+                onChange={onRootChange}
+                editorMode={editorMode}
+                editing={editingRoot}
+                onStart={onStartEditRoot}
+                onCancel={onCancelEditRoot}
+                saveStrategy="manual"
+                placeholder="Raíz de la palabra"
+                addLabel="+ Añadir raíz"
+              />
+            </span>
+          </div>
         </div>
 
         {/* Editor controls */}
