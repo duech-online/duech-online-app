@@ -32,8 +32,3 @@ export function isEditorModeClient(pathname: string | null | undefined): boolean
 export function isEditorPathname(pathname: string | null | undefined): boolean {
   return isEditorPath(pathname);
 }
-
-export const EDITOR_CONFIG = {
-  hostname: EDITOR_HOSTNAME,
-  pathPrefix: EDITOR_PATH_PREFIX,
-};

@@ -41,19 +41,7 @@ export function meaningToWordDefinition(meaning: Meaning): WordDefinition {
   };
 }
 
-/**
- * Transform multiple DBWords to an array of Words
- */
-export function dbWordsToWords(dbWords: DBWord[]): Word[] {
-  return dbWords.map(dbWordToWord);
-}
 
-/**
- * Get the variant from a DBWord (stored at word level)
- */
-export function getWordVariant(dbWord: DBWord): string | null {
-  return dbWord.variant || null;
-}
 
 /**
  * Transform DBWord with its letter to SearchResult-compatible format
