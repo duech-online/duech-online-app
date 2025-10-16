@@ -278,7 +278,7 @@ export function SearchPage({
     return () => {
       cancelled = true;
     };
-  }, [editorMode, hasSearched, urlQuery, initialFilters]);
+  }, [editorMode, hasSearched, urlQuery, trimmedUrlQuery, initialFilters]);
 
   // Save filters function for editor mode
   const saveFilters = useCallback(() => {
@@ -655,7 +655,7 @@ export function SearchPage({
               {editorMode ? 'Busca palabras para editar' : 'Busca palabras en el diccionario'}
             </h3>
             <p className="text-gray-600">
-              'Usa la búsqueda avanzada arriba para encontrar palabras por categorías, estilos,
+              Usa la búsqueda avanzada arriba para encontrar palabras por categorías, estilos,
               origen o letra.
             </p>
           </div>

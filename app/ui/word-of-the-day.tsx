@@ -102,7 +102,11 @@ export default function WordOfTheDay() {
       </div>
 
       <Button
-        href={editorMode ? `/editor/palabra/${encodeURIComponent(word.word.lemma)}` : `/palabra/${encodeURIComponent(word.word.lemma)}`}
+        href={
+          editorMode
+            ? `/editor/palabra/${encodeURIComponent(word.word.lemma)}`
+            : `/palabra/${encodeURIComponent(word.word.lemma)}`
+        }
         className="bg-duech-gold px-6 py-3 font-semibold text-gray-900 shadow-md hover:bg-yellow-500"
       >
         Ver definición completa

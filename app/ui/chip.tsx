@@ -3,17 +3,12 @@
 import { DeleteIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 
-/**
- * Chip genérico con botón de eliminación opcional
- * @param editorMode - Si es true, muestra el botón de eliminar y permite interacción (default: false - solo lectura)
- */
 export interface ChipProps {
   code: string;
   label: string;
   onRemove?: (code: string) => void;
   className?: string;
   variant?: 'category' | 'style';
-  /** Editor mode: shows remove button and enables interaction */
   editorMode?: boolean;
 }
 
@@ -49,9 +44,9 @@ export function Chip({
       onKeyDown={
         editorMode
           ? (e) => {
-            // solo para que no haga scroll si alguien presiona Space, no borra nada
-            if (e.key === ' ') e.preventDefault();
-          }
+              // solo para que no haga scroll si alguien presiona Space, no borra nada
+              if (e.key === ' ') e.preventDefault();
+            }
           : undefined
       }
       title={label}

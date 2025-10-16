@@ -6,20 +6,20 @@ import { EDITOR_CONFIG, isEditorPathname } from '@/app/lib/editor-mode';
  * Relies on the middleware adding the x-editor-mode header.
  */
 export async function isEditorMode(): Promise<boolean> {
-    const headersList = await headers();
-    const editorModeHeader = headersList.get('x-editor-mode');
-    const isEditor = editorModeHeader === 'true';
+  const headersList = await headers();
+  const editorModeHeader = headersList.get('x-editor-mode');
+  const isEditor = editorModeHeader === 'true';
 
-    console.log(
-        '[isEditorMode] Header value:',
-        editorModeHeader,
-        'Result:',
-        isEditor,
-        'Hostname config:',
-        EDITOR_CONFIG.hostname,
-    );
+  console.log(
+    '[isEditorMode] Header value:',
+    editorModeHeader,
+    'Result:',
+    isEditor,
+    'Hostname config:',
+    EDITOR_CONFIG.hostname
+  );
 
-    return isEditor;
+  return isEditor;
 }
 
 export { isEditorPathname };

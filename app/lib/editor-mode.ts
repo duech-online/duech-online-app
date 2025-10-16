@@ -2,9 +2,9 @@ const EDITOR_HOSTNAME = 'editor.localhost';
 const EDITOR_PATH_PREFIX = '/editor';
 
 function isEditorPath(pathname: string | null | undefined): boolean {
-    if (!pathname) return false;
-    if (pathname === EDITOR_PATH_PREFIX) return true;
-    return pathname.startsWith(`${EDITOR_PATH_PREFIX}/`);
+  if (!pathname) return false;
+  if (pathname === EDITOR_PATH_PREFIX) return true;
+  return pathname.startsWith(`${EDITOR_PATH_PREFIX}/`);
 }
 
 /**
@@ -20,20 +20,20 @@ function isEditorPath(pathname: string | null | undefined): boolean {
  * @returns true if the route is in editor mode, false otherwise
  */
 export function isEditorModeClient(pathname: string | null | undefined): boolean {
-    // For client components, check if hostname is editor.localhost
-    if (typeof window !== 'undefined') {
-        const hostIsEditor = window.location.hostname === EDITOR_HOSTNAME;
-        const pathIsEditor = isEditorPath(pathname);
-        return hostIsEditor || pathIsEditor;
-    }
-    return isEditorPath(pathname);
+  // For client components, check if hostname is editor.localhost
+  if (typeof window !== 'undefined') {
+    const hostIsEditor = window.location.hostname === EDITOR_HOSTNAME;
+    const pathIsEditor = isEditorPath(pathname);
+    return hostIsEditor || pathIsEditor;
+  }
+  return isEditorPath(pathname);
 }
 
 export function isEditorPathname(pathname: string | null | undefined): boolean {
-    return isEditorPath(pathname);
+  return isEditorPath(pathname);
 }
 
 export const EDITOR_CONFIG = {
-    hostname: EDITOR_HOSTNAME,
-    pathPrefix: EDITOR_PATH_PREFIX,
+  hostname: EDITOR_HOSTNAME,
+  pathPrefix: EDITOR_PATH_PREFIX,
 };

@@ -9,8 +9,7 @@ import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon, ArrowRightIcon } from '@/
 
 export default function LoginForm() {
   const searchParams = useSearchParams();
-  const redirectTo =
-    searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/buscar';
+  const redirectTo = searchParams.get('redirectTo') || searchParams.get('callbackUrl') || '/buscar';
   const [errorMessage, setErrorMessage] = useState('');
   const [isPending, setIsPending] = useState(false);
 
