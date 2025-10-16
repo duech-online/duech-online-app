@@ -2,21 +2,13 @@
 
 import React from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Link from 'next/link';
-import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
 import { MultiSelector } from '@/app/ui/multi-selector-modal';
-import { Chip } from '@/app/ui/chip';
-import { SelectDropdown } from '@/app/ui/dropdown';
 import { Button } from '@/app/ui/button';
-import {
-  PencilIcon,
-  TrashIcon,
-  PlusIcon,
-  SpinnerIcon,
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from '@/app/ui/icons';
+import { DefinitionSection } from '@/app/ui/definition-section';
+import { WordHeader } from '@/app/ui/word-header';
+import { ExampleDisplay } from '@/app/ui/example-display';
+import { SpinnerIcon, CheckCircleIcon, ExclamationCircleIcon } from '@/app/ui/icons';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
@@ -312,59 +304,16 @@ export function WordDisplay({
 
   // Render example helper
   const renderExample = (example: Example | Example[], defIndex?: number, isEditable = false) => {
-    const examples = Array.isArray(example) ? example : [example];
-
-    return examples.map((ex, exIndex) => (
-      <div
-        key={exIndex}
-        className={`example-hover relative rounded-lg border-l-4 ${editorMode ? 'border-blue-600' : 'border-blue-400'} bg-gray-50 p-4 ${editorMode ? 'pb-12' : ''}`}
-      >
-        <div className="mb-2 text-gray-700">
-          <MarkdownRenderer content={ex.value} />
-        </div>
-        <div className="text-sm text-gray-600">
-          {ex.author && <span className="mr-3">Autor: {ex.author}</span>}
-          {ex.title && <span className="mr-3">Título: {ex.title}</span>}
-          {ex.source && <span className="mr-3">Fuente: {ex.source}</span>}
-          {ex.date && <span className="mr-3">Fecha: {ex.date}</span>}
-          {ex.page && <span>Página: {ex.page}</span>}
-        </div>
-
-        {/* Example action buttons (editor mode) */}
-        {editorMode && isEditable && defIndex !== undefined && (
-          <div className="example-buttons absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 opacity-0 transition-opacity duration-200">
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={() => openExampleEditor(defIndex, exIndex)}
-                aria-label="Editar ejemplo"
-                title="Editar ejemplo"
-                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-green-400 bg-white text-green-600 shadow hover:bg-green-50 focus:ring-2 focus:ring-green-300 focus:outline-none"
-              >
-                <PencilIcon className="h-5 w-5" />
-              </Button>
-
-              <Button
-                onClick={() => handleAddExample(defIndex)}
-                aria-label="Agregar ejemplo"
-                title="Agregar ejemplo"
-                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-              >
-                <PlusIcon className="h-5 w-5" />
-              </Button>
-
-              <Button
-                onClick={() => handleDeleteExample(defIndex, exIndex)}
-                aria-label="Eliminar ejemplo"
-                title="Eliminar ejemplo"
-                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
-              >
-                <TrashIcon className="h-5 w-5" />
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-    ));
+    return (
+      <ExampleDisplay
+        example={example}
+        defIndex={defIndex}
+        editorMode={isEditable}
+        onEdit={(exIndex) => defIndex !== undefined && openExampleEditor(defIndex, exIndex)}
+        onAdd={() => defIndex !== undefined && handleAddExample(defIndex)}
+        onDelete={(exIndex) => defIndex !== undefined && handleDeleteExample(defIndex, exIndex)}
+      />
+    );
   };
 
   // Save status indicator
@@ -412,84 +361,27 @@ export function WordDisplay({
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <SaveStatusIndicator />
 
-      {/* Breadcrumb Navigation */}
-      <nav className="mb-6">
-        <ol className="flex items-center space-x-2 text-sm">
-          <li>
-            <Link href={searchPath} className="text-blue-600 hover:text-blue-800">
-              {searchLabel}
-            </Link>
-          </li>
-          <li className="text-gray-400">/</li>
-          <li className="text-gray-600">{word.lemma}</li>
-        </ol>
-      </nav>
+      <WordHeader
+        lemma={word.lemma}
+        onLemmaChange={(v) => patchWordLocal({ lemma: v ?? '' })}
+        editorMode={editorMode}
+        editingLemma={isEditing('lemma')}
+        onStartEditLemma={() => toggle('lemma')}
+        onCancelEditLemma={() => setEditingKey(null)}
+        letter={letter}
+        onLetterChange={setLetter}
+        letterOptions={LETTER_OPTIONS}
+        assignedTo={assignedTo}
+        onAssignedToChange={setAssignedTo}
+        users={users}
+        status={status}
+        onStatusChange={setStatus}
+        statusOptions={STATUS_OPTIONS}
+        searchPath={searchPath}
+        searchLabel={searchLabel}
+      />
 
       <div className="border-duech-gold rounded-xl border-t-4 bg-white p-10 shadow-2xl">
-        {/* Header */}
-        <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-          <div className="flex items-baseline gap-3">
-            <h1 className="text-duech-blue text-5xl font-bold">
-              <InlineEditable
-                value={word.lemma}
-                onChange={(v) => patchWordLocal({ lemma: v ?? '' })}
-                editorMode={editorMode}
-                editing={isEditing('lemma')}
-                onStart={() => toggle('lemma')}
-                onCancel={() => setEditingKey(null)}
-                saveStrategy="manual"
-                placeholder="(lema)"
-              />
-            </h1>
-          </div>
-
-          {/* Editor controls */}
-          {editorMode && (
-            <div className="flex flex-wrap items-center gap-3 text-sm">
-              <div className="w-24">
-                <SelectDropdown
-                  label="Letra"
-                  options={LETTER_OPTIONS}
-                  selectedValue={letter}
-                  onChange={(value) => setLetter(value.toLowerCase())}
-                  placeholder="Letra"
-                />
-              </div>
-
-              <div className="w-36">
-                <SelectDropdown
-                  label="Asignado a"
-                  options={[
-                    { value: '', label: 'Sin asignar' },
-                    ...users
-                      .filter(
-                        (u) =>
-                          u.role === 'lexicographer' || u.role === 'editor' || u.role === 'admin'
-                      )
-                      .map((u) => ({
-                        value: u.id.toString(),
-                        label: u.username,
-                      })),
-                  ]}
-                  selectedValue={assignedTo?.toString() ?? ''}
-                  onChange={(value) => setAssignedTo(value ? Number(value) : null)}
-                  placeholder="Sin asignar"
-                />
-              </div>
-
-              <div className="w-32">
-                <SelectDropdown
-                  label="Estado"
-                  options={STATUS_OPTIONS}
-                  selectedValue={status}
-                  onChange={setStatus}
-                  placeholder="Seleccionar estado"
-                />
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Root */}
         <div className="mb-4 flex items-center gap-2">
           <span className="text-lg text-gray-700">Raíz: </span>
@@ -511,264 +403,22 @@ export function WordDisplay({
         {/* Definitions */}
         <div className="space-y-16">
           {hasDefinitions ? (
-            word.values.map((def, defIndex) => {
-              return (
-                <section
-                  key={defIndex}
-                  className={`definition-hover relative rounded-2xl border-2 ${editorMode ? 'border-blue-300/70' : 'border-gray-200'} bg-white p-6 ${editorMode ? 'pb-16 pl-14 sm:pl-16' : ''} shadow-sm`}
-                >
-                  {/* Definition number and origin */}
-                  <div className="mt-1 mb-2 flex items-center gap-2">
-                    <span
-                      className={`bg-duech-blue ${editorMode ? 'absolute top-3 left-3' : ''} inline-flex h-10 w-10 ${editorMode ? '' : 'flex-shrink-0'} items-center justify-center rounded-full text-lg font-bold text-white`}
-                    >
-                      {def.number}
-                    </span>
-
-                    {/* Origin */}
-                    <InlineEditable
-                      value={def.origin}
-                      onChange={(v) => patchDefLocal(defIndex, { origin: v })}
-                      editorMode={editorMode}
-                      editing={isEditing(`def:${defIndex}:origin`)}
-                      onStart={() => toggle(`def:${defIndex}:origin`)}
-                      onCancel={() => setEditingKey(null)}
-                      saveStrategy="manual"
-                      placeholder="Origen de la palabra"
-                      addLabel="+ Añadir origen"
-                      renderDisplay={(value: string) => (
-                        <span className="text-sm text-gray-600">
-                          <span className="font-medium">Origen:</span> {value}
-                        </span>
-                      )}
-                    />
-                  </div>
-                  {/* Categories */}
-                  <div className="mb-3">
-                    {!def.categories || def.categories.length === 0 ? (
-                      editorMode && (
-                        <Button
-                          onClick={() => setEditingCategories(defIndex)}
-                          className="hover:text-duech-blue text-sm text-gray-500 underline"
-                        >
-                          + Añadir categorías gramaticales
-                        </Button>
-                      )
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {def.categories.map((cat, catIndex) => (
-                          <Chip
-                            key={catIndex}
-                            code={cat}
-                            label={GRAMMATICAL_CATEGORIES[cat] || cat}
-                            variant="category"
-                            editorMode={editorMode}
-                            onRemove={
-                              editorMode
-                                ? () => {
-                                    const updated = def.categories.filter((_, i) => i !== catIndex);
-                                    patchDefLocal(defIndex, {
-                                      categories: updated,
-                                    });
-                                  }
-                                : undefined
-                            }
-                          />
-                        ))}
-                        {editorMode && (
-                          <Button
-                            onClick={() => setEditingCategories(defIndex)}
-                            className="inline-flex items-center justify-center rounded-md border-2 border-dashed border-blue-400 bg-white px-2 py-1 text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                          >
-                            <PlusIcon className="h-5 w-5" />
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  {/* Remission */}
-                  <div className="mb-2 flex items-center gap-2">
-                    <InlineEditable
-                      value={def.remission}
-                      onChange={(v) => patchDefLocal(defIndex, { remission: v })}
-                      editorMode={editorMode}
-                      editing={isEditing(`def:${defIndex}:remission`)}
-                      onStart={() => toggle(`def:${defIndex}:remission`)}
-                      onCancel={() => setEditingKey(null)}
-                      saveStrategy="manual"
-                      placeholder="Artículo de remisión"
-                      addLabel="+ Añadir remisión"
-                      renderDisplay={(value: string) => (
-                        <p className="text-lg text-gray-800">
-                          Ver:{' '}
-                          <Link
-                            href={`/palabra/${encodeURIComponent(value)}`}
-                            className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
-                          >
-                            {value}
-                          </Link>
-                        </p>
-                      )}
-                    />
-                  </div>
-                  {/* Meaning */}
-                  <div className="mb-4">
-                    <InlineEditable
-                      as="textarea"
-                      value={def.meaning}
-                      onChange={(v) => patchDefLocal(defIndex, { meaning: v ?? '' })}
-                      editorMode={editorMode}
-                      editing={isEditing(`def:${defIndex}:meaning`)}
-                      onStart={() => toggle(`def:${defIndex}:meaning`)}
-                      onCancel={() => setEditingKey(null)}
-                      saveStrategy="manual"
-                      placeholder="Significado de la definición"
-                      renderDisplay={(value: string) => (
-                        <div className="text-xl leading-relaxed text-gray-900">
-                          <MarkdownRenderer content={value} />
-                        </div>
-                      )}
-                    />
-                  </div>
-                  {/* Styles */}
-                  <div className="mb-3">
-                    {!def.styles || def.styles.length === 0 ? (
-                      editorMode && (
-                        <Button
-                          onClick={() => setEditingStyles(defIndex)}
-                          className="hover:text-duech-blue text-sm text-gray-500 underline"
-                        >
-                          + Añadir estilos de uso
-                        </Button>
-                      )
-                    ) : (
-                      <div className="flex flex-wrap gap-2">
-                        {def.styles.map((style, styleIndex) => (
-                          <Chip
-                            key={styleIndex}
-                            code={style}
-                            label={USAGE_STYLES[style] || style}
-                            variant="style"
-                            editorMode={editorMode}
-                            onRemove={
-                              editorMode
-                                ? () => {
-                                    const updated = def.styles!.filter((_, i) => i !== styleIndex);
-                                    patchDefLocal(defIndex, {
-                                      styles: updated.length ? updated : null,
-                                    });
-                                  }
-                                : undefined
-                            }
-                          />
-                        ))}
-                        {editorMode && (
-                          <Button
-                            onClick={() => setEditingStyles(defIndex)}
-                            className="inline-flex items-center justify-center rounded-md border-2 border-dashed border-blue-400 bg-white px-2 py-1 text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                          >
-                            <PlusIcon className="h-5 w-5" />
-                          </Button>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                  {/* Observation */}
-                  {(def.observation || editorMode) && (
-                    <div className="mb-3">
-                      <InlineEditable
-                        value={def.observation}
-                        onChange={(v) => patchDefLocal(defIndex, { observation: v })}
-                        editorMode={editorMode}
-                        editing={isEditing(`def:${defIndex}:observation`)}
-                        onStart={() => toggle(`def:${defIndex}:observation`)}
-                        onCancel={() => setEditingKey(null)}
-                        saveStrategy="manual"
-                        placeholder="Observación sobre la definición"
-                        addLabel="+ Añadir observación"
-                        as="textarea"
-                        renderDisplay={(value: string) => (
-                          <p className="flex-1 text-sm text-blue-900">
-                            <span className="font-medium">Observación:</span> {value}
-                          </p>
-                        )}
-                        renderWrapper={(children: React.ReactNode) => (
-                          <div className="rounded-lg bg-blue-50 p-3">{children}</div>
-                        )}
-                      />
-                    </div>
-                  )}
-                  {/* Examples */}
-                  {def.example && (
-                    <div className="mt-4">
-                      <div className="mb-2 flex items-center gap-3">
-                        <h3 className="text-sm font-medium text-gray-900">
-                          Ejemplo{Array.isArray(def.example) && def.example.length > 1 ? 's' : ''}:
-                        </h3>
-                      </div>
-                      <div className="space-y-8">
-                        {renderExample(def.example, defIndex, editorMode)}
-                      </div>
-                    </div>
-                  )}{' '}
-                  {/* Variant */}
-                  {(def.variant || editorMode) && (
-                    <div className="mt-4">
-                      <span className="text-sm font-medium text-gray-900">Variante: </span>
-                      <InlineEditable
-                        value={def.variant}
-                        onChange={(v) => patchDefLocal(defIndex, { variant: v })}
-                        editorMode={editorMode}
-                        editing={isEditing(`def:${defIndex}:variant`)}
-                        onStart={() => toggle(`def:${defIndex}:variant`)}
-                        onCancel={() => setEditingKey(null)}
-                        saveStrategy="manual"
-                        placeholder="Variante de la palabra"
-                        addLabel="+ Añadir variante"
-                        renderDisplay={(value: string) => (
-                          <span className="font-bold">{value}</span>
-                        )}
-                      />
-                    </div>
-                  )}
-                  {/* Expressions - Public mode only */}
-                  {!editorMode && def.expressions && def.expressions.length > 0 && (
-                    <div className="mt-3">
-                      <p className="mb-1 text-sm font-medium text-gray-900">Expresiones:</p>
-                      <ul className="list-inside list-disc text-gray-700">
-                        {def.expressions.map((expr, exprIndex) => (
-                          <li key={exprIndex} className="font-medium">
-                            {expr}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                  {/* Add/Delete definition buttons (editor mode) */}
-                  {editorMode && (
-                    <div className="definition-buttons absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4 opacity-0 transition-opacity duration-200">
-                      <Button
-                        onClick={() => handleAddDefinition(defIndex)}
-                        aria-label="Agregar definición"
-                        title="Agregar definición"
-                        className="inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-                      >
-                        <PlusIcon className="h-7 w-7" />
-                      </Button>
-
-                      <Button
-                        onClick={() => handleDeleteDefinition(defIndex)}
-                        aria-label="Eliminar definición"
-                        title="Eliminar definición"
-                        className="inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
-                      >
-                        <TrashIcon className="h-7 w-7" />
-                      </Button>
-                    </div>
-                  )}
-                </section>
-              );
-            })
+            word.values.map((def, defIndex) => (
+              <DefinitionSection
+                key={defIndex}
+                definition={def}
+                defIndex={defIndex}
+                editorMode={editorMode}
+                editingKey={editingKey}
+                onToggleEdit={toggle}
+                onPatchDefinition={(patch) => patchDefLocal(defIndex, patch)}
+                onSetEditingCategories={() => setEditingCategories(defIndex)}
+                onSetEditingStyles={() => setEditingStyles(defIndex)}
+                onAddDefinition={() => handleAddDefinition(defIndex)}
+                onDeleteDefinition={() => handleDeleteDefinition(defIndex)}
+                renderExample={renderExample}
+              />
+            ))
           ) : (
             <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 px-6 py-10 text-center text-gray-600">
               <p>Esta palabra aún no tiene definiciones.</p>

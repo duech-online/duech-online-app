@@ -3,7 +3,7 @@ import { GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import { ArrowRightIcon, BookOpenIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
-import { Chip } from '@/app/ui/chip';
+import { ChipList } from '@/app/ui/chip';
 
 interface WordOfTheDayProps {
   editorMode: boolean;
@@ -45,15 +45,16 @@ export default async function WordOfTheDay({ editorMode }: WordOfTheDayProps) {
       <div className="mb-6">
         <h3 className="text-duech-blue mb-3 text-3xl font-bold">{word.word.lemma}</h3>
         {firstDefinition.categories.length > 0 && (
-          <div className="mb-4 flex flex-wrap gap-2">
-            {firstDefinition.categories.map((cat, index) => (
-              <Chip
-                key={index}
-                code={cat}
-                label={GRAMMATICAL_CATEGORIES[cat] || cat}
-                variant="category"
-              />
-            ))}
+          <div className="mb-4">
+            <ChipList
+              items={firstDefinition.categories}
+              labels={GRAMMATICAL_CATEGORIES}
+              variant="category"
+              editorMode={false}
+              addLabel=""
+              onAdd={() => {}}
+              onRemove={() => {}}
+            />
           </div>
         )}
       </div>

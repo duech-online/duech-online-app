@@ -1,7 +1,8 @@
 'use client';
 
-import { DeleteIcon } from '@/app/ui/icons';
+import React from 'react';
 import { Button } from '@/app/ui/button';
+import { PlusIcon, DeleteIcon } from '@/app/ui/icons';
 
 interface ChipProps {
   code: string;
@@ -12,7 +13,7 @@ interface ChipProps {
   editorMode?: boolean;
 }
 
-export function Chip({
+function Chip({
   code,
   label,
   onRemove,
@@ -61,6 +62,57 @@ export function Chip({
           title={`Quitar ${label}`}
         >
           <DeleteIcon className="h-3 w-3 text-white" />
+        </Button>
+      )}
+    </div>
+  );
+}
+
+interface ChipListProps {
+  items: string[];
+  labels: Record<string, string>;
+  variant: 'category' | 'style';
+  editorMode: boolean;
+  addLabel: string;
+  onAdd: () => void;
+  onRemove: (index: number) => void;
+}
+
+export function ChipList({
+  items,
+  labels,
+  variant,
+  editorMode,
+  addLabel,
+  onAdd,
+  onRemove,
+}: ChipListProps) {
+  if (!items || items.length === 0) {
+    return editorMode ? (
+      <Button onClick={onAdd} className="hover:text-duech-blue text-sm text-gray-500 underline">
+        {addLabel}
+      </Button>
+    ) : null;
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {items.map((item, index) => (
+        <Chip
+          key={index}
+          code={item}
+          label={labels[item] || item}
+          variant={variant}
+          editorMode={editorMode}
+          onRemove={editorMode ? () => onRemove(index) : undefined}
+        />
+      ))}
+      {editorMode && (
+        <Button
+          onClick={onAdd}
+          className="inline-flex items-center justify-center rounded-md border-2 border-dashed border-blue-400 bg-white px-2 py-1 text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+        >
+          <PlusIcon className="h-5 w-5" />
         </Button>
       )}
     </div>
