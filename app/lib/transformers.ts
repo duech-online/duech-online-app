@@ -2,7 +2,7 @@
  * Transformation functions to convert between DB format and frontend format
  */
 
-import { DBWord, Meaning, Word, WordDefinition, Example } from './definitions';
+import { DBWord, Meaning, Word, WordDefinition, Example } from '@/app/lib/definitions';
 
 /**
  * Transform a DBWord (from database) to Word (frontend format)

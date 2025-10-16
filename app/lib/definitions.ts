@@ -15,16 +15,6 @@ export interface Example {
   page?: string;
 }
 
-// Database schema types (match Drizzle's camelCase output)
-interface User {
-  id: number;
-  username: string;
-  email?: string;
-  passwordHash: string;
-  role: 'lexicographer' | 'editor' | 'admin' | 'superadmin';
-  createdAt: Date;
-  updatedAt: Date;
-}
 
 export interface DBWord {
   id: number;
@@ -56,15 +46,6 @@ export interface Meaning {
   updatedAt: Date;
 }
 
-interface Note {
-  id: number;
-  wordId: number;
-  userId?: number | null;
-  note: string;
-  resolved: boolean;
-  createdAt: Date;
-}
-
 // Legacy types for backward compatibility (will be deprecated)
 export interface WordDefinition {
   number: number;
@@ -85,16 +66,7 @@ export interface Word {
   values: WordDefinition[];
 }
 
-interface LetterGroup {
-  letter: string;
-  values: Word[];
-}
 
-interface Dictionary {
-  name: string;
-  description: string;
-  value: LetterGroup[];
-}
 
 /**
  * Advanced search with filters
