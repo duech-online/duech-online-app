@@ -435,3 +435,17 @@ export async function verifyUserPassword(
 ): Promise<boolean> {
   return await bcrypt.compare(password, dbPasswordHash);
 }
+
+/**
+ * Get all users (without sensitive data)
+ */
+export async function getUsers() {
+  return await db
+    .select({
+      id: users.id,
+      username: users.username,
+      email: users.email,
+      role: users.role,
+    })
+    .from(users);
+}
