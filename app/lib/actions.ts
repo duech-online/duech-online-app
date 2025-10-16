@@ -6,7 +6,6 @@ import {
   getUserByEmail,
   getUserByUsername,
   verifyUserPassword,
-  createDatabaseUser,
 } from '@/app/lib/queries';
 
 // Demo user for backwards compatibility - checks against DB first
