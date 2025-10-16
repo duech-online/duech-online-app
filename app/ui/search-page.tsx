@@ -64,6 +64,11 @@ function parseListParam(value: string | null): string[] {
     .filter(Boolean);
 }
 
+function arraysEqual(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false;
+  return a.every((value, index) => value === b[index]);
+}
+
 export function SearchPage({
   editorMode = false,
   title,
@@ -81,6 +86,21 @@ export function SearchPage({
   const urlStyles = useMemo(() => parseListParam(searchParams.get('styles')), [searchParams]);
   const urlOrigins = useMemo(() => parseListParam(searchParams.get('origins')), [searchParams]);
   const urlLetters = useMemo(() => parseListParam(searchParams.get('letters')), [searchParams]);
+  const urlStatus = useMemo(() => (searchParams.get('status') || '').trim(), [searchParams]);
+  const urlAssignedTo = useMemo(
+    () => parseListParam(searchParams.get('assignedTo')),
+    [searchParams]
+  );
+
+  const trimmedUrlQuery = urlQuery.trim();
+  const hasUrlCriteria =
+    Boolean(trimmedUrlQuery) ||
+    urlCategories.length > 0 ||
+    urlStyles.length > 0 ||
+    urlOrigins.length > 0 ||
+    urlLetters.length > 0 ||
+    urlStatus.length > 0 ||
+    urlAssignedTo.length > 0;
 
   const initialFilters = useMemo(
     () => ({
@@ -105,6 +125,7 @@ export function SearchPage({
     };
   });
   const isInitializedRef = useRef(false);
+  const urlSearchTriggeredRef = useRef(false);
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(!editorMode);
@@ -114,12 +135,59 @@ export function SearchPage({
   // Editor mode: Use users passed from server
   const availableUsers = initialUsers;
 
-  // Restore filters on mount for editor mode
+  // Restore filters on mount for editor mode (URL params take precedence)
   useEffect(() => {
     if (!editorMode) return;
 
-    const restoreFilters = () => {
+    const urlFiltersMatchState =
+      searchState.query === trimmedUrlQuery &&
+      arraysEqual(searchState.filters.categories, urlCategories) &&
+      arraysEqual(searchState.filters.styles, urlStyles) &&
+      arraysEqual(searchState.filters.origins, urlOrigins) &&
+      arraysEqual(searchState.filters.letters, urlLetters) &&
+      searchState.status === urlStatus &&
+      arraysEqual(searchState.assignedTo, urlAssignedTo);
+
+    if (hasUrlCriteria && urlFiltersMatchState) {
+      isInitializedRef.current = true;
+      return;
+    }
+
+    if (hasUrlCriteria) {
+      urlSearchTriggeredRef.current = false;
+      setSearchState({
+        query: trimmedUrlQuery,
+        filters: {
+          categories: [...urlCategories],
+          styles: [...urlStyles],
+          origins: [...urlOrigins],
+          letters: [...urlLetters],
+        },
+        status: urlStatus,
+        assignedTo: [...urlAssignedTo],
+      });
+      setHasSearched(false);
+      setSearchResults([]);
+      setTotalResults(0);
+      isInitializedRef.current = true;
+    } else {
       const savedFilters = getEditorSearchFilters();
+
+      const cookiesMatchState =
+        searchState.query === savedFilters.query &&
+        arraysEqual(searchState.filters.categories, savedFilters.selectedCategories) &&
+        arraysEqual(searchState.filters.styles, savedFilters.selectedStyles) &&
+        arraysEqual(searchState.filters.origins, savedFilters.selectedOrigins) &&
+        arraysEqual(searchState.filters.letters, savedFilters.selectedLetters) &&
+        searchState.status === savedFilters.selectedStatus &&
+        arraysEqual(searchState.assignedTo, savedFilters.selectedAssignedTo);
+
+      if (cookiesMatchState) {
+        isInitializedRef.current = true;
+        return;
+      }
+
+      urlSearchTriggeredRef.current = false;
       setSearchState({
         query: savedFilters.query,
         filters: {
@@ -132,10 +200,25 @@ export function SearchPage({
         assignedTo: savedFilters.selectedAssignedTo,
       });
       isInitializedRef.current = true;
-    };
-
-    restoreFilters();
-  }, [editorMode]);
+    }
+  }, [
+    editorMode,
+    hasUrlCriteria,
+    searchState.assignedTo,
+    searchState.filters.categories,
+    searchState.filters.letters,
+    searchState.filters.origins,
+    searchState.filters.styles,
+    searchState.query,
+    searchState.status,
+    trimmedUrlQuery,
+    urlAssignedTo,
+    urlCategories,
+    urlLetters,
+    urlOrigins,
+    urlStatus,
+    urlStyles,
+  ]);
 
   // Auto-search on mount for public mode
   useEffect(() => {
@@ -144,7 +227,7 @@ export function SearchPage({
     let cancelled = false;
 
     const hasSearchCriteria =
-      Boolean(urlQuery.trim()) ||
+      Boolean(trimmedUrlQuery) ||
       initialFilters.categories.length > 0 ||
       initialFilters.styles.length > 0 ||
       initialFilters.origins.length > 0 ||
@@ -162,7 +245,7 @@ export function SearchPage({
       try {
         const data = await searchDictionary(
           {
-            query: urlQuery.trim(),
+            query: trimmedUrlQuery,
             categories: initialFilters.categories,
             styles: initialFilters.styles,
             origins: initialFilters.origins,
@@ -347,6 +430,63 @@ export function SearchPage({
       clearEditorSearchFilters();
     }
   }, [editorMode]);
+
+  useEffect(() => {
+    if (!editorMode) return;
+
+    if (!hasUrlCriteria) {
+      urlSearchTriggeredRef.current = false;
+      return;
+    }
+
+    if (!isInitializedRef.current) return;
+
+    const matchesUrlState =
+      searchState.query === trimmedUrlQuery &&
+      arraysEqual(searchState.filters.categories, urlCategories) &&
+      arraysEqual(searchState.filters.styles, urlStyles) &&
+      arraysEqual(searchState.filters.origins, urlOrigins) &&
+      arraysEqual(searchState.filters.letters, urlLetters) &&
+      searchState.status === urlStatus &&
+      arraysEqual(searchState.assignedTo, urlAssignedTo);
+
+    if (!matchesUrlState) {
+      urlSearchTriggeredRef.current = false;
+      return;
+    }
+
+    if (urlSearchTriggeredRef.current) return;
+
+    urlSearchTriggeredRef.current = true;
+
+    void executeSearch({
+      query: searchState.query,
+      filters: {
+        categories: searchState.filters.categories,
+        styles: searchState.filters.styles,
+        origins: searchState.filters.origins,
+        letters: searchState.filters.letters,
+      },
+    });
+  }, [
+    editorMode,
+    executeSearch,
+    hasUrlCriteria,
+    searchState.assignedTo,
+    searchState.filters.categories,
+    searchState.filters.letters,
+    searchState.filters.origins,
+    searchState.filters.styles,
+    searchState.query,
+    searchState.status,
+    trimmedUrlQuery,
+    urlAssignedTo,
+    urlCategories,
+    urlLetters,
+    urlOrigins,
+    urlStatus,
+    urlStyles,
+  ]);
 
   const userOptions = useMemo(
     () =>

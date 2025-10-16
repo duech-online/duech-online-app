@@ -6,6 +6,8 @@ import { MultiSelectDropdown } from '@/app/ui/dropdown';
 import { getSearchMetadata } from '@/app/lib/dictionary';
 import { CloseIcon, SearchIcon, SettingsIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
+import { usePathname } from 'next/navigation';
+import { isEditorModeClient } from '@/app/lib/editor-mode';
 import { GRAMMATICAL_CATEGORIES, USAGE_STYLES, SearchFilters } from '@/app/lib/definitions';
 
 interface SearchBarProps {
@@ -66,7 +68,7 @@ export default function SearchBar({
   className = '',
   initialValue = '',
   initialFilters,
-  searchPath = '/buscar',
+  searchPath: customSearchPath,
   initialAdvancedOpen = false,
   onSearch,
   onStateChange,
@@ -89,6 +91,12 @@ export default function SearchBar({
   const [availableOrigins, setAvailableOrigins] = useState<string[]>([]);
   const [advancedOpen, setAdvancedOpen] = useState<boolean>(initialAdvancedOpen);
   const [metadataLoaded, setMetadataLoaded] = useState(false);
+
+  const pathname = usePathname();
+  const editorMode = isEditorModeClient(pathname);
+
+  const defaultSearchPath = editorMode ? '/editor/buscar' : '/buscar';
+  const searchPath = customSearchPath ?? defaultSearchPath;
 
   const initialCategories = initialFilters?.categories ?? EMPTY_FILTERS.categories;
   const initialStyles = initialFilters?.styles ?? EMPTY_FILTERS.styles;
@@ -240,7 +248,8 @@ export default function SearchBar({
       if (filters.origins.length) params.set('origins', filters.origins.join(','));
       if (filters.letters.length) params.set('letters', filters.letters.join(','));
 
-      router.push(`${searchPath}${params.toString() ? `?${params.toString()}` : ''}`);
+      const queryString = params.toString();
+      router.push(`${searchPath}${queryString ? `?${queryString}` : ''}`);
     },
     [filters, hasActiveFilters, onSearch, query, router, searchPath]
   );
@@ -318,8 +327,7 @@ export default function SearchBar({
             key={`${pill.key}-${pill.value}`}
             type="button"
             onClick={() => removeFilterValue(pill.key, pill.value)}
-            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium ${
-              pill.variant === 'category'
+            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium ${pill.variant === 'category'
                 ? 'border-blue-300 bg-blue-100 text-blue-800'
                 : pill.variant === 'style'
                   ? 'border-green-300 bg-green-100 text-green-800'
@@ -328,7 +336,7 @@ export default function SearchBar({
                     : pill.variant === 'letter'
                       ? 'border-orange-300 bg-orange-100 text-orange-800'
                       : 'border-gray-300 bg-gray-100 text-gray-800'
-            } `}
+              } `}
           >
             <span>{pill.label}</span>
             <CloseIcon className="h-3 w-3" />

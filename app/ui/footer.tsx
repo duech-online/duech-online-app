@@ -1,9 +1,4 @@
-interface FooterProps {
-    /** Editor mode: shows editor-specific footer text */
-    editorMode?: boolean;
-}
-
-export default function Footer({ editorMode = false }: FooterProps) {
+export default function Footer() {
     return (
         <footer style={{ backgroundColor: 'var(--footer-background)' }} className="py-12 text-white">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
