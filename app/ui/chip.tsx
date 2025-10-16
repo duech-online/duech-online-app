@@ -73,9 +73,9 @@ interface ChipListProps {
   labels: Record<string, string>;
   variant: 'category' | 'style';
   editorMode: boolean;
-  addLabel: string;
-  onAdd: () => void;
-  onRemove: (index: number) => void;
+  addLabel?: string;
+  onAdd?: () => void;
+  onRemove?: (index: number) => void;
 }
 
 export function ChipList({
@@ -88,7 +88,7 @@ export function ChipList({
   onRemove,
 }: ChipListProps) {
   if (!items || items.length === 0) {
-    return editorMode ? (
+    return editorMode && onAdd ? (
       <Button onClick={onAdd} className="hover:text-duech-blue text-sm text-gray-500 underline">
         {addLabel}
       </Button>
@@ -104,10 +104,10 @@ export function ChipList({
           label={labels[item] || item}
           variant={variant}
           editorMode={editorMode}
-          onRemove={editorMode ? () => onRemove(index) : undefined}
+          onRemove={editorMode && onRemove ? () => onRemove(index) : undefined}
         />
       ))}
-      {editorMode && (
+      {editorMode && onAdd && (
         <Button
           onClick={onAdd}
           className="inline-flex items-center justify-center rounded-md border-2 border-dashed border-blue-400 bg-white px-2 py-1 text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"

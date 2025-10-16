@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { advancedSearch } from '@/app/lib/queries';
+import { searchWords } from '@/app/lib/queries';
 import { SearchResult } from '@/app/lib/definitions';
 import { applyRateLimit } from '@/app/lib/rate-limiting';
 import { db } from '@/app/lib/db';
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
 
     if (!metaOnly) {
       // Search in database using advanced search
-      const results = await advancedSearch({
+      const results = await searchWords({
         query: filters.query || undefined,
         categories: filters.categories.length > 0 ? filters.categories : undefined,
         styles: filters.styles.length > 0 ? filters.styles : undefined,
