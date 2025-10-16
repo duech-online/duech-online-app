@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint app",
     "format": "prettier --write .",
-    "check:deps": "npx knip"
+    "format:check": "prettier --check .",
+    "deps:check": "knip"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
