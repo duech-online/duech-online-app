@@ -1,18 +1,9 @@
 import { SearchFilters, SearchMetadata, SearchResponse, Word } from '@/app/lib/definitions';
+import { getWordByLemma } from '@/app/lib/queries';
 
 const LETTERS = 'abcdefghijklmnñopqrstuvwxyz'.split('');
 const wordOfTheDayCache = new Map<string, { word: Word; letter: string }>();
 
-/**
- * Search words using API
- */
-export async function searchWords(
-  query: string,
-  page: number = 1,
-  limit: number = 1000
-): Promise<SearchResponse> {
-  return searchDictionary({ query }, page, limit);
-}
 
 /**
  * Get a random word for "Word of the Day"
@@ -65,29 +56,6 @@ export async function getWordOfTheDay(
   }
 }
 
-/**
- * Get word by lemma
- */
-export async function getWordByLemma(
-  lemma: string
-): Promise<{ word: Word; letter: string } | null> {
-  try {
-    const response = await fetch(`/api/words/${encodeURIComponent(lemma)}`);
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        return null;
-      }
-      throw new Error('Failed to get word');
-    }
-
-    const result = await response.json();
-    return result.data;
-  } catch (error) {
-    console.error('Error getting word:', error);
-    return null;
-  }
-}
 
 export async function searchDictionary(
   filters: SearchFilters,
@@ -194,28 +162,4 @@ function hashSeed(seed: string): number {
     hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   }
   return hash;
-}
-
-/**
- * Get available categories from metadata
- */
-export async function getAvailableCategories(): Promise<string[]> {
-  const metadata = await getSearchMetadata();
-  return metadata.categories;
-}
-
-/**
- * Get available styles from metadata
- */
-export async function getAvailableStyles(): Promise<string[]> {
-  const metadata = await getSearchMetadata();
-  return metadata.styles;
-}
-
-/**
- * Get available origins from metadata
- */
-export async function getAvailableOrigins(): Promise<string[]> {
-  const metadata = await getSearchMetadata();
-  return metadata.origins;
 }

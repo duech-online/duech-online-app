@@ -169,14 +169,6 @@ export const USAGE_STYLES: Record<string, string> = {
   us: 'Usado',
 };
 
-// Regional markers
-export const REGIONAL_MARKERS: Record<string, string> = {
-  '(Norte)': 'Norte de Chile',
-};
-
-// Lexicographers (for editor)
-export const LEXICOGRAPHERS = ['Soledad', 'Sofía'];
-
 // Word states (for editorial workflow)
 export const STATUS_OPTIONS = [
   { value: 'imported', label: 'Importado' },
