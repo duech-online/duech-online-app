@@ -5,7 +5,7 @@ import { Button } from '@/app/ui/button';
 
 /**
  * Chip genérico con botón de eliminación opcional
- * @param readOnly - Si es true, no muestra el botón de eliminar y es solo para visualización
+ * @param editorMode - Si es true, muestra el botón de eliminar y permite interacción (default: false - solo lectura)
  */
 export interface ChipProps {
   code: string;
@@ -13,7 +13,8 @@ export interface ChipProps {
   onRemove?: (code: string) => void;
   className?: string;
   variant?: 'category' | 'style';
-  readOnly?: boolean;
+  /** Editor mode: shows remove button and enables interaction */
+  editorMode?: boolean;
 }
 
 export function Chip({
@@ -22,7 +23,7 @@ export function Chip({
   onRemove,
   className = '',
   variant = 'category',
-  readOnly = false,
+  editorMode = false,
 }: ChipProps) {
   const variantStyles = {
     category: {
@@ -38,25 +39,25 @@ export function Chip({
   };
 
   const styles = variantStyles[variant];
-  const chipClass = readOnly ? styles.chipReadOnly : styles.chip;
+  const chipClass = editorMode ? styles.chip : styles.chipReadOnly;
 
   return (
     <div
-      role={readOnly ? undefined : 'button'}
-      tabIndex={readOnly ? undefined : 0}
-      className={`${readOnly ? '' : 'group'} inline-flex h-9 items-center rounded-full px-4 text-sm font-semibold transition-colors ${chipClass} ${className}`}
+      role={editorMode ? 'button' : undefined}
+      tabIndex={editorMode ? 0 : undefined}
+      className={`${editorMode ? 'group' : ''} inline-flex h-9 items-center rounded-full px-4 text-sm font-semibold transition-colors ${chipClass} ${className}`}
       onKeyDown={
-        readOnly
-          ? undefined
-          : (e) => {
-              // solo para que no haga scroll si alguien presiona Space, no borra nada
-              if (e.key === ' ') e.preventDefault();
-            }
+        editorMode
+          ? (e) => {
+            // solo para que no haga scroll si alguien presiona Space, no borra nada
+            if (e.key === ' ') e.preventDefault();
+          }
+          : undefined
       }
       title={label}
     >
       <span className="select-none">{label}</span>
-      {!readOnly && onRemove && (
+      {editorMode && onRemove && (
         <Button
           type="button"
           onClick={() => onRemove(code)}
