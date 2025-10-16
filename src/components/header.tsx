@@ -14,7 +14,13 @@ export default function Header() {
 
   // Detect editor mode on mount and when pathname changes
   useEffect(() => {
-    setEditorMode(isEditorModeClient());
+    const isEditor = isEditorModeClient();
+    console.log('[Header] Detecting editor mode:', {
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'N/A',
+      isEditor,
+      pathname,
+    });
+    setEditorMode(isEditor);
   }, [pathname]);
 
   const homeLink = '/';
@@ -24,6 +30,7 @@ export default function Header() {
     : 'Diccionario del uso del español de Chile';
 
   const fetchUser = useCallback(async () => {
+    console.log('[Header] fetchUser called, editorMode:', editorMode);
     if (!editorMode) {
       setUser(null);
       return;
@@ -31,13 +38,16 @@ export default function Header() {
 
     try {
       const res = await fetch('/api/auth/me', { cache: 'no-store' });
+      console.log('[Header] /api/auth/me response:', res.status);
       if (res.ok) {
         const data = await res.json();
+        console.log('[Header] User data:', data);
         setUser(data.user ?? null);
       } else {
         setUser(null);
       }
-    } catch {
+    } catch (error) {
+      console.error('[Header] Error fetching user:', error);
       setUser(null);
     }
   }, [editorMode]);

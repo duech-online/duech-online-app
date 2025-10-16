@@ -16,7 +16,7 @@ interface WordOfTheDayData {
 
 export default function WordOfTheDay() {
   const pathname = usePathname();
-  const editorMode = isEditorModeClient(pathname);
+  const editorMode = isEditorModeClient();
   const [word, setWord] = useState<WordOfTheDayData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
