@@ -377,6 +377,11 @@ export function WordDisplay({
         editingLemma={isEditing('lemma')}
         onStartEditLemma={() => toggle('lemma')}
         onCancelEditLemma={() => setEditingKey(null)}
+        root={word.root}
+        onRootChange={(v) => patchWordLocal({ root: v ?? '' })}
+        editingRoot={isEditing('root')}
+        onStartEditRoot={() => toggle('root')}
+        onCancelEditRoot={() => setEditingKey(null)}
         letter={letter}
         onLetterChange={setLetter}
         letterOptions={LETTER_OPTIONS}
@@ -391,24 +396,6 @@ export function WordDisplay({
       />
 
       <div className="border-duech-gold rounded-xl border-t-4 bg-white p-10 shadow-2xl">
-        {/* Root */}
-        <div className="mb-4 flex items-center gap-2">
-          <span className="text-lg text-gray-700">Raíz: </span>
-          <span className="text-duech-blue font-semibold">
-            <InlineEditable
-              value={word.root}
-              onChange={(v) => patchWordLocal({ root: v ?? '' })}
-              editorMode={editorMode}
-              editing={isEditing('root')}
-              onStart={() => toggle('root')}
-              onCancel={() => setEditingKey(null)}
-              saveStrategy="manual"
-              placeholder="Raíz de la palabra"
-              addLabel="+ Añadir raíz"
-            />
-          </span>
-        </div>
-
         {/* Definitions */}
         <div className="space-y-16">
           {hasDefinitions ? (
