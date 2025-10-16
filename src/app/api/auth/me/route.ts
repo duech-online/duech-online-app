@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getSessionUser } from '@/app/lib/auth';
+import { getSessionUser } from '@/lib/auth';
 
 /**
  * GET /api/auth/me

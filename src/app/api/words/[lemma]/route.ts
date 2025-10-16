@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWordByLemma } from '@/app/lib/queries';
-import { updateWordByLemma, deleteWordByLemma, createWord } from '@/app/lib/editor-mutations';
-import { applyRateLimit } from '@/app/lib/rate-limiting';
-import type { Word, WordDefinition } from '@/app/lib/definitions';
+import { getWordByLemma } from '@/lib/queries';
+import { updateWordByLemma, deleteWordByLemma, createWord } from '@/lib/editor-mutations';
+import { applyRateLimit } from '@/lib/rate-limiting';
+import type { Word, WordDefinition } from '@/lib/definitions';
 
 export async function GET(
   request: NextRequest,

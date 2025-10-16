@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { createToken, verifyToken } from '@/app/lib/auth';
+import { createToken, verifyToken } from '@/lib/auth';
 
 const EDITOR_HOST = 'editor.localhost';
 const PUBLIC_ASSET_PATTERN = /\.(ico|png|jpg|jpeg|gif|svg|webp|js|css|txt|xml|map)$/i;

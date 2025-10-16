@@ -2,11 +2,11 @@ import {
   ArrowRightIcon,
   InformationCircleIcon,
   CheckCircleIcon,
-} from '@/app/components/common/icons';
-import { Button } from '@/app/components/common/button';
-import SearchBar from '@/app/components/search/search-bar';
-import WordOfTheDay from '@/app/components/word/word-of-the-day';
-import { isEditorMode } from '@/app/lib/editor-mode-server';
+} from '@/components/common/icons';
+import { Button } from '@/components/common/button';
+import SearchBar from '@/components/search/search-bar';
+import WordOfTheDay from '@/components/word/word-of-the-day';
+import { isEditorMode } from '@/lib/editor-mode-server';
 
 export default async function Home() {
   const editorMode = await isEditorMode();
