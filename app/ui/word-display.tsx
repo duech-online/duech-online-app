@@ -599,15 +599,15 @@ export function WordDisplay({
                             code={cat}
                             label={GRAMMATICAL_CATEGORIES[cat] || cat}
                             variant="category"
-                            readOnly={!editorMode}
+                            editorMode={editorMode}
                             onRemove={
                               editorMode
                                 ? () => {
-                                    const updated = def.categories.filter((_, i) => i !== catIndex);
-                                    patchDefLocal(defIndex, {
-                                      categories: updated,
-                                    });
-                                  }
+                                  const updated = def.categories.filter((_, i) => i !== catIndex);
+                                  patchDefLocal(defIndex, {
+                                    categories: updated,
+                                  });
+                                }
                                 : undefined
                             }
                           />
@@ -742,15 +742,15 @@ export function WordDisplay({
                             code={style}
                             label={USAGE_STYLES[style] || style}
                             variant="style"
-                            readOnly={!editorMode}
+                            editorMode={editorMode}
                             onRemove={
                               editorMode
                                 ? () => {
-                                    const updated = def.styles!.filter((_, i) => i !== styleIndex);
-                                    patchDefLocal(defIndex, {
-                                      styles: updated.length ? updated : null,
-                                    });
-                                  }
+                                  const updated = def.styles!.filter((_, i) => i !== styleIndex);
+                                  patchDefLocal(defIndex, {
+                                    styles: updated.length ? updated : null,
+                                  });
+                                }
                                 : undefined
                             }
                           />
