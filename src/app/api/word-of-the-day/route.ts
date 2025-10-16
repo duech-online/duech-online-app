@@ -18,7 +18,6 @@ export async function GET() {
 
         return NextResponse.json(word);
     } catch (error) {
-        console.error('Error fetching word of the day:', error);
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

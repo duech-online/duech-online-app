@@ -63,7 +63,6 @@ export async function getWordOfTheDay(
     wordOfTheDayCache.set(seed, fallbackWord);
     return fallbackWord;
   } catch (error) {
-    console.error('Error getting word of the day:', error);
     throw error;
   }
 }

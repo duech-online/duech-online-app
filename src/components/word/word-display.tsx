@@ -73,7 +73,7 @@ export function WordDisplay({
           setUsers(data.data);
         }
       })
-      .catch((err) => console.error('Error fetching users:', err));
+      .catch(() => { });
   }, [editorMode]);
 
   // Debounced auto-save (editor mode only)
@@ -117,7 +117,6 @@ export function WordDisplay({
         setSaveStatus('idle');
       }, 2000);
     } catch (error) {
-      console.error('Error saving:', error);
       setSaveStatus('error');
 
       setTimeout(() => {

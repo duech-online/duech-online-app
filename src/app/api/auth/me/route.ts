@@ -5,7 +5,7 @@ import { getSessionUser } from '@/lib/auth';
  * GET /api/auth/me
  * Returns the current authenticated user's session data
  */
-export async function GET() {
+export async function GET(request: Request) {
   try {
     const user = await getSessionUser();
 
@@ -22,7 +22,6 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error('Error fetching session user:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

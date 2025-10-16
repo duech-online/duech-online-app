@@ -18,7 +18,7 @@ export function setEditorSearchFilters(filters: EditorSearchFilters): void {
     const serializedFilters = JSON.stringify(filters);
     document.cookie = `${COOKIE_NAME}=${encodeURIComponent(serializedFilters)}; max-age=${COOKIE_MAX_AGE}; path=/; samesite=lax`;
   } catch (error) {
-    console.error('Error setting editor search filters cookie:', error);
+    // Silent fail
   }
 }
 
@@ -68,7 +68,6 @@ export function getEditorSearchFilters(): EditorSearchFilters {
 
     return defaultFilters;
   } catch (error) {
-    console.error('Error getting editor search filters cookie:', error);
     return defaultFilters;
   }
 }
@@ -77,6 +76,6 @@ export function clearEditorSearchFilters(): void {
   try {
     document.cookie = `${COOKIE_NAME}=; max-age=0; path=/; samesite=lax`;
   } catch (error) {
-    console.error('Error clearing editor search filters cookie:', error);
+    // Silent fail
   }
 }
