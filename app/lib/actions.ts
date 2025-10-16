@@ -2,11 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { setSessionCookie, type SessionUser } from '@/app/lib/auth';
-import {
-  getUserByEmail,
-  getUserByUsername,
-  verifyUserPassword,
-} from '@/app/lib/queries';
+import { getUserByEmail, getUserByUsername, verifyUserPassword } from '@/app/lib/queries';
 
 // Demo user for backwards compatibility - checks against DB first
 const DEMO_USER: SessionUser = {

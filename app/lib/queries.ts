@@ -47,83 +47,6 @@ export async function getWordByLemma(
 }
 
 /**
- * Search words and meanings by text query
- * Returns in frontend-compatible format
- */
-export async function searchWords(query: string, limit = 20): Promise<SearchResult[]> {
-  const searchPattern = `%${query}%`;
-
-  // Search in lemmas (exact match gets higher priority)
-  const lemmaMatches = await db.query.words.findMany({
-    where: and(eq(words.status, 'published'), ilike(words.lemma, searchPattern)),
-    with: {
-      meanings: {
-        orderBy: (meanings, { asc }) => [asc(meanings.number)],
-      },
-    },
-    limit: limit,
-  });
-
-  // Search in meanings
-  const meaningMatches = await db
-    .selectDistinctOn([words.id], {
-      id: words.id,
-      lemma: words.lemma,
-      root: words.root,
-      letter: words.letter,
-      variant: words.variant,
-      status: words.status,
-      createdBy: words.createdBy,
-      assignedTo: words.assignedTo,
-      createdAt: words.createdAt,
-      updatedAt: words.updatedAt,
-    })
-    .from(words)
-    .innerJoin(meanings, eq(words.id, meanings.wordId))
-    .where(and(eq(words.status, 'published'), ilike(meanings.meaning, searchPattern)))
-    .limit(limit);
-
-  // Get full word data for meaning matches
-  const meaningMatchesWithData = await Promise.all(
-    meaningMatches.map(async (w) => {
-      const fullWord = await db.query.words.findFirst({
-        where: eq(words.id, w.id),
-        with: {
-          meanings: {
-            orderBy: (meanings, { asc }) => [asc(meanings.number)],
-          },
-        },
-      });
-      return fullWord;
-    })
-  );
-
-  // Combine and deduplicate results
-  const allMatches = new Map();
-
-  lemmaMatches.forEach((w) => {
-    if (w) {
-      const exactMatch = w.lemma.toLowerCase() === query.toLowerCase();
-      allMatches.set(w.lemma, {
-        ...dbWordToSearchResult(w),
-        matchType: exactMatch ? 'exact' : ('partial' as const),
-      });
-    }
-  });
-
-  meaningMatchesWithData.forEach((w) => {
-    if (w && !allMatches.has(w.lemma)) {
-      allMatches.set(w.lemma, {
-        ...dbWordToSearchResult(w, 'filter'),
-        matchType: 'filter' as const,
-      });
-    }
-  });
-
-  return Array.from(allMatches.values()).slice(0, limit);
-}
-
-/**
  * Advanced search with filters
  * Returns in frontend-compatible format
  */
@@ -264,45 +187,6 @@ export async function getUserByEmail(email: string) {
   const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
   return result.length > 0 ? result[0] : null;
-}
-
-/**
- * Create a new user with bcrypt password hashing
- */
-export async function createDatabaseUser(
-  username: string,
-  email: string,
-  password: string,
-  role: string = 'lexicographer'
-) {
-  // Check if username or email already exists
-  const existingByUsername = await getUserByUsername(username);
-  if (existingByUsername) {
-    throw new Error('Username already exists');
-  }
-
-  if (email) {
-    const existingByEmail = await getUserByEmail(email);
-    if (existingByEmail) {
-      throw new Error('Email already exists');
-    }
-  }
-
-  // Hash password with bcrypt (salt rounds: 10)
-  const passwordHash = await bcrypt.hash(password, 10);
-
-  // Insert user
-  const result = await db
-    .insert(users)
-    .values({
-      username,
-      email: email || null,
-      passwordHash,
-      role,
-    })
-    .returning();
-
-  return result[0];
 }
 
 /**

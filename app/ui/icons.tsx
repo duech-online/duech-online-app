@@ -50,7 +50,6 @@ export function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-
 export function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" {...props}>

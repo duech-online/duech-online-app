@@ -16,7 +16,7 @@ export interface Example {
 }
 
 // Database schema types (match Drizzle's camelCase output)
-export interface User {
+interface User {
   id: number;
   username: string;
   email?: string;
@@ -56,7 +56,7 @@ export interface Meaning {
   updatedAt: Date;
 }
 
-export interface Note {
+interface Note {
   id: number;
   wordId: number;
   userId?: number | null;
@@ -85,12 +85,12 @@ export interface Word {
   values: WordDefinition[];
 }
 
-export interface LetterGroup {
+interface LetterGroup {
   letter: string;
   values: Word[];
 }
 
-export interface Dictionary {
+interface Dictionary {
   name: string;
   description: string;
   value: LetterGroup[];

@@ -1,6 +1,6 @@
 'use client';
 
-export interface EditorSearchFilters {
+interface EditorSearchFilters {
   query: string;
   selectedCategories: string[];
   selectedStyles: string[];
