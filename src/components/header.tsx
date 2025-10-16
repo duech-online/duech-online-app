@@ -7,6 +7,19 @@ import Image from 'next/image';
 import { Button } from '@/components/common/button';
 import { isEditorModeClient } from '@/lib/editor-mode';
 
+// Navigation link component to avoid duplication
+function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="text-lg font-medium transition-colors"
+      style={{ color: '#ffffff' }}
+    >
+      <span className="hover:text-yellow-300">{children}</span>
+    </Link>
+  );
+}
+
 export default function Header() {
   const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
   const [editorMode, setEditorMode] = useState(false);
@@ -99,34 +112,10 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-8">
-            <Link
-              href="/"
-              className="text-lg font-medium transition-colors"
-              style={{ color: '#ffffff' }}
-            >
-              <span className="hover:text-yellow-300">Inicio</span>
-            </Link>
-            <Link
-              href="/buscar"
-              className="text-lg font-medium transition-colors"
-              style={{ color: '#ffffff' }}
-            >
-              <span className="hover:text-yellow-300">Buscar</span>
-            </Link>
-            <Link
-              href="/recursos"
-              className="text-lg font-medium transition-colors"
-              style={{ color: '#ffffff' }}
-            >
-              <span className="hover:text-yellow-300">Recursos</span>
-            </Link>
-            <Link
-              href="/acerca"
-              className="text-lg font-medium transition-colors"
-              style={{ color: '#ffffff' }}
-            >
-              <span className="hover:text-yellow-300">Acerca</span>
-            </Link>
+            <NavLink href="/">Inicio</NavLink>
+            <NavLink href="/buscar">Buscar</NavLink>
+            <NavLink href="/recursos">Recursos</NavLink>
+            <NavLink href="/acerca">Acerca</NavLink>
             {editorMode && (
               <a
                 href="http://localhost:3000/"

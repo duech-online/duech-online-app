@@ -8,6 +8,43 @@ interface Option {
   label: string;
 }
 
+// Common dropdown button component
+function DropdownButton({
+  onClick,
+  isOpen,
+  displayText,
+  isEmpty,
+  badge,
+}: {
+  onClick: () => void;
+  isOpen: boolean;
+  displayText: string;
+  isEmpty: boolean;
+  badge?: number;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="focus:border-duech-blue w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left transition-colors focus:outline-none"
+    >
+      <div className="flex items-center justify-between">
+        <span className={`truncate ${isEmpty ? 'text-gray-500' : 'text-gray-900'}`}>
+          {displayText}
+        </span>
+        <div className="flex items-center gap-2">
+          {badge !== undefined && badge > 0 && (
+            <span className="bg-duech-blue rounded-full px-2 py-1 text-xs text-white">{badge}</span>
+          )}
+          <ChevronDownIcon
+            className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          />
+        </div>
+      </div>
+    </button>
+  );
+}
+
 function useDropdownClose(setIsOpen: (open: boolean) => void, reset?: () => void) {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -52,20 +89,12 @@ export function SelectDropdown({
   return (
     <div className="relative" ref={ref}>
       <label className="mb-2 block text-sm font-medium text-gray-700">{label}</label>
-      <button
-        type="button"
+      <DropdownButton
         onClick={() => setIsOpen(!isOpen)}
-        className="focus:border-duech-blue w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left transition-colors focus:outline-none"
-      >
-        <div className="flex items-center justify-between">
-          <span className={`${!selectedValue ? 'text-gray-500' : 'text-gray-900'}`}>
-            {displayText}
-          </span>
-          <ChevronDownIcon
-            className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-          />
-        </div>
-      </button>
+        isOpen={isOpen}
+        displayText={displayText}
+        isEmpty={!selectedValue}
+      />
 
       {isOpen && (
         <div className="absolute z-10 mt-1 max-h-60 w-full overflow-y-auto rounded-lg border border-gray-300 bg-white shadow-lg">
@@ -139,29 +168,13 @@ export function MultiSelectDropdown({
   return (
     <div className="relative" ref={ref}>
       <label className="mb-1 block text-sm font-medium text-gray-700">{label}</label>
-      <button
-        type="button"
+      <DropdownButton
         onClick={() => setIsOpen((prev) => !prev)}
-        className="focus:border-duech-blue w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left transition-colors focus:outline-none"
-      >
-        <div className="flex items-center justify-between">
-          <span
-            className={`truncate ${selectedValues.length === 0 ? 'text-gray-500' : 'text-gray-900'}`}
-          >
-            {displayText}
-          </span>
-          <div className="flex items-center gap-2">
-            {selectedValues.length > 0 && (
-              <span className="bg-duech-blue rounded-full px-2 py-1 text-xs text-white">
-                {selectedValues.length}
-              </span>
-            )}
-            <ChevronDownIcon
-              className={`h-5 w-5 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
-            />
-          </div>
-        </div>
-      </button>
+        isOpen={isOpen}
+        displayText={displayText}
+        isEmpty={selectedValues.length === 0}
+        badge={selectedValues.length > 0 ? selectedValues.length : undefined}
+      />
 
       {isOpen && (
         <div className="absolute z-10 mt-1 max-h-64 w-full overflow-hidden rounded-lg border border-gray-300 bg-white shadow-lg">

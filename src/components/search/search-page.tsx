@@ -373,15 +373,15 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
     () =>
       editorMode
         ? {
-          hasActive: hasEditorFilters,
-          onClear: clearAdditionalFilters,
-          render: () => (
-            <>
-              {statusFilter}
-              {assignedFilter}
-            </>
-          ),
-        }
+            hasActive: hasEditorFilters,
+            onClear: clearAdditionalFilters,
+            render: () => (
+              <>
+                {statusFilter}
+                {assignedFilter}
+              </>
+            ),
+          }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
