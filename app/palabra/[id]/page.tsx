@@ -7,8 +7,6 @@ export default async function WordDetailPage({ params }: { params: { id: string 
   const editorMode = await isEditorMode();
   const decodedLemma = decodeURIComponent(params.id);
 
-  console.log('[WordDetailPage] Editor mode:', editorMode, 'Lemma:', decodedLemma);
-
   const wordData = await getWordByLemma(
     decodedLemma,
     editorMode ? { includeDrafts: true } : undefined

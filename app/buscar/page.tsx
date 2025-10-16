@@ -7,8 +7,6 @@ export default async function SearchPageRoute() {
   const users = editorMode ? await getUsers() : [];
   const title = editorMode ? 'Editor de Diccionario' : 'Diccionario';
 
-  console.log('[SearchPageRoute] Editor mode:', editorMode);
-
   return (
     <SearchPage
       editorMode={editorMode}
