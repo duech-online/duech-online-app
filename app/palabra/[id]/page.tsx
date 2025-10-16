@@ -11,7 +11,7 @@ export default async function WordDetailPage({ params }: { params: { id: string 
 
   const wordData = await getWordByLemma(
     decodedLemma,
-    editorMode ? { includeDrafts: true } : undefined,
+    editorMode ? { includeDrafts: true } : undefined
   );
 
   if (!wordData) {

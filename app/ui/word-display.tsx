@@ -15,7 +15,6 @@ import {
   SpinnerIcon,
   CheckCircleIcon,
   ExclamationCircleIcon,
-  BackIcon,
 } from '@/app/ui/icons';
 import {
   GRAMMATICAL_CATEGORIES,
@@ -519,7 +518,6 @@ export function WordDisplay({
         <div className="space-y-16">
           {hasDefinitions ? (
             word.values.map((def, defIndex) => {
-              const exs = getExamples(def);
               return (
                 <section
                   key={defIndex}
@@ -603,11 +601,11 @@ export function WordDisplay({
                             onRemove={
                               editorMode
                                 ? () => {
-                                  const updated = def.categories.filter((_, i) => i !== catIndex);
-                                  patchDefLocal(defIndex, {
-                                    categories: updated,
-                                  });
-                                }
+                                    const updated = def.categories.filter((_, i) => i !== catIndex);
+                                    patchDefLocal(defIndex, {
+                                      categories: updated,
+                                    });
+                                  }
                                 : undefined
                             }
                           />
@@ -746,11 +744,11 @@ export function WordDisplay({
                             onRemove={
                               editorMode
                                 ? () => {
-                                  const updated = def.styles!.filter((_, i) => i !== styleIndex);
-                                  patchDefLocal(defIndex, {
-                                    styles: updated.length ? updated : null,
-                                  });
-                                }
+                                    const updated = def.styles!.filter((_, i) => i !== styleIndex);
+                                    patchDefLocal(defIndex, {
+                                      styles: updated.length ? updated : null,
+                                    });
+                                  }
                                 : undefined
                             }
                           />
