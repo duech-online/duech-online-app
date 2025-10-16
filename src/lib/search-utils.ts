@@ -61,3 +61,25 @@ export function cloneFilters(filters: LocalSearchFilters): LocalSearchFilters {
     letters: [...filters.letters],
   };
 }
+
+/**
+ * User type for search functionality
+ */
+export interface User {
+  id: number;
+  username: string;
+  email?: string | null;
+  role: string;
+}
+
+/**
+ * Get lexicographer options for dropdowns
+ */
+export function getLexicographerOptions(users: User[]) {
+  return users
+    .filter((user) => user.role === 'lexicographer')
+    .map((user) => ({
+      value: user.id.toString(),
+      label: user.username,
+    }));
+}

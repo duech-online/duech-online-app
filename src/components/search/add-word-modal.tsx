@@ -5,13 +5,7 @@ import { useRouter } from 'next/navigation';
 import Popup from 'reactjs-popup';
 import { SelectDropdown, MultiSelectDropdown } from '@/components/common/dropdown';
 import { Button } from '@/components/common/button';
-
-interface User {
-  id: number;
-  username: string;
-  email?: string | null;
-  role: string;
-}
+import { getLexicographerOptions, type User } from '@/lib/search-utils';
 
 interface AddWordModalProps {
   availableUsers: User[];
@@ -30,16 +24,7 @@ export function AddWordModal({ availableUsers }: AddWordModalProps) {
   const [newWordLetter, setNewWordLetter] = useState('');
   const [newWordAssignedTo, setNewWordAssignedTo] = useState<string[]>([]);
 
-  const userOptions = useMemo(
-    () =>
-      availableUsers
-        .filter((user) => user.role === 'lexicographer')
-        .map((user) => ({
-          value: user.id.toString(),
-          label: user.username,
-        })),
-    [availableUsers]
-  );
+  const userOptions = useMemo(() => getLexicographerOptions(availableUsers), [availableUsers]);
 
   const autoLetterForLemma = newWordLemma.trim().charAt(0).toLowerCase();
   const selectedLetter = newWordLetter || autoLetterForLemma;
