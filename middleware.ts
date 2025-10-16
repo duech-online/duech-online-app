@@ -27,20 +27,25 @@ function isBypassPath(pathname: string) {
 }
 
 async function checkEditorAuthentication(request: NextRequest): Promise<boolean> {
+  console.log('[Middleware] checkEditorAuthentication - DEV_AUTO_AUTH:', DEV_AUTO_AUTH);
   if (DEV_AUTO_AUTH) {
+    console.log('[Middleware] Auto-auth enabled, returning true');
     return true;
   }
 
   const token = request.cookies.get(SESSION_COOKIE)?.value;
+  console.log('[Middleware] Token present:', !!token);
 
   if (!token) return false;
 
   const payload = await verifyToken(token);
+  console.log('[Middleware] Token verified:', !!payload, 'role:', payload?.role);
 
   if (!payload) return false;
 
   // Check if user has editor role
   const hasRole = payload.role ? EDITOR_ROLES.includes(payload.role) : false;
+  console.log('[Middleware] Has editor role:', hasRole);
 
   return hasRole;
 }
@@ -81,8 +86,16 @@ export async function middleware(request: NextRequest) {
 
   const isEditorHost = hostname === EDITOR_HOST;
 
+  console.log('[Middleware]', {
+    pathname,
+    hostname,
+    isEditorHost,
+    expectedHost: EDITOR_HOST,
+  });
+
   if (isEditorHost) {
     const isAuthenticated = await checkEditorAuthentication(request);
+    console.log('[Middleware] Editor host detected, authenticated:', isAuthenticated);
     if (!isAuthenticated) {
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirectTo', pathname);
