@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import InlineEditable from '@/app/ui/inline-editable';
 import { MultiSelector } from '@/app/ui/multi-selector';
 import { Chip } from '@/app/ui/chip';
+import { SelectDropdown } from '@/app/ui/dropdown';
 import { Button } from '@/app/ui/button';
 import {
   PencilIcon,
@@ -390,45 +391,34 @@ export default function EditorClient({
 
           {/* selects locales */}
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2">
-              <label htmlFor="assignedTo" className="font-semibold text-blue-900">
-                Asignado a:
-              </label>
-              <select
-                id="assignedTo"
-                value={assignedTo ?? ''}
-                onChange={(e) => setAssignedTo(e.target.value ? Number(e.target.value) : null)}
-                className="rounded border-gray-300 bg-white text-sm text-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="">Sin asignar</option>
-                {users
-                  .filter(
-                    (u) => u.role === 'lexicographer' || u.role === 'editor' || u.role === 'admin'
-                  )
-                  .map((u) => (
-                    <option key={u.id} value={u.id}>
-                      {u.username}
-                    </option>
-                  ))}
-              </select>
+            <div className="w-48">
+              <SelectDropdown
+                label="Asignado a"
+                options={[
+                  { value: '', label: 'Sin asignar' },
+                  ...users
+                    .filter(
+                      (u) => u.role === 'lexicographer' || u.role === 'editor' || u.role === 'admin'
+                    )
+                    .map((u) => ({
+                      value: u.id.toString(),
+                      label: u.username,
+                    })),
+                ]}
+                selectedValue={assignedTo?.toString() ?? ''}
+                onChange={(value) => setAssignedTo(value ? Number(value) : null)}
+                placeholder="Sin asignar"
+              />
             </div>
 
-            <div className="flex items-center gap-2 rounded-lg bg-blue-50 px-3 py-2">
-              <label htmlFor="status" className="font-semibold text-blue-900">
-                Estado:
-              </label>
-              <select
-                id="status"
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="rounded border-gray-300 bg-white text-sm text-gray-800 focus:border-blue-500 focus:ring-blue-500"
-              >
-                {STATUS_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+            <div className="w-48">
+              <SelectDropdown
+                label="Estado"
+                options={STATUS_OPTIONS}
+                selectedValue={status}
+                onChange={setStatus}
+                placeholder="Seleccionar estado"
+              />
             </div>
           </div>
         </div>
