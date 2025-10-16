@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Button } from '@/components/common/button';
-import { PlusIcon, DeleteIcon } from '@/components/common/icons';
+import { PlusIcon, DeleteIcon } from '@/components/icons';
 
 interface ChipProps {
   code: string;
@@ -45,9 +45,9 @@ function Chip({
       onKeyDown={
         editorMode
           ? (e) => {
-              // solo para que no haga scroll si alguien presiona Space, no borra nada
-              if (e.key === ' ') e.preventDefault();
-            }
+            // solo para que no haga scroll si alguien presiona Space, no borra nada
+            if (e.key === ' ') e.preventDefault();
+          }
           : undefined
       }
       title={label}

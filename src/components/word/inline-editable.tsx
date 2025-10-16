@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, ReactNode } from 'react';
 import { Button } from '@/components/common/button';
-import { PencilIcon } from '@/components/common/icons';
+import { PencilIcon } from '@/components/icons';
 
 type InlineEditableProps = {
   value: string | null;

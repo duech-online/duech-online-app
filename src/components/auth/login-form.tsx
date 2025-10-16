@@ -1,6 +1,6 @@
 'use client';
 
-import { dictionary } from '@/components/layout/fonts';
+import { dictionary } from '@/components/fonts';
 import { Button } from '@/components/common/button';
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -10,7 +10,7 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
   ArrowRightIcon,
-} from '@/components/common/icons';
+} from '@/components/icons';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();

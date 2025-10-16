@@ -2,7 +2,7 @@
  * UI Components for search results display
  */
 
-import { SadFaceIcon, SearchIcon } from '@/components/common/icons';
+import { SadFaceIcon, SearchIcon } from '@/components/icons';
 
 interface SearchLoadingSkeletonProps {
   editorMode: boolean;

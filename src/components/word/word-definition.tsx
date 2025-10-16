@@ -2,11 +2,11 @@
 
 import React from 'react';
 import Link from 'next/link';
-import MarkdownRenderer from '@/components/common/markdown-renderer';
-import InlineEditable from '@/components/common/inline-editable';
+import MarkdownRenderer from '@/components/word/markdown-renderer';
+import InlineEditable from '@/components/word/inline-editable';
 import { ChipList } from '@/components/common/chip';
 import { Button } from '@/components/common/button';
-import { PlusIcon, TrashIcon } from '@/components/common/icons';
+import { PlusIcon, TrashIcon } from '@/components/icons';
 import {
   GRAMMATICAL_CATEGORIES,
   USAGE_STYLES,
