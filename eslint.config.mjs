@@ -17,15 +17,14 @@ export default [
     ignores: ['node_modules/**', '.next/**', 'dist/**', 'build/**', 'out/**'],
     plugins: {
       'unused-imports': unusedImports,
-      import: importPlugin, // ✅ enable plugin
+      import: importPlugin,
     },
     settings: {
       'import/resolver': {
-        typescript: true, // ensures ESLint understands your tsconfig paths
+        typescript: true, 
       },
     },
     rules: {
-      // existing unused import rules
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
         'warn',
