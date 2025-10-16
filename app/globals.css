@@ -119,3 +119,12 @@ body {
   box-shadow: 0 10px 25px rgba(0, 51, 102, 0.15);
   transform: translateY(-2px);
 }
+
+/* Definition and Example hover effects */
+.definition-hover:hover .definition-buttons {
+  opacity: 1 !important;
+}
+
+.example-hover:hover .example-buttons {
+  opacity: 1 !important;
+}

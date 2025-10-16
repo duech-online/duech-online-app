@@ -317,7 +317,7 @@ export function WordDisplay({
     return examples.map((ex, exIndex) => (
       <div
         key={exIndex}
-        className={`rounded-lg border-l-4 ${editorMode ? 'border-blue-600' : 'border-blue-400'} bg-gray-50 p-4 ${editorMode ? 'relative' : ''}`}
+        className={`example-hover relative rounded-lg border-l-4 ${editorMode ? 'border-blue-600' : 'border-blue-400'} bg-gray-50 p-4 ${editorMode ? 'pb-12' : ''}`}
       >
         <div className="mb-2 text-gray-700">
           <MarkdownRenderer content={ex.value} />
@@ -329,22 +329,38 @@ export function WordDisplay({
           {ex.date && <span className="mr-3">Fecha: {ex.date}</span>}
           {ex.page && <span>Página: {ex.page}</span>}
         </div>
+
+        {/* Example action buttons (editor mode) */}
         {editorMode && isEditable && defIndex !== undefined && (
-          <div className="mt-2 flex gap-2">
-            <Button
-              onClick={() => openExampleEditor(defIndex, exIndex)}
-              className="text-sm text-blue-600 hover:text-blue-800"
-            >
-              <PencilIcon className="mr-1 inline h-4 w-4" />
-              Editar
-            </Button>
-            <Button
-              onClick={() => handleDeleteExample(defIndex, exIndex)}
-              className="text-sm text-red-600 hover:text-red-800"
-            >
-              <TrashIcon className="mr-1 inline h-4 w-4" />
-              Eliminar
-            </Button>
+          <div className="example-buttons absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 opacity-0 transition-opacity duration-200">
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => handleAddExample(defIndex)}
+                aria-label="Agregar ejemplo"
+                title="Agregar ejemplo"
+                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-green-400 bg-white text-green-600 shadow hover:bg-green-50 focus:ring-2 focus:ring-green-300 focus:outline-none"
+              >
+                <PlusIcon className="h-5 w-5" />
+              </Button>
+
+              <Button
+                onClick={() => openExampleEditor(defIndex, exIndex)}
+                aria-label="Editar ejemplo"
+                title="Editar ejemplo"
+                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              >
+                <PencilIcon className="h-5 w-5" />
+              </Button>
+
+              <Button
+                onClick={() => handleDeleteExample(defIndex, exIndex)}
+                aria-label="Eliminar ejemplo"
+                title="Eliminar ejemplo"
+                className="inline-flex size-10 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -528,7 +544,7 @@ export function WordDisplay({
               return (
                 <section
                   key={defIndex}
-                  className={`relative rounded-2xl border-2 ${editorMode ? 'border-blue-300/70' : 'border-gray-200'} bg-white p-6 ${editorMode ? 'pb-16 pl-14 sm:pl-16' : ''} shadow-sm`}
+                  className={`definition-hover relative rounded-2xl border-2 ${editorMode ? 'border-blue-300/70' : 'border-gray-200'} bg-white p-6 ${editorMode ? 'pb-16 pl-14 sm:pl-16' : ''} shadow-sm`}
                 >
                   {/* Definition number and origin */}
                   <div className="mt-1 mb-2 flex items-center gap-2">
@@ -620,9 +636,9 @@ export function WordDisplay({
                         {editorMode && (
                           <Button
                             onClick={() => setEditingCategories(defIndex)}
-                            className="hover:text-duech-blue text-sm text-gray-500 underline"
+                            className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-2 py-1 text-blue-600 hover:bg-blue-100"
                           >
-                            + Añadir
+                            <PlusIcon className="h-5 w-5" />
                           </Button>
                         )}
                       </div>
@@ -763,9 +779,9 @@ export function WordDisplay({
                         {editorMode && (
                           <Button
                             onClick={() => setEditingStyles(defIndex)}
-                            className="hover:text-duech-blue text-sm text-gray-500 underline"
+                            className="inline-flex items-center justify-center rounded-md border border-blue-300 bg-blue-50 px-2 py-1 text-blue-600 hover:bg-blue-100"
                           >
-                            + Añadir
+                            <PlusIcon className="h-5 w-5" />
                           </Button>
                         )}
                       </div>
@@ -834,22 +850,12 @@ export function WordDisplay({
                         <h3 className="text-sm font-medium text-gray-900">
                           Ejemplo{Array.isArray(def.example) && def.example.length > 1 ? 's' : ''}:
                         </h3>
-                        {editorMode && (
-                          <Button
-                            onClick={() => handleAddExample(defIndex)}
-                            className="text-duech-blue text-sm underline hover:text-blue-800"
-                          >
-                            + Añadir ejemplo
-                          </Button>
-                        )}
                       </div>
-                      <div className="space-y-2">
+                      <div className="space-y-8">
                         {renderExample(def.example, defIndex, editorMode)}
                       </div>
                     </div>
-                  )}
-
-                  {/* Variant */}
+                  )}                  {/* Variant */}
                   {(def.variant || editorMode) && (
                     <div className="mt-4">
                       <span className="text-sm font-medium text-gray-900">Variante: </span>
@@ -910,12 +916,12 @@ export function WordDisplay({
 
                   {/* Add/Delete definition buttons (editor mode) */}
                   {editorMode && (
-                    <div className="pointer-events-none absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4">
+                    <div className="definition-buttons absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4 opacity-0 transition-opacity duration-200">
                       <Button
                         onClick={() => handleAddDefinition(defIndex)}
                         aria-label="Agregar definición"
                         title="Agregar definición"
-                        className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                        className="inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-blue-400 bg-white text-blue-600 shadow hover:bg-blue-50 focus:ring-2 focus:ring-blue-300 focus:outline-none"
                       >
                         <PlusIcon className="h-7 w-7" />
                       </Button>
@@ -924,7 +930,7 @@ export function WordDisplay({
                         onClick={() => handleDeleteDefinition(defIndex)}
                         aria-label="Eliminar definición"
                         title="Eliminar definición"
-                        className="pointer-events-auto inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
+                        className="inline-flex size-14 items-center justify-center rounded-full border-2 border-dashed border-red-300 bg-white text-red-600 shadow hover:bg-red-50 focus:ring-2 focus:ring-red-300 focus:outline-none"
                       >
                         <TrashIcon className="h-7 w-7" />
                       </Button>
