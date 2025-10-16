@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState, ReactNode } from 'react';
-import { Button } from '@/app/ui/button';
-import { PencilIcon } from '@/app/ui/icons';
+import { Button } from '@/app/components/common/button';
+import { PencilIcon } from '@/app/components/common/icons';
 
 type InlineEditableProps = {
   value: string | null;

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDownIcon } from '@/app/ui/icons';
+import { ChevronDownIcon } from '@/app/components/common/icons';
 
 interface Option {
   value: string;

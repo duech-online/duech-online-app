@@ -2,8 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import InlineEditable from '@/app/ui/inline-editable';
-import { SelectDropdown } from '@/app/ui/dropdown';
+import InlineEditable from '@/app/components/common/inline-editable';
+import { SelectDropdown } from '@/app/components/common/dropdown';
 
 interface WordHeaderProps {
   lemma: string;

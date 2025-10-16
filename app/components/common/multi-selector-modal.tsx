@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/app/ui/button';
+import { Button } from '@/app/components/common/button';
 
 /**
  * Selector múltiple genérico para opciones (categorías, estilos, etc.)

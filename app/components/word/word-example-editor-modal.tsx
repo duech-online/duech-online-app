@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button } from '@/app/ui/button';
+import { Button } from '@/app/components/common/button';
 
 type ExampleDraft = {
   value: string;

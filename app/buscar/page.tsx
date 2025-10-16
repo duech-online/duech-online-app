@@ -1,6 +1,6 @@
 import { isEditorMode } from '@/app/lib/editor-mode-server';
 import { getUsers } from '@/app/lib/queries';
-import { SearchPage } from '@/app/ui/search-page';
+import { SearchPage } from '@/app/components/search/search-page';
 
 export default async function SearchPageRoute() {
   const editorMode = await isEditorMode();
