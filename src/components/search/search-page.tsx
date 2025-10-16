@@ -17,12 +17,7 @@ import {
   NoResultsState,
   SearchResultsCount,
 } from '@/components/search/search-results-components';
-import {
-  arraysEqual,
-  filtersChanged,
-  cloneFilters,
-  LocalSearchFilters,
-} from '@/lib/search-utils';
+import { arraysEqual, filtersChanged, cloneFilters, LocalSearchFilters } from '@/lib/search-utils';
 
 interface User {
   id: number;

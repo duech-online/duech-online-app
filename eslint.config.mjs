@@ -21,7 +21,7 @@ export default [
     },
     settings: {
       'import/resolver': {
-        typescript: true, 
+        typescript: true,
       },
     },
     rules: {

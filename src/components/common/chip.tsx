@@ -45,9 +45,9 @@ function Chip({
       onKeyDown={
         editorMode
           ? (e) => {
-            // solo para que no haga scroll si alguien presiona Space, no borra nada
-            if (e.key === ' ') e.preventDefault();
-          }
+              // solo para que no haga scroll si alguien presiona Space, no borra nada
+              if (e.key === ' ') e.preventDefault();
+            }
           : undefined
       }
       title={label}
