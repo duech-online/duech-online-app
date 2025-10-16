@@ -17,14 +17,96 @@ import {
   NoResultsState,
   SearchResultsCount,
 } from '@/components/search/search-results-components';
-import { arraysEqual, filtersChanged, cloneFilters, LocalSearchFilters } from '@/lib/search-utils';
+import {
+  arraysEqual,
+  filtersChanged,
+  cloneFilters,
+  LocalSearchFilters,
+  getLexicographerOptions,
+  type User,
+} from '@/lib/search-utils';
 import { isEditorModeClient } from '@/lib/editor-mode';
 
-interface User {
-  id: number;
-  username: string;
-  email?: string | null;
-  role: string;
+// Helper to check if current search state matches URL params
+function matchesUrlState(
+  searchState: {
+    query: string;
+    filters: LocalSearchFilters;
+    status: string;
+    assignedTo: string[];
+  },
+  urlParams: {
+    trimmedQuery: string;
+    categories: string[];
+    styles: string[];
+    origins: string[];
+    letters: string[];
+    status: string;
+    assignedTo: string[];
+  }
+): boolean {
+  return (
+    searchState.query === urlParams.trimmedQuery &&
+    arraysEqual(searchState.filters.categories, urlParams.categories) &&
+    arraysEqual(searchState.filters.styles, urlParams.styles) &&
+    arraysEqual(searchState.filters.origins, urlParams.origins) &&
+    arraysEqual(searchState.filters.letters, urlParams.letters) &&
+    searchState.status === urlParams.status &&
+    arraysEqual(searchState.assignedTo, urlParams.assignedTo)
+  );
+}
+
+// Helper to update state if query or filters changed
+function updateStateIfChanged(
+  prev: {
+    query: string;
+    filters: LocalSearchFilters;
+    status: string;
+    assignedTo: string[];
+  },
+  query: string,
+  filters: LocalSearchFilters
+) {
+  const hasFiltersChanged = filtersChanged(prev.filters, filters);
+  const queryChanged = prev.query !== query;
+
+  if (!hasFiltersChanged && !queryChanged) {
+    return prev;
+  }
+
+  return {
+    ...prev,
+    query,
+    filters: hasFiltersChanged ? cloneFilters(filters) : prev.filters,
+  };
+}
+
+// Helper to validate if URL-based search should proceed
+function shouldProceedWithUrlSearch(
+  editorMode: boolean,
+  hasUrlCriteria: boolean,
+  isInitialized: boolean
+): boolean {
+  if (!editorMode) return false;
+  if (!hasUrlCriteria) return false;
+  if (!isInitialized) return false;
+  return true;
+}
+
+// Helper to handle early returns in URL search effects
+function handleEarlyUrlSearchReturn(
+  editorMode: boolean,
+  urlParams: { hasUrlCriteria: boolean },
+  isInitialized: boolean,
+  urlSearchTriggeredRef: React.MutableRefObject<boolean>
+): boolean {
+  if (!shouldProceedWithUrlSearch(editorMode, urlParams.hasUrlCriteria, isInitialized)) {
+    if (editorMode && !urlParams.hasUrlCriteria) {
+      urlSearchTriggeredRef.current = false;
+    }
+    return true; // Should return early
+  }
+  return false; // Should continue
 }
 
 interface SearchPageProps {
@@ -72,42 +154,17 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
 
   // Reset URL search trigger when URL params change
   useEffect(() => {
-    if (!editorMode) return;
-
-    if (!urlParams.hasUrlCriteria) {
-      urlSearchTriggeredRef.current = false;
+    if (handleEarlyUrlSearchReturn(editorMode, urlParams, isInitialized, urlSearchTriggeredRef)) {
       return;
     }
 
-    if (!isInitialized) return;
-
-    const matchesUrlState =
-      searchState.query === urlParams.trimmedQuery &&
-      arraysEqual(searchState.filters.categories, urlParams.categories) &&
-      arraysEqual(searchState.filters.styles, urlParams.styles) &&
-      arraysEqual(searchState.filters.origins, urlParams.origins) &&
-      arraysEqual(searchState.filters.letters, urlParams.letters) &&
-      searchState.status === urlParams.status &&
-      arraysEqual(searchState.assignedTo, urlParams.assignedTo);
-
-    if (!matchesUrlState) {
+    if (!matchesUrlState(searchState, urlParams)) {
       urlSearchTriggeredRef.current = false;
       setHasSearched(false);
       setSearchResults([]);
       setTotalResults(0);
     }
-  }, [
-    editorMode,
-    isInitialized,
-    urlParams,
-    searchState.query,
-    searchState.filters.categories,
-    searchState.filters.styles,
-    searchState.filters.origins,
-    searchState.filters.letters,
-    searchState.status,
-    searchState.assignedTo,
-  ]);
+  }, [editorMode, isInitialized, urlParams, searchState]);
 
   // Auto-search on mount for public mode
   useEffect(() => {
@@ -170,20 +227,7 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
 
   const handleSearchStateChange = useCallback(
     ({ query, filters }: { query: string; filters: LocalSearchFilters }) => {
-      updateState((prev) => {
-        const hasFiltersChanged = filtersChanged(prev.filters, filters);
-        const queryChanged = prev.query !== query;
-
-        if (!hasFiltersChanged && !queryChanged) {
-          return prev;
-        }
-
-        return {
-          ...prev,
-          query,
-          filters: hasFiltersChanged ? cloneFilters(filters) : prev.filters,
-        };
-      });
+      updateState((prev) => updateStateIfChanged(prev, query, filters));
     },
     [updateState]
   );
@@ -239,20 +283,7 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
         setSearchResults(searchData.results);
         setTotalResults(searchData.pagination.total);
 
-        updateState((prev) => {
-          const hasFiltersChanged = filtersChanged(prev.filters, filters);
-          const queryChanged = prev.query !== query;
-
-          if (!hasFiltersChanged && !queryChanged) {
-            return prev;
-          }
-
-          return {
-            ...prev,
-            query,
-            filters: hasFiltersChanged ? cloneFilters(filters) : prev.filters,
-          };
-        });
+        updateState((prev) => updateStateIfChanged(prev, query, filters));
 
         if (editorMode) {
           setTimeout(() => saveFilters(), 0);
@@ -276,25 +307,11 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
 
   // Trigger search when URL params match current state in editor mode
   useEffect(() => {
-    if (!editorMode) return;
-
-    if (!urlParams.hasUrlCriteria) {
-      urlSearchTriggeredRef.current = false;
+    if (handleEarlyUrlSearchReturn(editorMode, urlParams, isInitialized, urlSearchTriggeredRef)) {
       return;
     }
 
-    if (!isInitialized) return;
-
-    const matchesUrlState =
-      searchState.query === urlParams.trimmedQuery &&
-      arraysEqual(searchState.filters.categories, urlParams.categories) &&
-      arraysEqual(searchState.filters.styles, urlParams.styles) &&
-      arraysEqual(searchState.filters.origins, urlParams.origins) &&
-      arraysEqual(searchState.filters.letters, urlParams.letters) &&
-      searchState.status === urlParams.status &&
-      arraysEqual(searchState.assignedTo, urlParams.assignedTo);
-
-    if (!matchesUrlState) {
+    if (!matchesUrlState(searchState, urlParams)) {
       urlSearchTriggeredRef.current = false;
       return;
     }
@@ -307,27 +324,9 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
       query: searchState.query,
       filters: searchState.filters,
     });
-  }, [
-    editorMode,
-    executeSearch,
-    isInitialized,
-    urlParams,
-    searchState.assignedTo,
-    searchState.filters,
-    searchState.query,
-    searchState.status,
-  ]);
+  }, [editorMode, executeSearch, isInitialized, urlParams, searchState]);
 
-  const userOptions = useMemo(
-    () =>
-      availableUsers
-        .filter((user) => user.role === 'lexicographer')
-        .map((user) => ({
-          value: user.id.toString(),
-          label: user.username,
-        })),
-    [availableUsers]
-  );
+  const userOptions = useMemo(() => getLexicographerOptions(availableUsers), [availableUsers]);
 
   const hasEditorFilters = searchState.status.length > 0 || searchState.assignedTo.length > 0;
 
@@ -374,15 +373,15 @@ export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPage
     () =>
       editorMode
         ? {
-            hasActive: hasEditorFilters,
-            onClear: clearAdditionalFilters,
-            render: () => (
-              <>
-                {statusFilter}
-                {assignedFilter}
-              </>
-            ),
-          }
+          hasActive: hasEditorFilters,
+          onClear: clearAdditionalFilters,
+          render: () => (
+            <>
+              {statusFilter}
+              {assignedFilter}
+            </>
+          ),
+        }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );

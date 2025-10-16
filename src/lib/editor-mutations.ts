@@ -5,6 +5,51 @@ import { eq } from 'drizzle-orm';
 import type { Word, Example } from '@/lib/definitions';
 
 /**
+ * Clean example data by removing undefined fields
+ */
+function cleanExample(ex: Example) {
+  return {
+    value: ex.value,
+    ...(ex.author !== undefined && { author: ex.author }),
+    ...(ex.title !== undefined && { title: ex.title }),
+    ...(ex.source !== undefined && { source: ex.source }),
+    ...(ex.date !== undefined && { date: ex.date }),
+    ...(ex.page !== undefined && { page: ex.page }),
+  };
+}
+
+/**
+ * Normalize examples to array and clean them
+ */
+function normalizeAndCleanExamples(example: Example | Example[] | undefined): ReturnType<typeof cleanExample>[] {
+  const examplesArray = Array.isArray(example) ? example : example ? [example] : [];
+  return examplesArray.map(cleanExample);
+}
+
+/**
+ * Insert a meaning into the database
+ */
+async function insertMeaning(
+  wordId: number,
+  def: Word['values'][number]
+) {
+  const cleanedExamples = normalizeAndCleanExamples(def.example);
+
+  await db.insert(meanings).values({
+    wordId,
+    number: def.number,
+    origin: def.origin || null,
+    meaning: def.meaning,
+    observation: def.observation || null,
+    remission: def.remission || null,
+    categories: def.categories.length > 0 ? def.categories : null,
+    styles: def.styles && def.styles.length > 0 ? def.styles : null,
+    examples: cleanedExamples.length > 0 ? cleanedExamples : null,
+    expressions: def.expressions && def.expressions.length > 0 ? def.expressions : null,
+  });
+}
+
+/**
  * Update a word and all its meanings
  */
 export async function updateWordByLemma(
@@ -43,35 +88,7 @@ export async function updateWordByLemma(
 
   // Insert new meanings
   for (const def of updatedWord.values) {
-    // Normalize examples to array
-    const examplesArray = Array.isArray(def.example)
-      ? def.example
-      : def.example
-        ? [def.example]
-        : [];
-
-    // Convert examples to match database schema (remove undefined fields)
-    const cleanedExamples = examplesArray.map((ex: Example) => ({
-      value: ex.value,
-      ...(ex.author !== undefined && { author: ex.author }),
-      ...(ex.title !== undefined && { title: ex.title }),
-      ...(ex.source !== undefined && { source: ex.source }),
-      ...(ex.date !== undefined && { date: ex.date }),
-      ...(ex.page !== undefined && { page: ex.page }),
-    }));
-
-    await db.insert(meanings).values({
-      wordId: existingWord.id,
-      number: def.number,
-      origin: def.origin || null,
-      meaning: def.meaning,
-      observation: def.observation || null,
-      remission: def.remission || null,
-      categories: def.categories.length > 0 ? def.categories : null,
-      styles: def.styles && def.styles.length > 0 ? def.styles : null,
-      examples: cleanedExamples.length > 0 ? cleanedExamples : null,
-      expressions: def.expressions && def.expressions.length > 0 ? def.expressions : null,
-    });
+    await insertMeaning(existingWord.id, def);
   }
 
   return { success: true };
@@ -125,33 +142,7 @@ export async function createWord(newWord: Word, options: CreateWordOptions = {})
 
   // Insert meanings
   for (const def of newWord.values) {
-    const examplesArray = Array.isArray(def.example)
-      ? def.example
-      : def.example
-        ? [def.example]
-        : [];
-
-    const cleanedExamples = examplesArray.map((ex: Example) => ({
-      value: ex.value,
-      ...(ex.author !== undefined && { author: ex.author }),
-      ...(ex.title !== undefined && { title: ex.title }),
-      ...(ex.source !== undefined && { source: ex.source }),
-      ...(ex.date !== undefined && { date: ex.date }),
-      ...(ex.page !== undefined && { page: ex.page }),
-    }));
-
-    await db.insert(meanings).values({
-      wordId: wordRecord.id,
-      number: def.number,
-      origin: def.origin || null,
-      meaning: def.meaning,
-      observation: def.observation || null,
-      remission: def.remission || null,
-      categories: def.categories.length > 0 ? def.categories : null,
-      styles: def.styles && def.styles.length > 0 ? def.styles : null,
-      examples: cleanedExamples.length > 0 ? cleanedExamples : null,
-      expressions: def.expressions && def.expressions.length > 0 ? def.expressions : null,
-    });
+    await insertMeaning(wordRecord.id, def);
   }
 
   return { success: true, wordId: wordRecord.id, lemma: normalizedLemma, letter: normalizedLetter };

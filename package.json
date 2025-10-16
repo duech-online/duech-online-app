@@ -9,7 +9,8 @@
     "lint": "eslint src",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "deps:check": "knip"
+    "deps:check": "knip",
+    "duplication": "jscpd src"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -38,6 +39,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.2.0",
+    "jscpd": "^4.0.5",
     "knip": "^5.65.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
