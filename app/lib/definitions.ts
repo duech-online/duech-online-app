@@ -15,7 +15,6 @@ export interface Example {
   page?: string;
 }
 
-
 export interface DBWord {
   id: number;
   lemma: string;
@@ -65,8 +64,6 @@ export interface Word {
   root: string;
   values: WordDefinition[];
 }
-
-
 
 /**
  * Advanced search with filters
