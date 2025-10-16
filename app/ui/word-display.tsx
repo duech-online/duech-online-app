@@ -2,12 +2,11 @@
 
 import React from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import InlineEditable from '@/app/ui/inline-editable';
 import { MultiSelector } from '@/app/ui/multi-selector-modal';
 import { Button } from '@/app/ui/button';
-import { DefinitionSection } from '@/app/ui/definition-section';
+import { DefinitionSection } from '@/app/ui/word-definition';
 import { WordHeader } from '@/app/ui/word-header';
-import { ExampleDisplay } from '@/app/ui/example-display';
+import { ExampleDisplay } from '@/app/ui/word-example';
 import { SpinnerIcon, CheckCircleIcon, ExclamationCircleIcon } from '@/app/ui/icons';
 import {
   GRAMMATICAL_CATEGORIES,
@@ -17,7 +16,7 @@ import {
   type Word,
   type WordDefinition,
 } from '@/app/lib/definitions';
-import { ExampleEditorModal, type ExampleDraft } from '@/app/ui/example-editor-modal';
+import { ExampleEditorModal, type ExampleDraft } from '@/app/ui/word-example-editor-modal';
 
 interface WordDisplayProps {
   initialWord: Word;
