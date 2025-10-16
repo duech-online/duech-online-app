@@ -4,17 +4,20 @@ import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { SelectDropdown, MultiSelectDropdown } from '@/app/ui/dropdown';
 import SearchBar from '@/app/ui/search-bar';
-import { SadFaceIcon, SearchIcon } from '@/app/ui/icons';
 import { searchDictionary } from '@/app/lib/dictionary-client';
 import { SearchResult } from '@/app/lib/definitions';
 import { STATUS_OPTIONS } from '@/app/lib/definitions';
 import { WordCard } from '@/app/ui/word-card';
 import { AddWordModal } from '@/app/ui/add-word-modal';
+import { useUrlSearchParams } from '@/app/hooks/useUrlSearchParams';
+import { useSearchState } from '@/app/hooks/useSearchState';
 import {
-  setEditorSearchFilters,
-  getEditorSearchFilters,
-  clearEditorSearchFilters,
-} from '@/app/lib/cookies';
+  SearchLoadingSkeleton,
+  EmptySearchState,
+  NoResultsState,
+  SearchResultsCount,
+} from '@/app/ui/search-results-components';
+import { arraysEqual, filtersChanged, cloneFilters, LocalSearchFilters } from '@/app/lib/search-utils';
 
 interface User {
   id: number;
@@ -23,50 +26,11 @@ interface User {
   role: string;
 }
 
-type SearchFilters = {
-  categories: string[];
-  styles: string[];
-  origins: string[];
-  letters: string[];
-};
-
-type SearchState = {
-  query: string;
-  filters: SearchFilters;
-  status: string;
-  assignedTo: string[];
-};
-
 interface SearchPageProps {
   editorMode?: boolean;
   title: string;
   placeholder: string;
   initialUsers?: User[];
-}
-
-const createDefaultSearchState = (): SearchState => ({
-  query: '',
-  filters: {
-    categories: [],
-    styles: [],
-    origins: [],
-    letters: [],
-  },
-  status: '',
-  assignedTo: [],
-});
-
-function parseListParam(value: string | null): string[] {
-  if (!value) return [];
-  return value
-    .split(',')
-    .map((item) => item.trim())
-    .filter(Boolean);
-}
-
-function arraysEqual(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  return a.every((value, index) => value === b[index]);
 }
 
 export function SearchPage({
@@ -75,56 +39,16 @@ export function SearchPage({
   placeholder,
   initialUsers = [],
 }: SearchPageProps) {
-  // Parse URL search params (for public mode)
+  // Parse URL search params
   const searchParams = useSearchParams();
+  const urlParams = useUrlSearchParams(searchParams);
 
-  const urlQuery = useMemo(() => searchParams.get('q') || '', [searchParams]);
-  const urlCategories = useMemo(
-    () => parseListParam(searchParams.get('categories')),
-    [searchParams]
-  );
-  const urlStyles = useMemo(() => parseListParam(searchParams.get('styles')), [searchParams]);
-  const urlOrigins = useMemo(() => parseListParam(searchParams.get('origins')), [searchParams]);
-  const urlLetters = useMemo(() => parseListParam(searchParams.get('letters')), [searchParams]);
-  const urlStatus = useMemo(() => (searchParams.get('status') || '').trim(), [searchParams]);
-  const urlAssignedTo = useMemo(
-    () => parseListParam(searchParams.get('assignedTo')),
-    [searchParams]
-  );
-
-  const trimmedUrlQuery = urlQuery.trim();
-  const hasUrlCriteria =
-    Boolean(trimmedUrlQuery) ||
-    urlCategories.length > 0 ||
-    urlStyles.length > 0 ||
-    urlOrigins.length > 0 ||
-    urlLetters.length > 0 ||
-    urlStatus.length > 0 ||
-    urlAssignedTo.length > 0;
-
-  const initialFilters = useMemo(
-    () => ({
-      categories: urlCategories,
-      styles: urlStyles,
-      origins: urlOrigins,
-      letters: urlLetters,
-    }),
-    [urlCategories, urlStyles, urlOrigins, urlLetters]
-  );
-
-  const [searchState, setSearchState] = useState<SearchState>(() => {
-    if (editorMode) {
-      return createDefaultSearchState();
-    }
-    // Public mode: use URL params
-    return {
-      query: urlQuery,
-      filters: initialFilters,
-      status: '',
-      assignedTo: [],
-    };
+  // Manage search state with URL/cookie synchronization
+  const { searchState, updateState, saveFilters, clearAll, isInitialized } = useSearchState({
+    editorMode,
+    urlParams,
   });
-  const isInitializedRef = useRef(false);
+
   const urlSearchTriggeredRef = useRef(false);
 
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
@@ -135,89 +59,53 @@ export function SearchPage({
   // Editor mode: Use users passed from server
   const availableUsers = initialUsers;
 
-  // Restore filters on mount for editor mode (URL params take precedence)
+  const initialFilters = useMemo(
+    () => ({
+      categories: urlParams.categories,
+      styles: urlParams.styles,
+      origins: urlParams.origins,
+      letters: urlParams.letters,
+    }),
+    [urlParams.categories, urlParams.styles, urlParams.origins, urlParams.letters]
+  );
+
+  // Reset URL search trigger when URL params change
   useEffect(() => {
     if (!editorMode) return;
 
-    const urlFiltersMatchState =
-      searchState.query === trimmedUrlQuery &&
-      arraysEqual(searchState.filters.categories, urlCategories) &&
-      arraysEqual(searchState.filters.styles, urlStyles) &&
-      arraysEqual(searchState.filters.origins, urlOrigins) &&
-      arraysEqual(searchState.filters.letters, urlLetters) &&
-      searchState.status === urlStatus &&
-      arraysEqual(searchState.assignedTo, urlAssignedTo);
-
-    if (hasUrlCriteria && urlFiltersMatchState) {
-      isInitializedRef.current = true;
+    if (!urlParams.hasUrlCriteria) {
+      urlSearchTriggeredRef.current = false;
       return;
     }
 
-    if (hasUrlCriteria) {
+    if (!isInitialized) return;
+
+    const matchesUrlState =
+      searchState.query === urlParams.trimmedQuery &&
+      arraysEqual(searchState.filters.categories, urlParams.categories) &&
+      arraysEqual(searchState.filters.styles, urlParams.styles) &&
+      arraysEqual(searchState.filters.origins, urlParams.origins) &&
+      arraysEqual(searchState.filters.letters, urlParams.letters) &&
+      searchState.status === urlParams.status &&
+      arraysEqual(searchState.assignedTo, urlParams.assignedTo);
+
+    if (!matchesUrlState) {
       urlSearchTriggeredRef.current = false;
-      setSearchState({
-        query: trimmedUrlQuery,
-        filters: {
-          categories: [...urlCategories],
-          styles: [...urlStyles],
-          origins: [...urlOrigins],
-          letters: [...urlLetters],
-        },
-        status: urlStatus,
-        assignedTo: [...urlAssignedTo],
-      });
       setHasSearched(false);
       setSearchResults([]);
       setTotalResults(0);
-      isInitializedRef.current = true;
-    } else {
-      const savedFilters = getEditorSearchFilters();
-
-      const cookiesMatchState =
-        searchState.query === savedFilters.query &&
-        arraysEqual(searchState.filters.categories, savedFilters.selectedCategories) &&
-        arraysEqual(searchState.filters.styles, savedFilters.selectedStyles) &&
-        arraysEqual(searchState.filters.origins, savedFilters.selectedOrigins) &&
-        arraysEqual(searchState.filters.letters, savedFilters.selectedLetters) &&
-        searchState.status === savedFilters.selectedStatus &&
-        arraysEqual(searchState.assignedTo, savedFilters.selectedAssignedTo);
-
-      if (cookiesMatchState) {
-        isInitializedRef.current = true;
-        return;
-      }
-
-      urlSearchTriggeredRef.current = false;
-      setSearchState({
-        query: savedFilters.query,
-        filters: {
-          categories: savedFilters.selectedCategories,
-          styles: savedFilters.selectedStyles,
-          origins: savedFilters.selectedOrigins,
-          letters: savedFilters.selectedLetters,
-        },
-        status: savedFilters.selectedStatus,
-        assignedTo: savedFilters.selectedAssignedTo,
-      });
-      isInitializedRef.current = true;
     }
   }, [
     editorMode,
-    hasUrlCriteria,
-    searchState.assignedTo,
-    searchState.filters.categories,
-    searchState.filters.letters,
-    searchState.filters.origins,
-    searchState.filters.styles,
+    isInitialized,
+    urlParams,
     searchState.query,
+    searchState.filters.categories,
+    searchState.filters.styles,
+    searchState.filters.origins,
+    searchState.filters.letters,
     searchState.status,
-    trimmedUrlQuery,
-    urlAssignedTo,
-    urlCategories,
-    urlLetters,
-    urlOrigins,
-    urlStatus,
-    urlStyles,
+    searchState.assignedTo,
   ]);
 
   // Auto-search on mount for public mode
@@ -227,7 +115,7 @@ export function SearchPage({
     let cancelled = false;
 
     const hasSearchCriteria =
-      Boolean(trimmedUrlQuery) ||
+      Boolean(urlParams.trimmedQuery) ||
       initialFilters.categories.length > 0 ||
       initialFilters.styles.length > 0 ||
       initialFilters.origins.length > 0 ||
@@ -245,7 +133,7 @@ export function SearchPage({
       try {
         const data = await searchDictionary(
           {
-            query: trimmedUrlQuery,
+            query: urlParams.trimmedQuery,
             categories: initialFilters.categories,
             styles: initialFilters.styles,
             origins: initialFilters.origins,
@@ -278,83 +166,58 @@ export function SearchPage({
     return () => {
       cancelled = true;
     };
-  }, [editorMode, hasSearched, urlQuery, trimmedUrlQuery, initialFilters]);
-
-  // Save filters function for editor mode
-  const saveFilters = useCallback(() => {
-    if (!editorMode || !isInitializedRef.current) return;
-
-    setEditorSearchFilters({
-      query: searchState.query,
-      selectedCategories: searchState.filters.categories,
-      selectedStyles: searchState.filters.styles,
-      selectedOrigins: searchState.filters.origins,
-      selectedLetters: searchState.filters.letters,
-      selectedStatus: searchState.status,
-      selectedAssignedTo: searchState.assignedTo,
-    });
-  }, [editorMode, searchState]);
+  }, [editorMode, hasSearched, urlParams.query, urlParams.trimmedQuery, initialFilters]);
 
   const handleSearchStateChange = useCallback(
-    ({ query, filters }: { query: string; filters: SearchFilters }) => {
-      setSearchState((prev) => {
-        const filtersChanged =
-          prev.filters.categories.length !== filters.categories.length ||
-          prev.filters.categories.some((cat, idx) => cat !== filters.categories[idx]) ||
-          prev.filters.styles.length !== filters.styles.length ||
-          prev.filters.styles.some((style, idx) => style !== filters.styles[idx]) ||
-          prev.filters.origins.length !== filters.origins.length ||
-          prev.filters.origins.some((origin, idx) => origin !== filters.origins[idx]) ||
-          prev.filters.letters.length !== filters.letters.length ||
-          prev.filters.letters.some((letter, idx) => letter !== filters.letters[idx]);
-
+    ({ query, filters }: { query: string; filters: LocalSearchFilters }) => {
+      updateState((prev) => {
+        const hasFiltersChanged = filtersChanged(prev.filters, filters);
         const queryChanged = prev.query !== query;
 
-        if (!filtersChanged && !queryChanged) {
+        if (!hasFiltersChanged && !queryChanged) {
           return prev;
         }
 
         return {
           ...prev,
           query,
-          filters: filtersChanged
-            ? {
-                categories: [...filters.categories],
-                styles: [...filters.styles],
-                origins: [...filters.origins],
-                letters: [...filters.letters],
-              }
-            : prev.filters,
+          filters: hasFiltersChanged ? cloneFilters(filters) : prev.filters,
         };
       });
     },
-    []
+    [updateState]
   );
 
-  const handleStatusChange = useCallback((value: string) => {
-    setSearchState((prev) => ({
-      ...prev,
-      status: value,
-    }));
-  }, []);
+  const handleStatusChange = useCallback(
+    (value: string) => {
+      updateState((prev) => ({
+        ...prev,
+        status: value,
+      }));
+    },
+    [updateState]
+  );
 
-  const handleAssignedChange = useCallback((values: string[]) => {
-    setSearchState((prev) => ({
-      ...prev,
-      assignedTo: values,
-    }));
-  }, []);
+  const handleAssignedChange = useCallback(
+    (values: string[]) => {
+      updateState((prev) => ({
+        ...prev,
+        assignedTo: values,
+      }));
+    },
+    [updateState]
+  );
 
   const clearAdditionalFilters = useCallback(() => {
-    setSearchState((prev) => ({
+    updateState((prev) => ({
       ...prev,
       status: '',
       assignedTo: [],
     }));
-  }, []);
+  }, [updateState]);
 
   const executeSearch = useCallback(
-    async ({ query, filters }: { query: string; filters: SearchFilters }) => {
+    async ({ query, filters }: { query: string; filters: LocalSearchFilters }) => {
       setIsLoading(true);
       setHasSearched(true);
 
@@ -376,34 +239,18 @@ export function SearchPage({
         setSearchResults(searchData.results);
         setTotalResults(searchData.pagination.total);
 
-        setSearchState((prev) => {
-          const filtersChanged =
-            prev.filters.categories.length !== filters.categories.length ||
-            prev.filters.categories.some((cat, idx) => cat !== filters.categories[idx]) ||
-            prev.filters.styles.length !== filters.styles.length ||
-            prev.filters.styles.some((style, idx) => style !== filters.styles[idx]) ||
-            prev.filters.origins.length !== filters.origins.length ||
-            prev.filters.origins.some((origin, idx) => origin !== filters.origins[idx]) ||
-            prev.filters.letters.length !== filters.letters.length ||
-            prev.filters.letters.some((letter, idx) => letter !== filters.letters[idx]);
-
+        updateState((prev) => {
+          const hasFiltersChanged = filtersChanged(prev.filters, filters);
           const queryChanged = prev.query !== query;
 
-          if (!filtersChanged && !queryChanged) {
+          if (!hasFiltersChanged && !queryChanged) {
             return prev;
           }
 
           return {
             ...prev,
             query,
-            filters: filtersChanged
-              ? {
-                  categories: [...filters.categories],
-                  styles: [...filters.styles],
-                  origins: [...filters.origins],
-                  letters: [...filters.letters],
-                }
-              : prev.filters,
+            filters: hasFiltersChanged ? cloneFilters(filters) : prev.filters,
           };
         });
 
@@ -418,37 +265,35 @@ export function SearchPage({
         setIsLoading(false);
       }
     },
-    [editorMode, saveFilters, searchState.assignedTo, searchState.status]
+    [editorMode, saveFilters, searchState.assignedTo, searchState.status, updateState]
   );
 
   const handleClearAll = useCallback(() => {
-    setSearchState(createDefaultSearchState());
+    clearAll();
     setSearchResults([]);
     setHasSearched(false);
     setTotalResults(0);
-    if (editorMode) {
-      clearEditorSearchFilters();
-    }
-  }, [editorMode]);
+  }, [clearAll]);
 
+  // Trigger search when URL params match current state in editor mode
   useEffect(() => {
     if (!editorMode) return;
 
-    if (!hasUrlCriteria) {
+    if (!urlParams.hasUrlCriteria) {
       urlSearchTriggeredRef.current = false;
       return;
     }
 
-    if (!isInitializedRef.current) return;
+    if (!isInitialized) return;
 
     const matchesUrlState =
-      searchState.query === trimmedUrlQuery &&
-      arraysEqual(searchState.filters.categories, urlCategories) &&
-      arraysEqual(searchState.filters.styles, urlStyles) &&
-      arraysEqual(searchState.filters.origins, urlOrigins) &&
-      arraysEqual(searchState.filters.letters, urlLetters) &&
-      searchState.status === urlStatus &&
-      arraysEqual(searchState.assignedTo, urlAssignedTo);
+      searchState.query === urlParams.trimmedQuery &&
+      arraysEqual(searchState.filters.categories, urlParams.categories) &&
+      arraysEqual(searchState.filters.styles, urlParams.styles) &&
+      arraysEqual(searchState.filters.origins, urlParams.origins) &&
+      arraysEqual(searchState.filters.letters, urlParams.letters) &&
+      searchState.status === urlParams.status &&
+      arraysEqual(searchState.assignedTo, urlParams.assignedTo);
 
     if (!matchesUrlState) {
       urlSearchTriggeredRef.current = false;
@@ -461,31 +306,17 @@ export function SearchPage({
 
     void executeSearch({
       query: searchState.query,
-      filters: {
-        categories: searchState.filters.categories,
-        styles: searchState.filters.styles,
-        origins: searchState.filters.origins,
-        letters: searchState.filters.letters,
-      },
+      filters: searchState.filters,
     });
   }, [
     editorMode,
     executeSearch,
-    hasUrlCriteria,
+    isInitialized,
+    urlParams,
     searchState.assignedTo,
-    searchState.filters.categories,
-    searchState.filters.letters,
-    searchState.filters.origins,
-    searchState.filters.styles,
+    searchState.filters,
     searchState.query,
     searchState.status,
-    trimmedUrlQuery,
-    urlAssignedTo,
-    urlCategories,
-    urlLetters,
-    urlOrigins,
-    urlStatus,
-    urlStyles,
   ]);
 
   const userOptions = useMemo(
@@ -544,15 +375,15 @@ export function SearchPage({
     () =>
       editorMode
         ? {
-            hasActive: hasEditorFilters,
-            onClear: clearAdditionalFilters,
-            render: () => (
-              <>
-                {statusFilter}
-                {assignedFilter}
-              </>
-            ),
-          }
+          hasActive: hasEditorFilters,
+          onClear: clearAdditionalFilters,
+          render: () => (
+            <>
+              {statusFilter}
+              {assignedFilter}
+            </>
+          ),
+        }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
@@ -593,31 +424,16 @@ export function SearchPage({
       {/* Results Section */}
       <div>
         {isLoading ? (
-          <div className="space-y-4">
-            {[...Array(editorMode ? 5 : 3)].map((_, index) => (
-              <div
-                key={index}
-                className={`animate-pulse rounded-lg bg-white ${editorMode ? 'p-4' : 'p-6'} shadow`}
-              >
-                <div className="mb-2 h-6 w-1/4 rounded bg-gray-200"></div>
-                <div className={`${editorMode ? '' : 'mb-2'} h-4 w-3/4 rounded bg-gray-200`}></div>
-                {!editorMode && <div className="h-4 w-1/2 rounded bg-gray-200"></div>}
-              </div>
-            ))}
-          </div>
+          <SearchLoadingSkeleton editorMode={editorMode} />
         ) : hasSearched || (!editorMode && hasSearchCriteria) ? (
           searchResults.length > 0 ? (
             <>
-              {/* Results count */}
-              <div className="mb-4 flex items-center justify-between">
-                <p className="mb-6 text-gray-600">
-                  {editorMode
-                    ? `Se encontraron ${searchResults.length} palabra${searchResults.length !== 1 ? 's' : ''}`
-                    : totalResults > 0
-                      ? `Se encontraron ${totalResults} resultado${totalResults !== 1 ? 's' : ''}${searchState.query.trim() && totalResults > 0 ? ` para "${searchState.query.trim()}"` : ''}`
-                      : 'No se encontraron resultados con los criterios seleccionados'}
-                </p>
-              </div>
+              <SearchResultsCount
+                editorMode={editorMode}
+                resultsCount={searchResults.length}
+                totalResults={totalResults}
+                query={searchState.query}
+              />
               {/* Results list */}
               <div className="space-y-4">
                 {searchResults.map((result, index) => (
@@ -634,31 +450,10 @@ export function SearchPage({
               </div>
             </>
           ) : (
-            // No results found
-            <div
-              className={`rounded-lg bg-white ${editorMode ? 'p-12' : 'p-8'} text-center shadow`}
-            >
-              <SadFaceIcon className="mx-auto mb-4 h-16 w-16 text-gray-400" />
-              <h3 className="mb-2 text-lg font-medium text-gray-900">
-                No se encontraron resultados
-              </h3>
-              <p className="text-gray-600">
-                Ajusta tu término de búsqueda o modifica las opciones avanzadas.
-              </p>
-            </div>
+            <NoResultsState editorMode={editorMode} />
           )
         ) : (
-          // No search yet
-          <div className="rounded-lg bg-white p-12 text-center shadow">
-            <SearchIcon className="mx-auto mb-4 h-16 w-16 text-gray-400" />
-            <h3 className="mb-2 text-lg font-medium text-gray-900">
-              {editorMode ? 'Busca palabras para editar' : 'Busca palabras en el diccionario'}
-            </h3>
-            <p className="text-gray-600">
-              Usa la búsqueda avanzada arriba para encontrar palabras por categorías, estilos,
-              origen o letra.
-            </p>
-          </div>
+          <EmptySearchState editorMode={editorMode} />
         )}
       </div>
     </div>
