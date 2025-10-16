@@ -45,7 +45,7 @@ async function sign(data: string, secret: string): Promise<string> {
 
 type TokenPayload = SessionUser & { iat: number; exp: number; role?: string };
 
-export async function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
+async function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
   const header = { alg: 'HS256', typ: 'JWT' };
   const now = Math.floor(Date.now() / 1000);
   const payload: TokenPayload = {
@@ -62,23 +62,19 @@ export async function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP
   return `${encodedHeader}.${encodedPayload}.${signature}`;
 }
 
-export async function verifyToken(token: string): Promise<TokenPayload | null> {
-  try {
-    const [encodedHeader, encodedPayload, signature] = token.split('.');
-    if (!encodedHeader || !encodedPayload || !signature) return null;
+async function verifyToken(token: string): Promise<TokenPayload | null> {
+  const [encodedHeader, encodedPayload, signature] = token.split('.');
+  if (!encodedHeader || !encodedPayload || !signature) return null;
 
-    const expected = await sign(`${encodedHeader}.${encodedPayload}`, getSecret());
-    if (expected !== signature) return null;
+  const expected = await sign(`${encodedHeader}.${encodedPayload}`, getSecret());
+  if (expected !== signature) return null;
 
-    const payloadBytes = base64urlDecode(encodedPayload);
-    const json = new TextDecoder().decode(payloadBytes);
-    const payload = JSON.parse(json) as TokenPayload;
+  const payloadBytes = base64urlDecode(encodedPayload);
+  const json = new TextDecoder().decode(payloadBytes);
+  const payload = JSON.parse(json) as TokenPayload;
 
-    if (payload.exp < Math.floor(Date.now() / 1000)) return null;
-    return payload;
-  } catch (error) {
-    return null;
-  }
+  if (payload.exp < Math.floor(Date.now() / 1000)) return null;
+  return payload;
 }
 
 export async function setSessionCookie(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {

@@ -32,7 +32,7 @@ export async function searchDictionary(
     params.append('limit', limit.toString());
 
     return await fetchSearchResults(params, page, limit);
-  } catch (error) {
+  } catch {
     return {
       results: [],
       metadata: { categories: [], styles: [], origins: [] },
@@ -51,7 +51,7 @@ export async function getSearchMetadata(): Promise<SearchMetadata> {
 
     const result = await response.json();
     return result.data.metadata;
-  } catch (error) {
+  } catch {
     return { categories: [], styles: [], origins: [] };
   }
 }
@@ -69,11 +69,7 @@ function buildFilterParams(filters: SearchFilters): URLSearchParams {
   return params;
 }
 
-async function fetchSearchResults(
-  params: URLSearchParams,
-  page: number,
-  limit: number
-) {
+async function fetchSearchResults(params: URLSearchParams, page: number, limit: number) {
   try {
     const queryString = params.toString();
     const response = await fetch(`/api/search${queryString ? `?${queryString}` : ''}`);
@@ -84,7 +80,7 @@ async function fetchSearchResults(
 
     const result = await response.json();
     return result.data;
-  } catch (error) {
+  } catch {
     return {
       results: [],
       metadata: { categories: [], styles: [], origins: [] },

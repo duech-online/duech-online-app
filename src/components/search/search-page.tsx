@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useSearchParams, usePathname } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { SelectDropdown, MultiSelectDropdown } from '@/components/common/dropdown';
 import SearchBar from '@/components/search/search-bar';
 import { searchDictionary } from '@/lib/dictionary-client';
@@ -33,13 +33,8 @@ interface SearchPageProps {
   initialUsers?: User[];
 }
 
-export function SearchPage({
-  title,
-  placeholder,
-  initialUsers = [],
-}: SearchPageProps) {
+export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPageProps) {
   // Detect editor mode
-  const pathname = usePathname();
   const editorMode = isEditorModeClient();
 
   // Parse URL search params
@@ -154,7 +149,7 @@ export function SearchPage({
           setTotalResults(data.pagination.total);
           setHasSearched(true);
         }
-      } catch (error) {
+      } catch {
         if (!cancelled) {
           setSearchResults([]);
           setTotalResults(0);
@@ -262,7 +257,7 @@ export function SearchPage({
         if (editorMode) {
           setTimeout(() => saveFilters(), 0);
         }
-      } catch (error) {
+      } catch {
         setSearchResults([]);
         setTotalResults(0);
       } finally {
@@ -379,15 +374,15 @@ export function SearchPage({
     () =>
       editorMode
         ? {
-          hasActive: hasEditorFilters,
-          onClear: clearAdditionalFilters,
-          render: () => (
-            <>
-              {statusFilter}
-              {assignedFilter}
-            </>
-          ),
-        }
+            hasActive: hasEditorFilters,
+            onClear: clearAdditionalFilters,
+            render: () => (
+              <>
+                {statusFilter}
+                {assignedFilter}
+              </>
+            ),
+          }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
