@@ -1,62 +1,23 @@
-'use client';
-
-import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { getWordOfTheDay } from '@/app/lib/dictionary';
-import { Word, GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
+import { GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
 import { ArrowRightIcon, BookOpenIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 import { Chip } from '@/app/ui/chip';
-import { isEditorModeClient } from '@/app/lib/editor-mode';
 
-export default function WordOfTheDay() {
-  const pathname = usePathname();
-  const editorMode = isEditorModeClient(pathname);
-  const [word, setWord] = useState<{ word: Word; letter: string } | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface WordOfTheDayProps {
+  editorMode: boolean;
+}
 
-  useEffect(() => {
-    let active = true;
+export default async function WordOfTheDay({ editorMode }: WordOfTheDayProps) {
+  let word: Awaited<ReturnType<typeof getWordOfTheDay>> = null;
+  let error: string | null = null;
 
-    const loadRandomWord = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const randomWord = await getWordOfTheDay();
-        if (!active) return;
-        setWord(randomWord);
-      } catch (err) {
-        console.error('WordOfTheDay load error:', err);
-        if (!active) return;
-        const message =
-          err instanceof Error ? err.message : 'No pudimos cargar la palabra del día.';
-        setWord(null);
-        setError(message);
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadRandomWord();
-
-    return () => {
-      active = false;
-    };
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="animate-pulse rounded-lg bg-white p-6 shadow-md">
-        <div className="mb-4 h-6 w-1/3 rounded bg-gray-200"></div>
-        <div className="mb-3 h-8 w-1/2 rounded bg-gray-200"></div>
-        <div className="mb-2 h-4 w-full rounded bg-gray-200"></div>
-        <div className="h-4 w-3/4 rounded bg-gray-200"></div>
-      </div>
-    );
+  try {
+    word = await getWordOfTheDay();
+  } catch (err) {
+    console.error('WordOfTheDay load error:', err);
+    error = err instanceof Error ? err.message : 'No pudimos cargar la palabra del día.';
   }
 
   if (!word) {

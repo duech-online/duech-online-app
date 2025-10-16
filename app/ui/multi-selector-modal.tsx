@@ -48,9 +48,13 @@ export function MultiSelector({
   const columnsClass = columns === 3 ? 'md:grid-cols-3' : '';
 
   return (
-    <div className="bg-opacity-50 fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={onClose}
+    >
       <div
-        className={`max-h-[80vh] w-full ${maxWidthClass} overflow-y-auto rounded-lg bg-white p-6 shadow-xl`}
+        className={`mx-4 max-h-[80vh] w-full ${maxWidthClass} overflow-y-auto rounded-lg bg-white p-6 shadow-xl`}
+        onClick={(e) => e.stopPropagation()}
       >
         <h3 className="mb-4 text-xl font-bold text-gray-900">{title}</h3>
         <div className={`grid grid-cols-2 gap-3 ${columnsClass}`}>

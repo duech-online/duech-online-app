@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { SelectDropdown, MultiSelectDropdown } from '@/app/ui/dropdown';
 import SearchBar from '@/app/ui/search-bar';
 import { SadFaceIcon, SearchIcon } from '@/app/ui/icons';
-import { searchDictionary } from '@/app/lib/dictionary';
+import { searchDictionary } from '@/app/lib/dictionary-client';
 import { SearchResult } from '@/app/lib/definitions';
 import { STATUS_OPTIONS } from '@/app/lib/definitions';
 import { WordCard } from '@/app/ui/word-card';
@@ -319,11 +319,11 @@ export function SearchPage({
           query,
           filters: filtersChanged
             ? {
-                categories: [...filters.categories],
-                styles: [...filters.styles],
-                origins: [...filters.origins],
-                letters: [...filters.letters],
-              }
+              categories: [...filters.categories],
+              styles: [...filters.styles],
+              origins: [...filters.origins],
+              letters: [...filters.letters],
+            }
             : prev.filters,
         };
       });
@@ -398,11 +398,11 @@ export function SearchPage({
             query,
             filters: filtersChanged
               ? {
-                  categories: [...filters.categories],
-                  styles: [...filters.styles],
-                  origins: [...filters.origins],
-                  letters: [...filters.letters],
-                }
+                categories: [...filters.categories],
+                styles: [...filters.styles],
+                origins: [...filters.origins],
+                letters: [...filters.letters],
+              }
               : prev.filters,
           };
         });
@@ -544,15 +544,15 @@ export function SearchPage({
     () =>
       editorMode
         ? {
-            hasActive: hasEditorFilters,
-            onClear: clearAdditionalFilters,
-            render: () => (
-              <>
-                {statusFilter}
-                {assignedFilter}
-              </>
-            ),
-          }
+          hasActive: hasEditorFilters,
+          onClear: clearAdditionalFilters,
+          render: () => (
+            <>
+              {statusFilter}
+              {assignedFilter}
+            </>
+          ),
+        }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
