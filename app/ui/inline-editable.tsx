@@ -1,13 +1,15 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, ReactNode } from 'react';
+import { Button } from '@/app/ui/button';
+import { PencilIcon } from '@/app/ui/icons';
 
-type Props = {
-  value: string;
+type InlineEditableProps = {
+  value: string | null;
   // cuando saveStrategy === 'immediate'
-  onSave?: (v: string) => Promise<void> | void;
+  onSave?: (v: string | null) => Promise<void> | void;
   // cuando saveStrategy === 'manual'
-  onChange?: (v: string) => void;
+  onChange?: (v: string | null) => void;
 
   as?: 'input' | 'textarea';
   placeholder?: string;
@@ -21,6 +23,12 @@ type Props = {
   // 'manual' => Enter/blur: llama onChange(v) y cierra (no API)
   // 'immediate' => Enter/blur: llama onSave(v) y cierra (sí API)
   saveStrategy?: 'manual' | 'immediate';
+
+  // New props for the complete pattern
+  editorMode?: boolean;
+  addLabel?: string;
+  renderDisplay?: (value: string) => ReactNode;
+  renderWrapper?: (children: ReactNode) => ReactNode;
 };
 
 export default function InlineEditable({
@@ -34,16 +42,20 @@ export default function InlineEditable({
   onCancel,
   onStart,
   saveStrategy = 'manual', // por defecto manual
-}: Props) {
+  editorMode = true,
+  addLabel,
+  renderDisplay,
+  renderWrapper,
+}: InlineEditableProps) {
   const isControlled = typeof editing === 'boolean';
   const [internalEditing, setInternalEditing] = useState(false);
   const isEditing = isControlled ? (editing as boolean) : internalEditing;
 
-  const [draft, setDraft] = useState(value);
+  const [draft, setDraft] = useState(value ?? '');
   const ref = useRef<HTMLInputElement & HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    setDraft(value);
+    setDraft(value ?? '');
   }, [value]);
   useEffect(() => {
     if (isEditing) ref.current?.focus();
@@ -58,36 +70,73 @@ export default function InlineEditable({
   };
 
   const doImmediate = async () => {
-    end();
-    const a = (draft ?? '').trim();
+    const a = draft.trim();
     const b = (value ?? '').trim();
-    if (a === b) return;
-    await onSave?.(draft);
+    if (a === b) {
+      cancel(); // No changes, just close
+      return;
+    }
+    await onSave?.(a || null);
+    end();
+    onCancel?.(); // Close editing mode
   };
 
   const doManual = () => {
+    const trimmed = draft.trim();
+    onChange?.(trimmed || null);
     end();
-    onChange?.(draft);
+    onCancel?.(); // Close editing mode after saving
   };
 
   const save = () => (saveStrategy === 'manual' ? doManual() : doImmediate());
   const cancel = () => {
-    setDraft(value);
+    setDraft(value ?? '');
     end();
     onCancel?.();
   };
 
+  const displayValue = value?.trim() || '';
+  const finalAddLabel = addLabel || `+ ${placeholder}`;
+
+  // Public mode (not editor mode) - just display the value
+  if (!editorMode) {
+    if (!displayValue) return null;
+
+    const content = renderDisplay ? renderDisplay(displayValue) : displayValue;
+    return renderWrapper ? <>{renderWrapper(content)}</> : <>{content}</>;
+  }
+
+  // Editor mode - not editing
   if (!isEditing) {
+    // Has value - show value with edit button
+    if (displayValue) {
+      const content = renderDisplay ? renderDisplay(displayValue) : displayValue;
+      const wrappedContent = renderWrapper ? renderWrapper(content) : content;
+
+      return (
+        <div className="flex items-center gap-2">
+          {wrappedContent}
+          <Button
+            onClick={begin}
+            className="text-duech-blue inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-blue-100"
+            aria-label={`Editar ${placeholder.toLowerCase()}`}
+            title={`Editar ${placeholder.toLowerCase()}`}
+          >
+            <PencilIcon className="h-5 w-5" />
+          </Button>
+        </div>
+      );
+    }
+
+    // Empty - show "add" button
     return (
-      <span
-        className={`cursor-text rounded px-1 hover:bg-yellow-50 ${className}`}
-        onClick={begin}
-        title="Click para editar"
-      >
-        {value?.trim() ? value : <em className="text-gray-400">{placeholder}</em>}
-      </span>
+      <Button onClick={begin} className="hover:text-duech-blue text-sm text-gray-500 underline">
+        {finalAddLabel}
+      </Button>
     );
   }
+
+  // Editor mode - currently editing
 
   if (as === 'textarea') {
     return (

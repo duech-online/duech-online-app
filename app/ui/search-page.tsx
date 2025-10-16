@@ -319,11 +319,11 @@ export function SearchPage({
           query,
           filters: filtersChanged
             ? {
-              categories: [...filters.categories],
-              styles: [...filters.styles],
-              origins: [...filters.origins],
-              letters: [...filters.letters],
-            }
+                categories: [...filters.categories],
+                styles: [...filters.styles],
+                origins: [...filters.origins],
+                letters: [...filters.letters],
+              }
             : prev.filters,
         };
       });
@@ -398,11 +398,11 @@ export function SearchPage({
             query,
             filters: filtersChanged
               ? {
-                categories: [...filters.categories],
-                styles: [...filters.styles],
-                origins: [...filters.origins],
-                letters: [...filters.letters],
-              }
+                  categories: [...filters.categories],
+                  styles: [...filters.styles],
+                  origins: [...filters.origins],
+                  letters: [...filters.letters],
+                }
               : prev.filters,
           };
         });
@@ -544,15 +544,15 @@ export function SearchPage({
     () =>
       editorMode
         ? {
-          hasActive: hasEditorFilters,
-          onClear: clearAdditionalFilters,
-          render: () => (
-            <>
-              {statusFilter}
-              {assignedFilter}
-            </>
-          ),
-        }
+            hasActive: hasEditorFilters,
+            onClear: clearAdditionalFilters,
+            render: () => (
+              <>
+                {statusFilter}
+                {assignedFilter}
+              </>
+            ),
+          }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
