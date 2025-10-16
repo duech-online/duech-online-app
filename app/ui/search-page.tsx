@@ -17,7 +17,12 @@ import {
   NoResultsState,
   SearchResultsCount,
 } from '@/app/ui/search-results-components';
-import { arraysEqual, filtersChanged, cloneFilters, LocalSearchFilters } from '@/app/lib/search-utils';
+import {
+  arraysEqual,
+  filtersChanged,
+  cloneFilters,
+  LocalSearchFilters,
+} from '@/app/lib/search-utils';
 
 interface User {
   id: number;
@@ -375,15 +380,15 @@ export function SearchPage({
     () =>
       editorMode
         ? {
-          hasActive: hasEditorFilters,
-          onClear: clearAdditionalFilters,
-          render: () => (
-            <>
-              {statusFilter}
-              {assignedFilter}
-            </>
-          ),
-        }
+            hasActive: hasEditorFilters,
+            onClear: clearAdditionalFilters,
+            render: () => (
+              <>
+                {statusFilter}
+                {assignedFilter}
+              </>
+            ),
+          }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
