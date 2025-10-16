@@ -4,10 +4,10 @@
 
 import { eq, ilike, or, and, sql, SQL } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
-import { db } from './db';
-import { words, meanings, users } from './schema';
-import { Word, SearchResult } from './definitions';
-import { dbWordToWord, dbWordToSearchResult } from './transformers';
+import { db } from '@/app/lib/db';
+import { words, meanings, users } from '@/app/lib/schema';
+import { Word, SearchResult } from '@/app/lib/definitions';
+import { dbWordToWord, dbWordToSearchResult } from '@/app/lib/transformers';
 
 /**
  * Get a word by lemma with all its meanings

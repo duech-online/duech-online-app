@@ -5,8 +5,8 @@ import { usePathname } from 'next/navigation';
 import { getWordOfTheDay } from '@/app/lib/dictionary';
 import { Word, GRAMMATICAL_CATEGORIES } from '@/app/lib/definitions';
 import MarkdownRenderer from '@/app/ui/markdown-renderer';
-import { ArrowRightIcon, BookOpenIcon } from './icons';
-import { Button } from './button';
+import { ArrowRightIcon, BookOpenIcon } from '@/app/ui/icons';
+import { Button } from '@/app/ui/button';
 import { Chip } from '@/app/ui/chip';
 import { isEditorModeClient } from '@/app/lib/editor-mode';
 
