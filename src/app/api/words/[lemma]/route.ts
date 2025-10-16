@@ -44,7 +44,6 @@ export async function GET(
       data: wordData,
     });
   } catch (error) {
-    console.error('Error in word API:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -144,19 +143,19 @@ export async function POST(request: NextRequest) {
       values.length > 0
         ? values
         : [
-            {
-              number: 1,
-              meaning: 'Definición pendiente',
-              origin: null,
-              categories: [],
-              remission: null,
-              styles: null,
-              observation: null,
-              example: [],
-              variant: null,
-              expressions: null,
-            },
-          ];
+          {
+            number: 1,
+            meaning: 'Definición pendiente',
+            origin: null,
+            categories: [],
+            remission: null,
+            styles: null,
+            observation: null,
+            example: [],
+            variant: null,
+            expressions: null,
+          },
+        ];
 
     const word: Word = {
       lemma,
@@ -182,7 +181,6 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating word:', error);
     return NextResponse.json(
       {
         error: 'Error al crear la palabra',
@@ -208,7 +206,6 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ lem
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating word:', error);
     return NextResponse.json(
       {
         error: 'Error al actualizar la palabra',
@@ -235,7 +232,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error deleting word:', error);
     return NextResponse.json(
       {
         error: 'Error al eliminar la palabra',

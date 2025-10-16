@@ -186,7 +186,6 @@ export default function SearchBar({
         setAvailableOrigins(metadata.origins);
         setMetadataLoaded(true);
       } catch (error) {
-        console.error('Error loading metadata for search filters:', error);
         if (isMounted) {
           setMetadataLoaded(true);
         }

@@ -77,7 +77,6 @@ export async function verifyToken(token: string): Promise<TokenPayload | null> {
     if (payload.exp < Math.floor(Date.now() / 1000)) return null;
     return payload;
   } catch (error) {
-    console.error('[Auth] Token verification error:', error);
     return null;
   }
 }
@@ -90,6 +89,7 @@ export async function setSessionCookie(user: SessionUser, maxAgeSeconds = DEFAUL
     secure: process.env.NODE_ENV === 'production',
     path: '/',
     maxAge: DEFAULT_EXP_SECONDS,
+    domain: process.env.NODE_ENV === 'production' ? undefined : 'localhost', // Allows subdomain sharing in dev
   });
 }
 

@@ -31,9 +31,8 @@ export async function searchDictionary(
     params.append('page', page.toString());
     params.append('limit', limit.toString());
 
-    return await fetchSearchResults(params, page, limit, 'Error searching dictionary:');
+    return await fetchSearchResults(params, page, limit);
   } catch (error) {
-    console.error('Error searching dictionary:', error);
     return {
       results: [],
       metadata: { categories: [], styles: [], origins: [] },
@@ -53,7 +52,6 @@ export async function getSearchMetadata(): Promise<SearchMetadata> {
     const result = await response.json();
     return result.data.metadata;
   } catch (error) {
-    console.error('Error getting search metadata:', error);
     return { categories: [], styles: [], origins: [] };
   }
 }
@@ -74,8 +72,7 @@ function buildFilterParams(filters: SearchFilters): URLSearchParams {
 async function fetchSearchResults(
   params: URLSearchParams,
   page: number,
-  limit: number,
-  errorLabel: string
+  limit: number
 ) {
   try {
     const queryString = params.toString();
@@ -88,7 +85,6 @@ async function fetchSearchResults(
     const result = await response.json();
     return result.data;
   } catch (error) {
-    console.error(errorLabel, error);
     return {
       results: [],
       metadata: { categories: [], styles: [], origins: [] },

@@ -31,7 +31,6 @@ export default function WordOfTheDay() {
         const data = await response.json();
         setWord(data);
       } catch (err) {
-        console.error('WordOfTheDay load error:', err);
         setError(err instanceof Error ? err.message : 'No pudimos cargar la palabra del día.');
       } finally {
         setLoading(false);

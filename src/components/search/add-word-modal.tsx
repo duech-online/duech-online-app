@@ -100,7 +100,6 @@ export function AddWordModal({ availableUsers }: AddWordModalProps) {
       // Navigate to word page
       router.push(`/palabra/${encodeURIComponent(createdLemma)}`);
     } catch (error) {
-      console.error('Error adding word:', error);
       alert(error instanceof Error ? error.message : 'Error al agregar la palabra');
     }
   };

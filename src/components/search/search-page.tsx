@@ -155,7 +155,6 @@ export function SearchPage({
           setHasSearched(true);
         }
       } catch (error) {
-        console.error('Error searching:', error);
         if (!cancelled) {
           setSearchResults([]);
           setTotalResults(0);
@@ -264,7 +263,6 @@ export function SearchPage({
           setTimeout(() => saveFilters(), 0);
         }
       } catch (error) {
-        console.error('Error in search:', error);
         setSearchResults([]);
         setTotalResults(0);
       } finally {
