@@ -32,5 +32,8 @@ jobs:
       - name: Check dependencies with Knip
         run: npm run check:deps
 
+      - name: Check clones
+        run: npm run duplication
+
       - name: Build Next.js app
         run: npm run build
