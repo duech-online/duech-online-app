@@ -32,14 +32,13 @@ export async function authenticate(_: unknown, formData: FormData): Promise<stri
   }
 
   if (dbUser && (await verifyUserPassword(dbUser.passwordHash, password))) {
-    console.log('[Auth] Setting session for user:', dbUser.username, 'role:', dbUser.role);
     await setSessionCookie({
       id: String(dbUser.id),
       email: dbUser.email || dbUser.username,
       name: dbUser.username,
       role: dbUser.role,
     });
-    console.log('[Auth] Session cookie set, redirecting to:', redirectTo);
+
     redirect(redirectTo);
   }
 
