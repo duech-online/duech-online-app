@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 import { SelectDropdown, MultiSelectDropdown } from '@/components/common/dropdown';
 import SearchBar from '@/components/search/search-bar';
 import { searchDictionary } from '@/lib/dictionary-client';
@@ -18,6 +18,7 @@ import {
   SearchResultsCount,
 } from '@/components/search/search-results-components';
 import { arraysEqual, filtersChanged, cloneFilters, LocalSearchFilters } from '@/lib/search-utils';
+import { isEditorModeClient } from '@/lib/editor-mode';
 
 interface User {
   id: number;
@@ -27,21 +28,26 @@ interface User {
 }
 
 interface SearchPageProps {
-  editorMode?: boolean;
-  title: string;
+  title?: string;
   placeholder: string;
   initialUsers?: User[];
 }
 
 export function SearchPage({
-  editorMode = false,
   title,
   placeholder,
   initialUsers = [],
 }: SearchPageProps) {
+  // Detect editor mode
+  const pathname = usePathname();
+  const editorMode = isEditorModeClient();
+
   // Parse URL search params
   const searchParams = useSearchParams();
   const urlParams = useUrlSearchParams(searchParams);
+
+  // Set title based on editor mode if not provided
+  const pageTitle = title || (editorMode ? 'Editor de Diccionario' : 'Diccionario');
 
   // Manage search state with URL/cookie synchronization
   const { searchState, updateState, saveFilters, clearAll, isInitialized } = useSearchState({
@@ -375,15 +381,15 @@ export function SearchPage({
     () =>
       editorMode
         ? {
-            hasActive: hasEditorFilters,
-            onClear: clearAdditionalFilters,
-            render: () => (
-              <>
-                {statusFilter}
-                {assignedFilter}
-              </>
-            ),
-          }
+          hasActive: hasEditorFilters,
+          onClear: clearAdditionalFilters,
+          render: () => (
+            <>
+              {statusFilter}
+              {assignedFilter}
+            </>
+          ),
+        }
         : undefined,
     [editorMode, clearAdditionalFilters, hasEditorFilters, statusFilter, assignedFilter]
   );
@@ -395,7 +401,7 @@ export function SearchPage({
         className={`mb-${editorMode ? '3' : '10'} ${editorMode ? 'flex items-center justify-between' : ''}`}
       >
         <h1 className={`text-duech-blue ${editorMode ? '' : 'mb-6'} text-4xl font-bold`}>
-          {title}
+          {pageTitle}
         </h1>
         {editorMode && <AddWordModal availableUsers={availableUsers} />}
       </div>

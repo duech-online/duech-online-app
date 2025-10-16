@@ -4,7 +4,6 @@ import { createToken, verifyToken } from '@/lib/auth';
 
 const EDITOR_HOST = 'editor.localhost';
 const PUBLIC_ASSET_PATTERN = /\.(ico|png|jpg|jpeg|gif|svg|webp|js|css|txt|xml|map)$/i;
-const EDITOR_PATH_PREFIX = '/editor';
 const SESSION_COOKIE = 'duech_session';
 const EDITOR_ROLES = ['lexicographer', 'editor', 'admin', 'superadmin'];
 const SESSION_MAX_AGE = 60 * 60 * 24 * 7; // 7 days
@@ -25,10 +24,6 @@ function isBypassPath(pathname: string) {
     pathname.startsWith('/api') ||
     PUBLIC_ASSET_PATTERN.test(pathname)
   );
-}
-
-function isEditorPath(pathname: string) {
-  return pathname === EDITOR_PATH_PREFIX || pathname.startsWith(`${EDITOR_PATH_PREFIX}/`);
 }
 
 async function checkEditorAuthentication(request: NextRequest): Promise<boolean> {
@@ -84,10 +79,9 @@ export async function middleware(request: NextRequest) {
   const devToken = await ensureDevSessionCookie(request);
   let response: NextResponse;
 
-  const editorHost = hostname === EDITOR_HOST;
-  const editorPath = isEditorPath(pathname);
+  const isEditorHost = hostname === EDITOR_HOST;
 
-  if (editorHost || editorPath) {
+  if (isEditorHost) {
     const isAuthenticated = await checkEditorAuthentication(request);
     if (!isAuthenticated) {
       const loginUrl = new URL('/login', request.url);
@@ -98,23 +92,11 @@ export async function middleware(request: NextRequest) {
       const requestHeaders = new Headers(request.headers);
       requestHeaders.set('x-editor-mode', 'true');
 
-      if (editorPath) {
-        const rewriteUrl = request.nextUrl.clone();
-        const targetPath = pathname.replace(/^\/editor(\/)?/, '/');
-        rewriteUrl.pathname = targetPath === '' ? '/' : targetPath;
-
-        response = NextResponse.rewrite(rewriteUrl, {
-          request: {
-            headers: requestHeaders,
-          },
-        });
-      } else {
-        response = NextResponse.next({
-          request: {
-            headers: requestHeaders,
-          },
-        });
-      }
+      response = NextResponse.next({
+        request: {
+          headers: requestHeaders,
+        },
+      });
     }
   } else {
     response = NextResponse.next();

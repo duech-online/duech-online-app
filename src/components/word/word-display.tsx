@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { MultiSelector } from '@/components/word/multi-selector-modal';
 import { Button } from '@/components/common/button';
 import { DefinitionSection } from '@/components/word/word-definition';
@@ -17,13 +18,13 @@ import {
   type WordDefinition,
 } from '@/lib/definitions';
 import { ExampleEditorModal, type ExampleDraft } from '@/components/word/word-example-editor-modal';
+import { isEditorModeClient } from '@/lib/editor-mode';
 
 interface WordDisplayProps {
   initialWord: Word;
   initialLetter: string;
   initialStatus?: string;
   initialAssignedTo?: number;
-  editorMode?: boolean;
 }
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
@@ -39,8 +40,11 @@ export function WordDisplay({
   initialLetter,
   initialStatus,
   initialAssignedTo,
-  editorMode = false,
 }: WordDisplayProps) {
+  // Detect editor mode
+  const pathname = usePathname();
+  const editorMode = isEditorModeClient();
+
   const [word, setWord] = useState<Word>(initialWord);
   const [letter, setLetter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
