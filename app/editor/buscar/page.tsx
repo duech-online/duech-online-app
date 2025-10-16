@@ -145,11 +145,11 @@ function EditorContent() {
           query,
           filters: filtersChanged
             ? {
-              categories: [...filters.categories],
-              styles: [...filters.styles],
-              origins: [...filters.origins],
-              letters: [...filters.letters],
-            }
+                categories: [...filters.categories],
+                styles: [...filters.styles],
+                origins: [...filters.origins],
+                letters: [...filters.letters],
+              }
             : prev.filters,
         };
       });
@@ -224,11 +224,11 @@ function EditorContent() {
             query,
             filters: filtersChanged
               ? {
-                categories: [...filters.categories],
-                styles: [...filters.styles],
-                origins: [...filters.origins],
-                letters: [...filters.letters],
-              }
+                  categories: [...filters.categories],
+                  styles: [...filters.styles],
+                  origins: [...filters.origins],
+                  letters: [...filters.letters],
+                }
               : prev.filters,
           };
         });
@@ -444,22 +444,13 @@ function EditorContent() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="letra" className="mb-1 block text-sm font-medium text-gray-900">
-                      Letra
-                    </label>
-                    <select
-                      id="letra"
-                      value={selectedLetter}
-                      onChange={(event) => setNewWordLetter(event.target.value.toLowerCase())}
-                      className="focus:border-duech-blue focus:ring-duech-blue w-full rounded border border-gray-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:outline-none"
-                    >
-                      <option value="">Seleccionar letra</option>
-                      {LETTER_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
+                    <SelectDropdown
+                      label="Letra"
+                      options={[{ value: '', label: 'Seleccionar letra' }, ...LETTER_OPTIONS]}
+                      selectedValue={selectedLetter}
+                      onChange={(value) => setNewWordLetter(value.toLowerCase())}
+                      placeholder="Seleccionar letra"
+                    />
                   </div>
                 </div>
                 <MultiSelectDropdown
