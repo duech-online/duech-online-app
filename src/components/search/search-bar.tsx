@@ -95,7 +95,7 @@ export default function SearchBar({
   const pathname = usePathname();
   const editorMode = isEditorModeClient(pathname);
 
-  const defaultSearchPath = editorMode ? '/editor/buscar' : '/buscar';
+  const defaultSearchPath = '/buscar';
   const searchPath = customSearchPath ?? defaultSearchPath;
 
   const initialCategories = initialFilters?.categories ?? EMPTY_FILTERS.categories;
@@ -327,8 +327,7 @@ export default function SearchBar({
             key={`${pill.key}-${pill.value}`}
             type="button"
             onClick={() => removeFilterValue(pill.key, pill.value)}
-            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium ${
-              pill.variant === 'category'
+            className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-sm font-medium ${pill.variant === 'category'
                 ? 'border-blue-300 bg-blue-100 text-blue-800'
                 : pill.variant === 'style'
                   ? 'border-green-300 bg-green-100 text-green-800'
@@ -337,7 +336,7 @@ export default function SearchBar({
                     : pill.variant === 'letter'
                       ? 'border-orange-300 bg-orange-100 text-orange-800'
                       : 'border-gray-300 bg-gray-100 text-gray-800'
-            } `}
+              } `}
           >
             <span>{pill.label}</span>
             <CloseIcon className="h-3 w-3" />

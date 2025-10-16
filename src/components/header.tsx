@@ -9,10 +9,15 @@ import { isEditorModeClient } from '@/lib/editor-mode';
 
 export default function Header() {
   const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
+  const [editorMode, setEditorMode] = useState(false);
   const pathname = usePathname();
-  const editorMode = isEditorModeClient(pathname);
 
-  const homeLink = editorMode ? '/editor' : '/';
+  // Detect editor mode on mount and when pathname changes
+  useEffect(() => {
+    setEditorMode(isEditorModeClient());
+  }, [pathname]);
+
+  const homeLink = '/';
   const title = editorMode ? 'DUECh Editor' : 'DUECh';
   const subtitle = editorMode
     ? 'Editor del Diccionario del uso del español de Chile'
@@ -39,7 +44,7 @@ export default function Header() {
 
   useEffect(() => {
     fetchUser();
-  }, [fetchUser, pathname]);
+  }, [fetchUser]);
 
   const handleLogout = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,14 +100,14 @@ export default function Header() {
 
           <div className="flex items-center space-x-8">
             <Link
-              href={editorMode ? '/editor' : '/'}
+              href="/"
               className="text-lg font-medium transition-colors"
               style={{ color: '#ffffff' }}
             >
               <span className="hover:text-yellow-300">Inicio</span>
             </Link>
             <Link
-              href={editorMode ? '/editor/buscar' : '/buscar'}
+              href="/buscar"
               className="text-lg font-medium transition-colors"
               style={{ color: '#ffffff' }}
             >
@@ -123,13 +128,13 @@ export default function Header() {
               <span className="hover:text-yellow-300">Acerca</span>
             </Link>
             {editorMode && (
-              <Link
-                href="/"
+              <a
+                href="http://localhost:3000/"
                 className="text-lg font-medium transition-colors"
                 style={{ color: '#ffffff' }}
               >
                 <span className="hover:text-yellow-300">Diccionario Público</span>
-              </Link>
+              </a>
             )}
             {editorMode && user && (
               <div className="flex items-center gap-3">

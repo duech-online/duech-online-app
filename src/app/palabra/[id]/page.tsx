@@ -24,7 +24,6 @@ export default async function WordDetailPage({ params }: { params: { id: string 
       initialLetter={letter}
       initialStatus={status}
       initialAssignedTo={assignedTo ?? undefined}
-      editorMode={editorMode}
     />
   );
 }

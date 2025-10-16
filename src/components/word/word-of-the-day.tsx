@@ -1,23 +1,52 @@
-import { getWordOfTheDay } from '@/lib/dictionary';
-import { GRAMMATICAL_CATEGORIES } from '@/lib/definitions';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { GRAMMATICAL_CATEGORIES, type Word } from '@/lib/definitions';
 import MarkdownRenderer from '@/components/word/markdown-renderer';
 import { ArrowRightIcon, BookOpenIcon } from '@/components/icons';
 import { Button } from '@/components/common/button';
 import { ChipList } from '@/components/common/chip';
+import { isEditorModeClient } from '@/lib/editor-mode';
 
-interface WordOfTheDayProps {
-  editorMode: boolean;
+interface WordOfTheDayData {
+  word: Word;
+  letter: string;
 }
 
-export default async function WordOfTheDay({ editorMode }: WordOfTheDayProps) {
-  let word: Awaited<ReturnType<typeof getWordOfTheDay>> = null;
-  let error: string | null = null;
+export default function WordOfTheDay() {
+  const pathname = usePathname();
+  const editorMode = isEditorModeClient(pathname);
+  const [word, setWord] = useState<WordOfTheDayData | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  try {
-    word = await getWordOfTheDay();
-  } catch (err) {
-    console.error('WordOfTheDay load error:', err);
-    error = err instanceof Error ? err.message : 'No pudimos cargar la palabra del día.';
+  useEffect(() => {
+    async function fetchWordOfTheDay() {
+      try {
+        const response = await fetch('/api/word-of-the-day');
+        if (!response.ok) {
+          throw new Error('Failed to fetch word of the day');
+        }
+        const data = await response.json();
+        setWord(data);
+      } catch (err) {
+        console.error('WordOfTheDay load error:', err);
+        setError(err instanceof Error ? err.message : 'No pudimos cargar la palabra del día.');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchWordOfTheDay();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="rounded-lg bg-white p-6 text-center shadow-md">
+        <p className="text-gray-700">Cargando palabra del día...</p>
+      </div>
+    );
   }
 
   if (!word) {
@@ -61,11 +90,7 @@ export default async function WordOfTheDay({ editorMode }: WordOfTheDayProps) {
       </div>
 
       <Button
-        href={
-          editorMode
-            ? `/editor/palabra/${encodeURIComponent(word.word.lemma)}`
-            : `/palabra/${encodeURIComponent(word.word.lemma)}`
-        }
+        href={`/palabra/${encodeURIComponent(word.word.lemma)}`}
         className="bg-duech-gold px-6 py-3 font-semibold text-gray-900 shadow-md hover:bg-yellow-500"
       >
         Ver definición completa

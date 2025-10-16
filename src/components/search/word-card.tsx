@@ -30,11 +30,9 @@ export function WordCard({
   className = '',
 }: WordCardProps) {
   const isPublished = status === 'published';
-  const viewUrl = editorMode
-    ? `/editor/palabra/${encodeURIComponent(lemma)}`
-    : `/palabra/${encodeURIComponent(lemma)}`;
+  const viewUrl = `/palabra/${encodeURIComponent(lemma)}`;
   // In editor mode, we need the public domain URL for preview
-  const publicPreviewUrl = editorMode ? `/palabra/${encodeURIComponent(lemma)}` : undefined;
+  const publicPreviewUrl = editorMode ? `http://localhost:3000/palabra/${encodeURIComponent(lemma)}` : undefined;
 
   // Get status label and color for editor mode
   const statusOption = STATUS_OPTIONS.find((opt) => opt.value === status);

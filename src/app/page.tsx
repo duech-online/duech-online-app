@@ -1,12 +1,11 @@
+'use client';
+
 import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/components/icons';
 import { Button } from '@/components/common/button';
 import SearchBar from '@/components/search/search-bar';
 import WordOfTheDay from '@/components/word/word-of-the-day';
-import { isEditorMode } from '@/lib/editor-mode-server';
 
-export default async function Home() {
-  const editorMode = await isEditorMode();
-
+export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-16 text-center">
@@ -26,7 +25,7 @@ export default async function Home() {
       </div>
 
       <div className="mb-16 grid gap-10 md:grid-cols-2">
-        <WordOfTheDay editorMode={editorMode} />
+        <WordOfTheDay />
 
         <div className="border-duech-blue card-hover rounded-xl border-t-4 bg-white p-8 shadow-lg">
           <h2 className="text-duech-blue mb-6 flex items-center text-2xl font-bold">
@@ -63,7 +62,7 @@ export default async function Home() {
         </p>
 
         <Button
-          href={editorMode ? '/editor/buscar' : '/buscar'}
+          href="/buscar"
           className="bg-duech-blue px-8 py-4 font-semibold text-white hover:bg-blue-800"
         >
           Abrir buscador <ArrowRightIcon className="ml-3 h-6 w-6 text-gray-50" />
