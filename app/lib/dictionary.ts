@@ -4,7 +4,6 @@ import { getWordByLemma } from '@/app/lib/queries';
 const LETTERS = 'abcdefghijklmnñopqrstuvwxyz'.split('');
 const wordOfTheDayCache = new Map<string, { word: Word; letter: string }>();
 
-
 /**
  * Get a random word for "Word of the Day"
  */
@@ -55,7 +54,6 @@ export async function getWordOfTheDay(
     throw error;
   }
 }
-
 
 export async function searchDictionary(
   filters: SearchFilters,

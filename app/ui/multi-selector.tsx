@@ -6,7 +6,7 @@ import { Button } from '@/app/ui/button';
 /**
  * Selector múltiple genérico para opciones (categorías, estilos, etc.)
  */
-export interface MultiSelectorProps {
+interface MultiSelectorProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (items: string[]) => void;

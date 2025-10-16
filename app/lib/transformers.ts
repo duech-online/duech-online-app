@@ -21,7 +21,7 @@ export function dbWordToWord(dbWord: DBWord): Word {
 /**
  * Transform a Meaning (from database) to WordDefinition (frontend format)
  */
-export function meaningToWordDefinition(meaning: Meaning): WordDefinition {
+function meaningToWordDefinition(meaning: Meaning): WordDefinition {
   // Normalize examples to match frontend format
   // Frontend expects Example | Example[], but DB always has Example[]
   const examples = meaning.examples || [];
@@ -40,8 +40,6 @@ export function meaningToWordDefinition(meaning: Meaning): WordDefinition {
     expressions: meaning.expressions || null,
   };
 }
-
-
 
 /**
  * Transform DBWord with its letter to SearchResult-compatible format

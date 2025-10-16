@@ -1,5 +1,4 @@
 import { headers } from 'next/headers';
-import { isEditorPathname } from '@/app/lib/editor-mode';
 
 /**
  * Check if current request is in editor mode (server components).
@@ -11,5 +10,3 @@ export async function isEditorMode(): Promise<boolean> {
   const isEditor = editorModeHeader === 'true';
   return isEditor;
 }
-
-export { isEditorPathname };

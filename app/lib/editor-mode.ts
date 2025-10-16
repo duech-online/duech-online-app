@@ -28,7 +28,3 @@ export function isEditorModeClient(pathname: string | null | undefined): boolean
   }
   return isEditorPath(pathname);
 }
-
-export function isEditorPathname(pathname: string | null | undefined): boolean {
-  return isEditorPath(pathname);
-}

@@ -43,7 +43,7 @@ async function sign(data: string, secret: string): Promise<string> {
   return base64url(new Uint8Array(signature));
 }
 
-export type TokenPayload = SessionUser & { iat: number; exp: number; role?: string };
+type TokenPayload = SessionUser & { iat: number; exp: number; role?: string };
 
 export async function createToken(user: SessionUser, maxAgeSeconds = DEFAULT_EXP_SECONDS) {
   const header = { alg: 'HS256', typ: 'JWT' };

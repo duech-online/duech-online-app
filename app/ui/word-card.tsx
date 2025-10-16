@@ -5,7 +5,7 @@ import { ArrowRightCircleIcon, EyeIcon } from '@/app/ui/icons';
 import { STATUS_OPTIONS } from '@/app/lib/definitions';
 import { Button } from '@/app/ui/button';
 
-export interface WordCardProps {
+interface WordCardProps {
   lemma: string;
   letter: string;
   /** Editor mode: shows additional metadata like status, definitions count, etc */

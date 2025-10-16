@@ -3,7 +3,7 @@
 import { DeleteIcon } from '@/app/ui/icons';
 import { Button } from '@/app/ui/button';
 
-export interface ChipProps {
+interface ChipProps {
   code: string;
   label: string;
   onRemove?: (code: string) => void;
