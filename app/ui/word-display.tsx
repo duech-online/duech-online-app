@@ -334,7 +334,6 @@ export function WordDisplay({
         {editorMode && isEditable && defIndex !== undefined && (
           <div className="example-buttons absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 opacity-0 transition-opacity duration-200">
             <div className="flex items-center gap-3">
-
               <Button
                 onClick={() => openExampleEditor(defIndex, exIndex)}
                 aria-label="Editar ejemplo"
@@ -431,32 +430,17 @@ export function WordDisplay({
         <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-baseline gap-3">
             <h1 className="text-duech-blue text-5xl font-bold">
-              {editorMode ? (
-                <InlineEditable
-                  value={word.lemma}
-                  editing={isEditing('lemma')}
-                  saveStrategy="manual"
-                  onChange={(v) => {
-                    patchWordLocal({ lemma: v });
-                    setEditingKey(null);
-                  }}
-                  onCancel={() => setEditingKey(null)}
-                  placeholder="(lema)"
-                />
-              ) : (
-                word.lemma
-              )}
+              <InlineEditable
+                value={word.lemma}
+                onChange={(v) => patchWordLocal({ lemma: v ?? '' })}
+                editorMode={editorMode}
+                editing={isEditing('lemma')}
+                onStart={() => toggle('lemma')}
+                onCancel={() => setEditingKey(null)}
+                saveStrategy="manual"
+                placeholder="(lema)"
+              />
             </h1>
-            {editorMode && (
-              <Button
-                onClick={() => toggle('lemma')}
-                className="text-duech-blue ml-1 inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
-                aria-label="Editar lema"
-                title="Editar lema"
-              >
-                <PencilIcon className="h-6 w-6" />
-              </Button>
-            )}
           </div>
 
           {/* Editor controls */}
@@ -510,32 +494,18 @@ export function WordDisplay({
         <div className="mb-4 flex items-center gap-2">
           <span className="text-lg text-gray-700">Raíz: </span>
           <span className="text-duech-blue font-semibold">
-            {editorMode ? (
-              <InlineEditable
-                value={word.root}
-                editing={isEditing('root')}
-                saveStrategy="manual"
-                onChange={(v) => {
-                  patchWordLocal({ root: v });
-                  setEditingKey(null);
-                }}
-                onCancel={() => setEditingKey(null)}
-                placeholder="+ Añadir raíz"
-              />
-            ) : (
-              word.root
-            )}
+            <InlineEditable
+              value={word.root}
+              onChange={(v) => patchWordLocal({ root: v ?? '' })}
+              editorMode={editorMode}
+              editing={isEditing('root')}
+              onStart={() => toggle('root')}
+              onCancel={() => setEditingKey(null)}
+              saveStrategy="manual"
+              placeholder="Raíz de la palabra"
+              addLabel="+ Añadir raíz"
+            />
           </span>
-          {editorMode && (
-            <Button
-              onClick={() => toggle('root')}
-              className="text-duech-blue inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-blue-100"
-              aria-label="Editar raíz"
-              title="Editar raíz"
-            >
-              <PencilIcon className="h-6 w-6" />
-            </Button>
-          )}
         </div>
 
         {/* Definitions */}
@@ -555,53 +525,24 @@ export function WordDisplay({
                       {def.number}
                     </span>
 
-                    {/* Origin - Editor mode with inline editing, public mode read-only */}
-                    {editorMode ? (
-                      isEditing(`def:${defIndex}:origin`) ? (
-                        <InlineEditable
-                          value={def.origin ?? ''}
-                          editing
-                          saveStrategy="manual"
-                          onChange={(v) => {
-                            patchDefLocal(defIndex, {
-                              origin: v.trim() || null,
-                            });
-                            setEditingKey(null);
-                          }}
-                          onCancel={() => setEditingKey(null)}
-                          placeholder="Origen de la palabra"
-                        />
-                      ) : def.origin ? (
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm text-gray-600">
-                            <span className="font-medium">Origen:</span> {def.origin}
-                          </span>
-                          <Button
-                            onClick={() => toggle(`def:${defIndex}:origin`)}
-                            className="text-duech-blue inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-blue-100"
-                            aria-label="Editar origen"
-                            title="Editar origen"
-                          >
-                            <PencilIcon className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => toggle(`def:${defIndex}:origin`)}
-                          className="hover:text-duech-blue text-sm text-gray-500 underline"
-                        >
-                          + Añadir origen
-                        </Button>
-                      )
-                    ) : (
-                      def.origin && (
-                        <p className="text-sm text-gray-600">
-                          <span className="font-medium">Origen:</span> {def.origin}
-                        </p>
-                      )
-                    )}
+                    {/* Origin */}
+                    <InlineEditable
+                      value={def.origin}
+                      onChange={(v) => patchDefLocal(defIndex, { origin: v })}
+                      editorMode={editorMode}
+                      editing={isEditing(`def:${defIndex}:origin`)}
+                      onStart={() => toggle(`def:${defIndex}:origin`)}
+                      onCancel={() => setEditingKey(null)}
+                      saveStrategy="manual"
+                      placeholder="Origen de la palabra"
+                      addLabel="+ Añadir origen"
+                      renderDisplay={(value: string) => (
+                        <span className="text-sm text-gray-600">
+                          <span className="font-medium">Origen:</span> {value}
+                        </span>
+                      )}
+                    />
                   </div>
-
                   {/* Categories */}
                   <div className="mb-3">
                     {!def.categories || def.categories.length === 0 ? (
@@ -625,11 +566,11 @@ export function WordDisplay({
                             onRemove={
                               editorMode
                                 ? () => {
-                                  const updated = def.categories.filter((_, i) => i !== catIndex);
-                                  patchDefLocal(defIndex, {
-                                    categories: updated,
-                                  });
-                                }
+                                    const updated = def.categories.filter((_, i) => i !== catIndex);
+                                    patchDefLocal(defIndex, {
+                                      categories: updated,
+                                    });
+                                  }
                                 : undefined
                             }
                           />
@@ -645,106 +586,50 @@ export function WordDisplay({
                       </div>
                     )}
                   </div>
-
                   {/* Remission */}
                   <div className="mb-2 flex items-center gap-2">
-                    {editorMode ? (
-                      isEditing(`def:${defIndex}:remission`) ? (
-                        <InlineEditable
-                          value={def.remission ?? ''}
-                          editing
-                          saveStrategy="manual"
-                          onChange={(v) => {
-                            patchDefLocal(defIndex, {
-                              remission: v.trim() || null,
-                            });
-                            setEditingKey(null);
-                          }}
-                          onCancel={() => setEditingKey(null)}
-                          placeholder="Artículo de remisión"
-                        />
-                      ) : def.remission ? (
-                        <div className="flex items-center gap-2">
-                          <p className="text-lg text-gray-800">
-                            Ver:{' '}
-                            <Link
-                              href={`/palabra/${encodeURIComponent(def.remission)}`}
-                              className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
-                            >
-                              {def.remission}
-                            </Link>
-                          </p>
-                          <Button
-                            onClick={() => toggle(`def:${defIndex}:remission`)}
-                            className="text-duech-blue inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-blue-100"
-                            aria-label="Editar remisión"
-                            title="Editar remisión"
+                    <InlineEditable
+                      value={def.remission}
+                      onChange={(v) => patchDefLocal(defIndex, { remission: v })}
+                      editorMode={editorMode}
+                      editing={isEditing(`def:${defIndex}:remission`)}
+                      onStart={() => toggle(`def:${defIndex}:remission`)}
+                      onCancel={() => setEditingKey(null)}
+                      saveStrategy="manual"
+                      placeholder="Artículo de remisión"
+                      addLabel="+ Añadir remisión"
+                      renderDisplay={(value: string) => (
+                        <p className="text-lg text-gray-800">
+                          Ver:{' '}
+                          <Link
+                            href={`/palabra/${encodeURIComponent(value)}`}
+                            className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
                           >
-                            <PencilIcon className="h-5 w-5" />
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          onClick={() => toggle(`def:${defIndex}:remission`)}
-                          className="hover:text-duech-blue text-sm text-gray-500 underline"
-                        >
-                          + Añadir remisión
-                        </Button>
-                      )
-                    ) : (
-                      def.remission && (
-                        <div className="mb-4">
-                          <p className="text-lg text-gray-800">
-                            Ver:{' '}
-                            <Link
-                              href={`/palabra/${encodeURIComponent(def.remission)}`}
-                              className="text-duech-blue hover:text-duech-gold font-bold transition-colors"
-                            >
-                              {def.remission}
-                            </Link>
-                          </p>
-                        </div>
-                      )
-                    )}
+                            {value}
+                          </Link>
+                        </p>
+                      )}
+                    />
                   </div>
-
                   {/* Meaning */}
                   <div className="mb-4">
-                    {editorMode ? (
-                      isEditing(`def:${defIndex}:meaning`) ? (
-                        <InlineEditable
-                          as="textarea"
-                          value={def.meaning}
-                          editing
-                          saveStrategy="manual"
-                          onChange={(v) => {
-                            patchDefLocal(defIndex, { meaning: v });
-                            setEditingKey(null);
-                          }}
-                          onCancel={() => setEditingKey(null)}
-                        />
-                      ) : (
-                        <div className="flex items-start gap-2">
-                          <div className="flex-1 text-xl leading-relaxed text-gray-900">
-                            <MarkdownRenderer content={def.meaning} />
-                          </div>
-                          <Button
-                            onClick={() => toggle(`def:${defIndex}:meaning`)}
-                            className="text-duech-blue inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg hover:bg-blue-100"
-                            aria-label="Editar significado"
-                            title="Editar significado"
-                          >
-                            <PencilIcon className="h-5 w-5" />
-                          </Button>
+                    <InlineEditable
+                      as="textarea"
+                      value={def.meaning}
+                      onChange={(v) => patchDefLocal(defIndex, { meaning: v ?? '' })}
+                      editorMode={editorMode}
+                      editing={isEditing(`def:${defIndex}:meaning`)}
+                      onStart={() => toggle(`def:${defIndex}:meaning`)}
+                      onCancel={() => setEditingKey(null)}
+                      saveStrategy="manual"
+                      placeholder="Significado de la definición"
+                      renderDisplay={(value: string) => (
+                        <div className="text-xl leading-relaxed text-gray-900">
+                          <MarkdownRenderer content={value} />
                         </div>
-                      )
-                    ) : (
-                      <div className="text-xl leading-relaxed text-gray-900">
-                        <MarkdownRenderer content={def.meaning} />
-                      </div>
-                    )}
+                      )}
+                    />
                   </div>
-
                   {/* Styles */}
                   <div className="mb-3">
                     {!def.styles || def.styles.length === 0 ? (
@@ -768,11 +653,11 @@ export function WordDisplay({
                             onRemove={
                               editorMode
                                 ? () => {
-                                  const updated = def.styles!.filter((_, i) => i !== styleIndex);
-                                  patchDefLocal(defIndex, {
-                                    styles: updated.length ? updated : null,
-                                  });
-                                }
+                                    const updated = def.styles!.filter((_, i) => i !== styleIndex);
+                                    patchDefLocal(defIndex, {
+                                      styles: updated.length ? updated : null,
+                                    });
+                                  }
                                 : undefined
                             }
                           />
@@ -788,62 +673,31 @@ export function WordDisplay({
                       </div>
                     )}
                   </div>
-
                   {/* Observation */}
                   {(def.observation || editorMode) && (
                     <div className="mb-3">
-                      {editorMode ? (
-                        isEditing(`def:${defIndex}:observation`) ? (
-                          <InlineEditable
-                            as="textarea"
-                            value={def.observation ?? ''}
-                            editing
-                            saveStrategy="manual"
-                            onChange={(v) => {
-                              patchDefLocal(defIndex, {
-                                observation: v.trim() || null,
-                              });
-                              setEditingKey(null);
-                            }}
-                            onCancel={() => setEditingKey(null)}
-                            placeholder="Observación sobre la definición"
-                          />
-                        ) : def.observation ? (
-                          <div className="rounded-lg bg-blue-50 p-3">
-                            <div className="flex items-start gap-2">
-                              <p className="flex-1 text-sm text-blue-900">
-                                <span className="font-medium">Observación:</span> {def.observation}
-                              </p>
-                              <Button
-                                onClick={() => toggle(`def:${defIndex}:observation`)}
-                                className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg text-blue-600 hover:bg-blue-100 hover:text-blue-800"
-                                aria-label="Editar observación"
-                                title="Editar observación"
-                              >
-                                <PencilIcon className="h-5 w-5" />
-                              </Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <Button
-                            onClick={() => toggle(`def:${defIndex}:observation`)}
-                            className="hover:text-duech-blue text-sm text-gray-500 underline"
-                          >
-                            + Añadir observación
-                          </Button>
-                        )
-                      ) : (
-                        def.observation && (
-                          <div className="rounded-lg bg-blue-50 p-3">
-                            <p className="text-sm text-blue-900">
-                              <span className="font-medium">Observación:</span> {def.observation}
-                            </p>
-                          </div>
-                        )
-                      )}
+                      <InlineEditable
+                        value={def.observation}
+                        onChange={(v) => patchDefLocal(defIndex, { observation: v })}
+                        editorMode={editorMode}
+                        editing={isEditing(`def:${defIndex}:observation`)}
+                        onStart={() => toggle(`def:${defIndex}:observation`)}
+                        onCancel={() => setEditingKey(null)}
+                        saveStrategy="manual"
+                        placeholder="Observación sobre la definición"
+                        addLabel="+ Añadir observación"
+                        as="textarea"
+                        renderDisplay={(value: string) => (
+                          <p className="flex-1 text-sm text-blue-900">
+                            <span className="font-medium">Observación:</span> {value}
+                          </p>
+                        )}
+                        renderWrapper={(children: React.ReactNode) => (
+                          <div className="rounded-lg bg-blue-50 p-3">{children}</div>
+                        )}
+                      />
                     </div>
                   )}
-
                   {/* Examples */}
                   {def.example && (
                     <div className="mt-4">
@@ -856,51 +710,27 @@ export function WordDisplay({
                         {renderExample(def.example, defIndex, editorMode)}
                       </div>
                     </div>
-                  )}                  {/* Variant */}
+                  )}{' '}
+                  {/* Variant */}
                   {(def.variant || editorMode) && (
                     <div className="mt-4">
                       <span className="text-sm font-medium text-gray-900">Variante: </span>
-                      {editorMode ? (
-                        isEditing(`def:${defIndex}:variant`) ? (
-                          <InlineEditable
-                            value={def.variant ?? ''}
-                            editing
-                            saveStrategy="manual"
-                            onChange={(v) => {
-                              patchDefLocal(defIndex, {
-                                variant: v.trim() || null,
-                              });
-                              setEditingKey(null);
-                            }}
-                            onCancel={() => setEditingKey(null)}
-                            placeholder="Variante de la palabra"
-                          />
-                        ) : def.variant ? (
-                          <div className="inline-flex items-center gap-2">
-                            <span className="font-bold">{def.variant}</span>
-                            <Button
-                              onClick={() => toggle(`def:${defIndex}:variant`)}
-                              className="text-duech-blue inline-flex h-8 w-8 items-center justify-center rounded-lg hover:bg-blue-100"
-                              aria-label="Editar variante"
-                              title="Editar variante"
-                            >
-                              <PencilIcon className="h-5 w-5" />
-                            </Button>
-                          </div>
-                        ) : (
-                          <Button
-                            onClick={() => toggle(`def:${defIndex}:variant`)}
-                            className="hover:text-duech-blue text-sm text-gray-500 underline"
-                          >
-                            + Añadir variante
-                          </Button>
-                        )
-                      ) : (
-                        def.variant && <span className="font-bold">{def.variant}</span>
-                      )}
+                      <InlineEditable
+                        value={def.variant}
+                        onChange={(v) => patchDefLocal(defIndex, { variant: v })}
+                        editorMode={editorMode}
+                        editing={isEditing(`def:${defIndex}:variant`)}
+                        onStart={() => toggle(`def:${defIndex}:variant`)}
+                        onCancel={() => setEditingKey(null)}
+                        saveStrategy="manual"
+                        placeholder="Variante de la palabra"
+                        addLabel="+ Añadir variante"
+                        renderDisplay={(value: string) => (
+                          <span className="font-bold">{value}</span>
+                        )}
+                      />
                     </div>
                   )}
-
                   {/* Expressions - Public mode only */}
                   {!editorMode && def.expressions && def.expressions.length > 0 && (
                     <div className="mt-3">
@@ -914,7 +744,6 @@ export function WordDisplay({
                       </ul>
                     </div>
                   )}
-
                   {/* Add/Delete definition buttons (editor mode) */}
                   {editorMode && (
                     <div className="definition-buttons absolute bottom-0 left-1/2 flex -translate-x-1/2 translate-y-1/2 items-center gap-4 opacity-0 transition-opacity duration-200">
