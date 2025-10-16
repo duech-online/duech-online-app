@@ -6,9 +6,9 @@ const SESSION_COOKIE = 'duech_session';
 
 function shouldBypass(pathname: string): boolean {
   return (
-    pathname.startsWith('/_next/') ||     // Next.js internals
-    pathname.startsWith('/api/') ||       // API routes
-    pathname === '/login' ||              // Login page
+    pathname.startsWith('/_next/') || // Next.js internals
+    pathname.startsWith('/api/') || // API routes
+    pathname === '/login' || // Login page
     /\.(ico|png|jpg|jpeg|gif|svg|webp|css|js|woff|woff2|ttf|eot)$/i.test(pathname) // Static files
   );
 }

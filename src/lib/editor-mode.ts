@@ -7,10 +7,9 @@ const EDITOR_HOSTNAME = 'editor.localhost';
 
 /**
  * Check if the current context is in editor mode (client components)
- * @param pathname - The pathname (not used anymore, kept for backward compatibility)
  * @returns true if accessing via editor.localhost, false otherwise
  */
-export function isEditorModeClient(pathname?: string | null | undefined): boolean {
+export function isEditorModeClient(): boolean {
   // For client components, check if hostname is editor.localhost
   if (typeof window !== 'undefined') {
     return window.location.hostname === EDITOR_HOSTNAME;

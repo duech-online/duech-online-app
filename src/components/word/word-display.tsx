@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { usePathname } from 'next/navigation';
 import { MultiSelector } from '@/components/word/multi-selector-modal';
 import { Button } from '@/components/common/button';
 import { DefinitionSection } from '@/components/word/word-definition';
@@ -42,7 +41,6 @@ export function WordDisplay({
   initialAssignedTo,
 }: WordDisplayProps) {
   // Detect editor mode
-  const pathname = usePathname();
   const editorMode = isEditorModeClient();
 
   const [word, setWord] = useState<Word>(initialWord);
@@ -73,7 +71,7 @@ export function WordDisplay({
           setUsers(data.data);
         }
       })
-      .catch(() => { });
+      .catch(() => {});
   }, [editorMode]);
 
   // Debounced auto-save (editor mode only)
@@ -116,7 +114,7 @@ export function WordDisplay({
       setTimeout(() => {
         setSaveStatus('idle');
       }, 2000);
-    } catch (error) {
+    } catch {
       setSaveStatus('error');
 
       setTimeout(() => {

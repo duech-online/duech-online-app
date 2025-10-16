@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import { GRAMMATICAL_CATEGORIES, type Word } from '@/lib/definitions';
 import MarkdownRenderer from '@/components/word/markdown-renderer';
 import { ArrowRightIcon, BookOpenIcon } from '@/components/icons';
 import { Button } from '@/components/common/button';
 import { ChipList } from '@/components/common/chip';
-import { isEditorModeClient } from '@/lib/editor-mode';
 
 interface WordOfTheDayData {
   word: Word;
@@ -15,8 +13,6 @@ interface WordOfTheDayData {
 }
 
 export default function WordOfTheDay() {
-  const pathname = usePathname();
-  const editorMode = isEditorModeClient();
   const [word, setWord] = useState<WordOfTheDayData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);

@@ -38,7 +38,7 @@ export default function Header() {
       } else {
         setUser(null);
       }
-    } catch (error) {
+    } catch {
       setUser(null);
     }
   }, [editorMode]);
@@ -70,7 +70,7 @@ export default function Header() {
       } else {
         window.location.href = '/';
       }
-    } catch (error) {
+    } catch {
       window.location.href = '/';
     }
   };

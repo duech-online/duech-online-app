@@ -43,7 +43,7 @@ export async function GET(
       success: true,
       data: wordData,
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
@@ -143,19 +143,19 @@ export async function POST(request: NextRequest) {
       values.length > 0
         ? values
         : [
-          {
-            number: 1,
-            meaning: 'Definición pendiente',
-            origin: null,
-            categories: [],
-            remission: null,
-            styles: null,
-            observation: null,
-            example: [],
-            variant: null,
-            expressions: null,
-          },
-        ];
+            {
+              number: 1,
+              meaning: 'Definición pendiente',
+              origin: null,
+              categories: [],
+              remission: null,
+              styles: null,
+              observation: null,
+              example: [],
+              variant: null,
+              expressions: null,
+            },
+          ];
 
     const word: Word = {
       lemma,
