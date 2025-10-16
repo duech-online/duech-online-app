@@ -25,6 +25,7 @@ import {
   type Word,
   type WordDefinition,
 } from '@/app/lib/definitions';
+import { ExampleEditorModal, type ExampleDraft } from '@/app/ui/example-editor-modal';
 
 interface WordDisplayProps {
   initialWord: Word;
@@ -36,14 +37,6 @@ interface WordDisplayProps {
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 type ActiveExample = { defIndex: number; exIndex: number; isNew?: boolean };
-type ExampleDraft = {
-  value: string;
-  author: string;
-  title: string;
-  source: string;
-  date: string;
-  page: string;
-};
 
 export function WordDisplay({
   initialWord,
@@ -602,11 +595,11 @@ export function WordDisplay({
                             onRemove={
                               editorMode
                                 ? () => {
-                                    const updated = def.categories.filter((_, i) => i !== catIndex);
-                                    patchDefLocal(defIndex, {
-                                      categories: updated,
-                                    });
-                                  }
+                                  const updated = def.categories.filter((_, i) => i !== catIndex);
+                                  patchDefLocal(defIndex, {
+                                    categories: updated,
+                                  });
+                                }
                                 : undefined
                             }
                           />
@@ -745,11 +738,11 @@ export function WordDisplay({
                             onRemove={
                               editorMode
                                 ? () => {
-                                    const updated = def.styles!.filter((_, i) => i !== styleIndex);
-                                    patchDefLocal(defIndex, {
-                                      styles: updated.length ? updated : null,
-                                    });
-                                  }
+                                  const updated = def.styles!.filter((_, i) => i !== styleIndex);
+                                  patchDefLocal(defIndex, {
+                                    styles: updated.length ? updated : null,
+                                  });
+                                }
                                 : undefined
                             }
                           />
@@ -976,85 +969,14 @@ export function WordDisplay({
       )}
 
       {/* Example editor modal */}
-      {editorMode && activeExample && exampleDraft && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="mx-4 max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white p-6">
-            <h2 className="mb-4 text-2xl font-bold">
-              {activeExample.isNew ? 'Nuevo ejemplo' : 'Editar ejemplo'}
-            </h2>
-            <div className="space-y-4">
-              <div>
-                <label className="mb-1 block text-sm font-medium">Ejemplo *</label>
-                <textarea
-                  value={exampleDraft.value}
-                  onChange={(e) => setExampleDraft({ ...exampleDraft, value: e.target.value })}
-                  className="min-h-[100px] w-full rounded border p-2"
-                  placeholder="Texto del ejemplo"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium">Autor</label>
-                <input
-                  type="text"
-                  value={exampleDraft.author}
-                  onChange={(e) => setExampleDraft({ ...exampleDraft, author: e.target.value })}
-                  className="w-full rounded border p-2"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium">Título</label>
-                <input
-                  type="text"
-                  value={exampleDraft.title}
-                  onChange={(e) => setExampleDraft({ ...exampleDraft, title: e.target.value })}
-                  className="w-full rounded border p-2"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium">Fuente</label>
-                <input
-                  type="text"
-                  value={exampleDraft.source}
-                  onChange={(e) => setExampleDraft({ ...exampleDraft, source: e.target.value })}
-                  className="w-full rounded border p-2"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium">Fecha</label>
-                <input
-                  type="text"
-                  value={exampleDraft.date}
-                  onChange={(e) => setExampleDraft({ ...exampleDraft, date: e.target.value })}
-                  className="w-full rounded border p-2"
-                />
-              </div>
-              <div>
-                <label className="mb-1 block text-sm font-medium">Página</label>
-                <input
-                  type="text"
-                  value={exampleDraft.page}
-                  onChange={(e) => setExampleDraft({ ...exampleDraft, page: e.target.value })}
-                  className="w-full rounded border p-2"
-                />
-              </div>
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <Button
-                onClick={() => closeExampleEditor(activeExample.isNew)}
-                className="rounded border px-4 py-2 hover:bg-gray-50"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={saveExampleDraft}
-                className="bg-duech-blue rounded px-4 py-2 text-white hover:bg-blue-700"
-              >
-                Guardar
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ExampleEditorModal
+        isOpen={editorMode && activeExample !== null && exampleDraft !== null}
+        isNew={activeExample?.isNew ?? false}
+        draft={exampleDraft ?? { value: '', author: '', title: '', source: '', date: '', page: '' }}
+        onDraftChange={setExampleDraft}
+        onSave={saveExampleDraft}
+        onCancel={() => closeExampleEditor(activeExample?.isNew)}
+      />
     </div>
   );
 }
