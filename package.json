@@ -1,12 +1,12 @@
 {
   "name": "duech-online-app",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint app",
     "format": "prettier --write .",
     "check:deps": "npx knip && npx depcheck"
   },
