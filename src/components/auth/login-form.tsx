@@ -5,12 +5,7 @@ import { Button } from '@/components/common/button';
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { authenticate } from '@/lib/actions';
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  ExclamationCircleIcon,
-  ArrowRightIcon,
-} from '@/components/icons';
+import { AtSymbolIcon, KeyIcon, ExclamationCircleIcon, ArrowRightIcon } from '@/components/icons';
 
 export default function LoginForm() {
   const searchParams = useSearchParams();

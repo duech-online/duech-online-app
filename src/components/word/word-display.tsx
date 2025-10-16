@@ -16,10 +16,7 @@ import {
   type Word,
   type WordDefinition,
 } from '@/lib/definitions';
-import {
-  ExampleEditorModal,
-  type ExampleDraft,
-} from '@/components/word/word-example-editor-modal';
+import { ExampleEditorModal, type ExampleDraft } from '@/components/word/word-example-editor-modal';
 
 interface WordDisplayProps {
   initialWord: Word;
