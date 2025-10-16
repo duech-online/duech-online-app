@@ -299,7 +299,16 @@ export function WordDisplay({
   };
 
   const handleDeleteDefinition = (defIndex: number) => {
-    setWord((prev) => ({ ...prev, values: prev.values.filter((_, i) => i !== defIndex) }));
+    setWord((prev) => {
+      const values = prev.values.filter((_, i) => i !== defIndex);
+
+      const renumbered = values.map((def, idx) => ({
+        ...def,
+        number: idx + 1,
+      }));
+
+      return { ...prev, values: renumbered };
+    });
   };
 
   // Render example helper
