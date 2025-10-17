@@ -25,7 +25,6 @@ import {
   getLexicographerOptions,
   type User,
 } from '@/lib/search-utils';
-import { isEditorModeClient } from '@/lib/editor-mode';
 
 // Helper to check if current search state matches URL params
 function matchesUrlState(
@@ -113,12 +112,15 @@ interface SearchPageProps {
   title?: string;
   placeholder: string;
   initialUsers?: User[];
+  editorMode?: boolean;
 }
 
-export function SearchPage({ title, placeholder, initialUsers = [] }: SearchPageProps) {
-  // Detect editor mode
-  const editorMode = isEditorModeClient();
-
+export function SearchPage({
+  title,
+  placeholder,
+  initialUsers = [],
+  editorMode = false,
+}: SearchPageProps) {
   // Parse URL search params
   const searchParams = useSearchParams();
   const urlParams = useUrlSearchParams(searchParams);

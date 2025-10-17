@@ -1,11 +1,9 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Button } from '@/components/common/button';
-import { isEditorModeClient } from '@/lib/editor-mode';
 
 // Navigation link component to avoid duplication
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -20,16 +18,12 @@ function NavLink({ href, children }: { href: string; children: React.ReactNode }
   );
 }
 
-export default function Header() {
-  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
-  const [editorMode, setEditorMode] = useState(false);
-  const pathname = usePathname();
+interface HeaderProps {
+  editorMode: boolean;
+}
 
-  // Detect editor mode on mount and when pathname changes
-  useEffect(() => {
-    const isEditor = isEditorModeClient();
-    setEditorMode(isEditor);
-  }, [pathname]);
+export default function Header({ editorMode }: HeaderProps) {
+  const [user, setUser] = useState<{ name?: string; email: string } | null>(null);
 
   const homeLink = '/';
   const title = editorMode ? 'DUECh Editor' : 'DUECh';

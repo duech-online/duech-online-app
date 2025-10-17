@@ -17,13 +17,13 @@ import {
   type WordDefinition,
 } from '@/lib/definitions';
 import { ExampleEditorModal, type ExampleDraft } from '@/components/word/word-example-editor-modal';
-import { isEditorModeClient } from '@/lib/editor-mode';
 
 interface WordDisplayProps {
   initialWord: Word;
   initialLetter: string;
   initialStatus?: string;
   initialAssignedTo?: number;
+  editorMode: boolean;
 }
 
 type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
@@ -39,10 +39,8 @@ export function WordDisplay({
   initialLetter,
   initialStatus,
   initialAssignedTo,
+  editorMode,
 }: WordDisplayProps) {
-  // Detect editor mode
-  const editorMode = isEditorModeClient();
-
   const [word, setWord] = useState<Word>(initialWord);
   const [letter, setLetter] = useState(initialLetter);
   const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
