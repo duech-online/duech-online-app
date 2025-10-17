@@ -1,5 +1,3 @@
-'use client';
-
 import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/components/icons';
 import { Button } from '@/components/common/button';
 import SearchBar from '@/components/search/search-bar';
