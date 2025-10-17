@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+:root {
+  /* Primary Colors - Academia Blue Palette */
+  --color-primary-50: #e6f2ff;
+  --color-primary-100: #bae0ff;
+  --color-primary-200: #8cc9ff;
+  --color-primary-300: #5eb1ff;
+  --color-primary-400: #3b9eff;
+  --color-primary-500: #1a8cff;
+  --color-primary-600: #0066cc; /* Main blue - high contrast */
+  --color-primary-700: #004c99;
+  --color-primary-800: #003366;
+  --color-primary-900: #001a33;
+
+  /* Accent Colors - Gold/Yellow */
+  --color-accent-50: #fffbf0;
+  --color-accent-100: #fff4d9;
+  --color-accent-200: #ffe8b3;
+  --color-accent-300: #ffdb8c;
+  --color-accent-400: #ffce66;
+  --color-accent-500: #ffc140; /* Main gold */
+  --color-accent-600: #cc9a00;
+  --color-accent-700: #997300;
+  --color-accent-800: #664d00;
+  --color-accent-900: #332600;
+
+  /* Neutral Colors with better contrast */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* Semantic Colors */
+  --color-success: #059669;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+  --color-info: #0066cc;
+
+  /* Layout colors */
+  --background: #ffffff;
+  --foreground: #111827;
+  --card-background: #ffffff;
+  --card-border: #e5e7eb;
+  --nav-background: #004c99;
+  --nav-text: #ffffff;
+  --footer-background: #001a33;
+  --footer-text: #e5e7eb;
+}
+
+@theme inline {
+  /* Custom color utilities for Tailwind */
+  --color-duech-blue: var(--color-primary-600);
+  --color-duech-gold: var(--color-accent-500);
+  --color-duech-dark-blue: var(--color-primary-800);
+  --color-duech-light-blue: var(--color-primary-100);
+}
+
+/* Remove dark mode for now to maintain consistency */
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Lusitana', 'Georgia', 'Times New Roman', serif;
+  line-height: 1.6;
+}
+
+/* Custom utility classes */
+.text-duech-blue {
+  color: var(--color-primary-600);
+}
+
+.bg-duech-blue {
+  background-color: var(--color-primary-600);
+}
+
+.text-duech-gold {
+  color: var(--color-accent-500);
+}
+
+.bg-duech-gold {
+  background-color: var(--color-accent-500);
+}
+
+.border-duech-blue {
+  border-color: var(--color-primary-600);
+}
+
+/* High contrast focus states */
+*:focus-visible {
+  outline: 3px solid var(--color-primary-400);
+  outline-offset: 2px;
+}
+
+/* Navigation link overrides */
+.nav-link {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.nav-link:hover {
+  color: #fde68a !important;
+  text-decoration: none !important;
+}
+
+/* Card hover effects */
+.card-hover {
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.card-hover:hover {
+  box-shadow: 0 10px 25px rgba(0, 51, 102, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Definition and Example hover effects */
+.definition-hover:hover .definition-buttons {
+  opacity: 1 !important;
+}
+
+.example-hover:hover .example-buttons {
+  opacity: 1 !important;
+}
