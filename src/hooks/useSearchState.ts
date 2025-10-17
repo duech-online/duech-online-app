@@ -58,24 +58,13 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
   });
 
   const isInitializedRef = useRef(false);
+  const mountedRef = useRef(false);
 
-  // Restore filters on mount for editor mode (URL params take precedence)
+  // Initialize state on mount for editor mode (URL params take precedence over cookies)
   useEffect(() => {
-    if (!editorMode) return;
+    if (!editorMode || mountedRef.current) return;
 
-    const urlFiltersMatchState =
-      searchState.query === urlParams.trimmedQuery &&
-      arraysEqual(searchState.filters.categories, urlParams.categories) &&
-      arraysEqual(searchState.filters.styles, urlParams.styles) &&
-      arraysEqual(searchState.filters.origins, urlParams.origins) &&
-      arraysEqual(searchState.filters.letters, urlParams.letters) &&
-      searchState.status === urlParams.status &&
-      arraysEqual(searchState.assignedTo, urlParams.assignedTo);
-
-    if (urlParams.hasUrlCriteria && urlFiltersMatchState) {
-      isInitializedRef.current = true;
-      return;
-    }
+    mountedRef.current = true;
 
     if (urlParams.hasUrlCriteria) {
       setSearchState({
@@ -93,20 +82,6 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
     } else {
       const savedFilters = getEditorSearchFilters();
 
-      const cookiesMatchState =
-        searchState.query === savedFilters.query &&
-        arraysEqual(searchState.filters.categories, savedFilters.selectedCategories) &&
-        arraysEqual(searchState.filters.styles, savedFilters.selectedStyles) &&
-        arraysEqual(searchState.filters.origins, savedFilters.selectedOrigins) &&
-        arraysEqual(searchState.filters.letters, savedFilters.selectedLetters) &&
-        searchState.status === savedFilters.selectedStatus &&
-        arraysEqual(searchState.assignedTo, savedFilters.selectedAssignedTo);
-
-      if (cookiesMatchState) {
-        isInitializedRef.current = true;
-        return;
-      }
-
       setSearchState({
         query: savedFilters.query,
         filters: {
@@ -120,16 +95,50 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
       });
       isInitializedRef.current = true;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorMode]);
+  // Only run on mount to initialize state from URL params or cookies
+
+  // Sync state when URL params change (e.g., browser back/forward navigation)
+  useEffect(() => {
+    if (!editorMode || !mountedRef.current) return;
+    if (!urlParams.hasUrlCriteria) return;
+
+    // Check if URL params differ from current state
+    const urlMatchesState =
+      searchState.query === urlParams.trimmedQuery &&
+      arraysEqual(searchState.filters.categories, urlParams.categories) &&
+      arraysEqual(searchState.filters.styles, urlParams.styles) &&
+      arraysEqual(searchState.filters.origins, urlParams.origins) &&
+      arraysEqual(searchState.filters.letters, urlParams.letters) &&
+      searchState.status === urlParams.status &&
+      arraysEqual(searchState.assignedTo, urlParams.assignedTo);
+
+    if (urlMatchesState) return;
+
+    // URL params changed (e.g., from browser navigation), sync state
+    setSearchState({
+      query: urlParams.trimmedQuery,
+      filters: {
+        categories: [...urlParams.categories],
+        styles: [...urlParams.styles],
+        origins: [...urlParams.origins],
+        letters: [...urlParams.letters],
+      },
+      status: urlParams.status,
+      assignedTo: [...urlParams.assignedTo],
+    });
   }, [
     editorMode,
-    urlParams,
-    searchState.assignedTo,
-    searchState.filters.categories,
-    searchState.filters.letters,
-    searchState.filters.origins,
-    searchState.filters.styles,
-    searchState.query,
-    searchState.status,
+    urlParams.hasUrlCriteria,
+    urlParams.trimmedQuery,
+    urlParams.categories,
+    urlParams.styles,
+    urlParams.origins,
+    urlParams.letters,
+    urlParams.status,
+    urlParams.assignedTo,
+    // Intentionally excluding searchState to avoid circular updates
   ]);
 
   // Save filters to cookies for editor mode
