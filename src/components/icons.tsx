@@ -160,7 +160,7 @@ export function DeleteIcon(props: IconProps) {
 export function ArrowRightCircleIcon(props: IconProps) {
   return (
     <Icon {...props}>
-      <path d="M12 5v14m7-7l-7 7-7-7" />
+      <path d="M12 9l3 3m0 0l-3 3m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
       <circle cx="12" cy="12" r="10" />
     </Icon>
   );
