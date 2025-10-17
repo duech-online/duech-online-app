@@ -30,7 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Check dependencies with Knip
-        run: npm run check:deps
+        run: npm run deps:check
 
       - name: Check clones
         run: npm run duplication
