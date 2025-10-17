@@ -18,24 +18,10 @@ export interface UrlSearchParams {
   hasUrlCriteria: boolean;
 }
 
-// Helper to create stable array references
-function arrayEqual(a: string[], b: string[]): boolean {
-  if (a.length !== b.length) return false;
-  return a.every((val, idx) => val === b[idx]);
-}
-
 /**
  * Parse all search parameters from URL and return memoized values
  */
 export function useUrlSearchParams(searchParams: ReadonlyURLSearchParams): UrlSearchParams {
-  // Create a stable signature of the search params to use for memoization
-  const paramsSignature = useMemo(() => {
-    const params = new URLSearchParams(searchParams.toString());
-    // Sort to ensure consistent ordering
-    params.sort();
-    return params.toString();
-  }, [searchParams]);
-
   return useMemo(() => {
     const query = searchParams.get('q') || '';
     const categories = parseListParam(searchParams.get('categories'));
@@ -66,5 +52,5 @@ export function useUrlSearchParams(searchParams: ReadonlyURLSearchParams): UrlSe
       assignedTo,
       hasUrlCriteria,
     };
-  }, [paramsSignature, searchParams]);
+  }, [searchParams]);
 }

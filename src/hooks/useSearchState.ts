@@ -60,6 +60,20 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
   const isInitializedRef = useRef(false);
   const mountedRef = useRef(false);
 
+  const setSearchStateFromUrl = useCallback(() => {
+    setSearchState({
+      query: urlParams.trimmedQuery,
+      filters: {
+        categories: [...urlParams.categories],
+        styles: [...urlParams.styles],
+        origins: [...urlParams.origins],
+        letters: [...urlParams.letters],
+      },
+      status: urlParams.status,
+      assignedTo: [...urlParams.assignedTo],
+    });
+  }, [urlParams]);
+
   // Initialize state on mount for editor mode (URL params take precedence over cookies)
   useEffect(() => {
     if (!editorMode || mountedRef.current) return;
@@ -67,17 +81,7 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
     mountedRef.current = true;
 
     if (urlParams.hasUrlCriteria) {
-      setSearchState({
-        query: urlParams.trimmedQuery,
-        filters: {
-          categories: [...urlParams.categories],
-          styles: [...urlParams.styles],
-          origins: [...urlParams.origins],
-          letters: [...urlParams.letters],
-        },
-        status: urlParams.status,
-        assignedTo: [...urlParams.assignedTo],
-      });
+      setSearchStateFromUrl();
       isInitializedRef.current = true;
     } else {
       const savedFilters = getEditorSearchFilters();
@@ -117,17 +121,7 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
     if (urlMatchesState) return;
 
     // URL params changed (e.g., from browser navigation), sync state
-    setSearchState({
-      query: urlParams.trimmedQuery,
-      filters: {
-        categories: [...urlParams.categories],
-        styles: [...urlParams.styles],
-        origins: [...urlParams.origins],
-        letters: [...urlParams.letters],
-      },
-      status: urlParams.status,
-      assignedTo: [...urlParams.assignedTo],
-    });
+    setSearchStateFromUrl();
   }, [
     editorMode,
     urlParams.hasUrlCriteria,
@@ -138,7 +132,14 @@ export function useSearchState({ editorMode, urlParams }: UseSearchStateOptions)
     urlParams.letters,
     urlParams.status,
     urlParams.assignedTo,
-    // Intentionally excluding searchState to avoid circular updates
+    setSearchStateFromUrl,
+    searchState.query,
+    searchState.filters.categories,
+    searchState.filters.styles,
+    searchState.filters.origins,
+    searchState.filters.letters,
+    searchState.status,
+    searchState.assignedTo,
   ]);
 
   // Save filters to cookies for editor mode
