@@ -1,7 +1,7 @@
 import { ArrowRightIcon, InformationCircleIcon, CheckCircleIcon } from '@/components/icons';
 import { Button } from '@/components/common/button';
 import SearchBar from '@/components/search/search-bar';
-import WordOfTheDay from '@/components/word/word-of-the-day';
+import WordOfTheDay from '@/components/word-of-the-day';
 
 export default function Home() {
   return (
