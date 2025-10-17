@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "docs": "pnpm typedoc --out docs app --entryPointStrategy expand && pnpm opener docs/index.html",
+    "docs": "pnpm typedoc --out docs src --entryPointStrategy expand && pnpm opener docs/index.html",
     "lint": "eslint src",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
