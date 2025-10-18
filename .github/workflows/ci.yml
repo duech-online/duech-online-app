@@ -32,6 +32,9 @@ jobs:
       - name: Check dependencies with Knip
         run: npm run deps:check
 
+      - name: Run tests
+        run: npm run test
+
       - name: Check clones
         run: npm run duplication
 
