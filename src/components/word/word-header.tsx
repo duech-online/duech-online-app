@@ -4,6 +4,9 @@ import React from 'react';
 import Link from 'next/link';
 import InlineEditable from '@/components/word/inline-editable';
 import { SelectDropdown } from '@/components/common/dropdown';
+import { InformationCircleIcon } from '@/components/icons';
+import WordWarning from '@/components/word/word-warning';
+import type { WordDefinition } from '@/lib/definitions';
 
 interface WordHeaderProps {
   lemma: string;
@@ -30,6 +33,7 @@ interface WordHeaderProps {
   statusOptions: Array<{ value: string; label: string }>;
   searchPath: string;
   searchLabel: string;
+  definitions?: WordDefinition[];
 }
 
 export function WordHeader({
@@ -55,6 +59,7 @@ export function WordHeader({
   statusOptions,
   searchPath,
   searchLabel,
+  definitions,
 }: WordHeaderProps) {
   return (
     <>
@@ -149,6 +154,41 @@ export function WordHeader({
           </div>
         )}
       </div>
+      {editorMode && (
+        <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <div className="flex items-center gap-3">
+            <InformationCircleIcon className="h-20 w-20 flex-shrink-0 text-blue-600" />
+            <div className="text-sm text-gray-700">
+              <p className="mb-2 font-semibold text-blue-900">
+                Para empezar a editar, basta con hacer clic en el ícono de lápiz.
+              </p>
+              <p className="mb-2 font-semibold text-blue-900">Formato de texto con Markdown:</p>
+              <ul className="space-y-1">
+                <li>
+                  <code className="rounded bg-blue-100 px-1.5 py-0.5 text-xs">*cursiva*</code> para{' '}
+                  <em>cursiva</em>
+                </li>
+                <li>
+                  <code className="rounded bg-blue-100 px-1.5 py-0.5 text-xs">**negrita**</code>{' '}
+                  para <strong>negrita</strong>
+                </li>
+                <li>
+                  <code className="rounded bg-blue-100 px-1.5 py-0.5 text-xs">***ambos***</code>{' '}
+                  para{' '}
+                  <strong>
+                    <em>negrita y cursiva</em>
+                  </strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Warnings summary below the info box */}
+      {editorMode && definitions && definitions.length > 0 && (
+        <WordWarning definitions={definitions} className="mb-6" />
+      )}
     </>
   );
 }

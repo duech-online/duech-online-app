@@ -37,7 +37,6 @@ function meaningToWordDefinition(meaning: Meaning): WordDefinition {
     observation: meaning.observation || null,
     example: example as Example | Example[],
     variant: null, // Variant is stored at word level, not meaning level
-    expressions: meaning.expressions || null,
   };
 }
 

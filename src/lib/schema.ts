@@ -53,7 +53,6 @@ export const meanings = pgTable('meanings', {
       page?: string;
     }>
   >(), // JSONB field with examples
-  expressions: text('expressions').array(), // Array of expression strings
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
