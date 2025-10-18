@@ -11,7 +11,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "deps:check": "knip",
-    "duplication": "jscpd src"
+    "duplication": "jscpd src",
+    "test": "vitest"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -29,24 +30,32 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20.19.11",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.0.4",
     "drizzle-kit": "^0.31.5",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "eslint-config-prettier": "^10.1.8",
-    "opener": "^1.5.2",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-unused-imports": "^4.2.0",
     "jscpd": "^4.0.5",
+    "jsdom": "^27.0.1",
     "knip": "^5.65.0",
+    "next-router-mock": "^1.0.2",
+    "opener": "^1.5.2",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "tailwindcss": "^4",
     "typedoc": "^0.28.14",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }
