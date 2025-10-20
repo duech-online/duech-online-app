@@ -211,19 +211,6 @@ export function DefinitionSection({
               />
             </div>
           )}
-          {/* Expressions - Public mode only */}
-          {!editorMode && def.expressions && def.expressions.length > 0 && (
-            <div className="mt-3">
-              <p className="mb-1 text-sm font-medium text-gray-900">Expresiones:</p>
-              <ul className="list-inside list-disc text-gray-700">
-                {def.expressions.map((expr, exprIndex) => (
-                  <li key={exprIndex} className="font-medium">
-                    {expr}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       </div>
 

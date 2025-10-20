@@ -44,7 +44,6 @@ async function insertMeaning(wordId: number, def: Word['values'][number]) {
     categories: def.categories.length > 0 ? def.categories : null,
     styles: def.styles && def.styles.length > 0 ? def.styles : null,
     examples: cleanedExamples.length > 0 ? cleanedExamples : null,
-    expressions: def.expressions && def.expressions.length > 0 ? def.expressions : null,
   });
 }
 

@@ -40,7 +40,6 @@ export interface Meaning {
   categories: string[] | null;
   styles: string[] | null;
   examples: Example[] | null; // JSONB field
-  expressions: string[] | null; // Array field
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,7 +55,6 @@ export interface WordDefinition {
   observation: string | null;
   example: Example | Example[];
   variant: string | null;
-  expressions: string[] | null;
 }
 
 export interface Word {

@@ -279,7 +279,6 @@ export function WordDisplay({
       observation: null,
       example: emptyExample(),
       variant: null,
-      expressions: null,
     };
 
     setWord((prev) => {
@@ -391,6 +390,7 @@ export function WordDisplay({
         statusOptions={STATUS_OPTIONS}
         searchPath={searchPath}
         searchLabel={searchLabel}
+        definitions={word.values}
       />
 
       <div className="border-duech-gold rounded-xl border-t-4 bg-white p-10 shadow-2xl">

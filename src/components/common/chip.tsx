@@ -9,7 +9,7 @@ interface ChipProps {
   label: string;
   onRemove?: (code: string) => void;
   className?: string;
-  variant?: 'category' | 'style';
+  variant?: 'category' | 'style' | 'warning';
   editorMode?: boolean;
 }
 
@@ -31,6 +31,11 @@ function Chip({
       chip: 'bg-yellow-300/80 text-gray-900 cursor-default',
       chipReadOnly: 'bg-yellow-300/80 text-gray-900',
       removeBtn: 'bg-black/5 hover:bg-black/10',
+    },
+    warning: {
+      chip: 'bg-red-100 text-red-800 border border-red-300 cursor-default shadow-sm hover:bg-red-200',
+      chipReadOnly: 'bg-red-100 text-red-800 border border-red-300 shadow-sm',
+      removeBtn: 'bg-red-200 hover:bg-red-300',
     },
   };
 
@@ -71,7 +76,7 @@ function Chip({
 interface ChipListProps {
   items: string[];
   labels: Record<string, string>;
-  variant: 'category' | 'style';
+  variant: 'category' | 'style' | 'warning';
   editorMode: boolean;
   addLabel?: string;
   onAdd?: () => void;

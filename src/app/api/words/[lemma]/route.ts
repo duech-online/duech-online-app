@@ -90,9 +90,6 @@ function normalizeWordDefinitions(input: unknown): WordDefinition[] {
         observation: typeof def.observation === 'string' ? def.observation : null,
         example: exampleValue,
         variant: typeof def.variant === 'string' ? def.variant : null,
-        expressions: Array.isArray(def.expressions)
-          ? (def.expressions.filter((expr): expr is string => typeof expr === 'string') as string[])
-          : null,
       };
     });
 }
@@ -153,7 +150,6 @@ export async function POST(request: NextRequest) {
               observation: null,
               example: [],
               variant: null,
-              expressions: null,
             },
           ];
 
