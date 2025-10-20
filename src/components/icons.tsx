@@ -1,3 +1,4 @@
+import React from 'react';
 // Base icon component to reduce duplication
 interface IconProps extends React.SVGProps<SVGSVGElement> {
   strokeWidth?: number;
