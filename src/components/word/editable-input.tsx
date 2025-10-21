@@ -14,6 +14,8 @@ type EditableInputProps = {
   placeholder?: string;
   className?: string;
   autoFocus?: boolean;
+  as?: 'input' | 'textarea';
+  rows?: number;
 };
 
 export default function EditableInput({
@@ -23,9 +25,15 @@ export default function EditableInput({
   placeholder = '',
   className = '',
   autoFocus = false,
+  as = 'input',
+  rows = 4,
 }: EditableInputProps) {
   const [draft, setDraft] = useState(value ?? '');
-  const ref = useRef<HTMLInputElement | null>(null);
+  const ref = useRef<HTMLInputElement | HTMLTextAreaElement | null>(null);
+
+  const setRef = (node: HTMLInputElement | HTMLTextAreaElement | null) => {
+    ref.current = node;
+  };
 
   useEffect(() => {
     setDraft(value ?? '');
@@ -49,18 +57,52 @@ export default function EditableInput({
     onBlur?.();
   };
 
+  const classNames =
+    as === 'textarea'
+      ? `rounded border border-gray-300 px-3 py-2 leading-relaxed ${className}`
+      : `rounded border border-gray-300 px-2 py-1 ${className}`;
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    handleChange(e.target.value);
+  const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
+    handleChange(e.target.value);
+
+  if (as === 'textarea') {
+    return (
+      <textarea
+        ref={setRef}
+        value={draft}
+        onChange={handleTextareaChange}
+        onBlur={commit}
+        rows={rows}
+        placeholder={placeholder}
+        className={classNames}
+        onKeyDown={(e) => {
+          if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            e.preventDefault();
+            commit();
+          }
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            cancel();
+          }
+        }}
+      />
+    );
+  }
+
   return (
     <input
-      ref={ref}
+      ref={setRef}
       value={draft}
-      onChange={(e) => handleChange(e.target.value)}
+      onChange={handleInputChange}
       onBlur={commit}
+      placeholder={placeholder}
+      className={classNames}
       onKeyDown={(e) => {
         if (e.key === 'Enter') commit();
         if (e.key === 'Escape') cancel();
       }}
-      placeholder={placeholder}
-      className={`rounded border border-gray-300 px-2 py-1 ${className}`}
     />
   );
 }

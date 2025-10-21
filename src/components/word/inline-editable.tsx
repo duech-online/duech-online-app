@@ -25,6 +25,8 @@ type InlineEditableProps = {
   addLabel?: string;
   renderDisplay?: (value: string) => ReactNode;
   renderWrapper?: (children: ReactNode) => ReactNode;
+  as?: 'input' | 'textarea';
+  rows?: number;
 };
 
 export default function InlineEditable({
@@ -41,6 +43,8 @@ export default function InlineEditable({
   addLabel,
   renderDisplay,
   renderWrapper,
+  as = 'input',
+  rows,
 }: InlineEditableProps) {
   const isControlled = typeof editing === 'boolean';
   const [internalEditing, setInternalEditing] = useState(false);
@@ -106,6 +110,8 @@ export default function InlineEditable({
       placeholder={placeholder}
       className={className}
       autoFocus
+      as={as}
+      rows={rows}
     />
   );
 }

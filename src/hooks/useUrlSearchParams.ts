@@ -21,15 +21,16 @@ export interface UrlSearchParams {
 /**
  * Parse all search parameters from URL and return memoized values
  */
-export function useUrlSearchParams(searchParams: ReadonlyURLSearchParams): UrlSearchParams {
+export function useUrlSearchParams(searchParams?: ReadonlyURLSearchParams | null): UrlSearchParams {
   return useMemo(() => {
-    const query = searchParams.get('q') || '';
-    const categories = parseListParam(searchParams.get('categories'));
-    const styles = parseListParam(searchParams.get('styles'));
-    const origins = parseListParam(searchParams.get('origins'));
-    const letters = parseListParam(searchParams.get('letters'));
-    const status = (searchParams.get('status') || '').trim();
-    const assignedTo = parseListParam(searchParams.get('assignedTo'));
+    const params = searchParams ?? new URLSearchParams();
+    const query = params.get('q') || '';
+    const categories = parseListParam(params.get('categories'));
+    const styles = parseListParam(params.get('styles'));
+    const origins = parseListParam(params.get('origins'));
+    const letters = parseListParam(params.get('letters'));
+    const status = (params.get('status') || '').trim();
+    const assignedTo = parseListParam(params.get('assignedTo'));
     const trimmedQuery = query.trim();
 
     const hasUrlCriteria =
