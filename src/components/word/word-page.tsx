@@ -17,6 +17,7 @@ import {
   type WordDefinition,
 } from '@/lib/definitions';
 import { ExampleEditorModal, type ExampleDraft } from '@/components/word/word-example-editor-modal';
+import WordNotes from './word-notes';
 
 interface WordDisplayProps {
   initialWord: Word;
@@ -428,6 +429,10 @@ export function WordDisplay({
             </div>
           )}
         </div>
+      </div>
+
+      <div>
+        <WordNotes editorMode={editorMode} />
       </div>
 
       {/* Multi-select modals (editor mode only) */}

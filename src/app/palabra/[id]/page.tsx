@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getWordByLemma } from '@/lib/queries';
-import { WordDisplay } from '@/components/word/word-display';
+import { WordDisplay } from '@/components/word/word-page';
 import { isEditorMode } from '@/lib/editor-mode-server';
 
 export default async function WordDetailPage({ params }: { params: { id: string } }) {
