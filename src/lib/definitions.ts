@@ -15,6 +15,13 @@ export interface Example {
   page?: string;
 }
 
+export interface WordNote {
+  id: number;
+  note: string;
+  createdAt: string;
+  user?: { id?: number; username?: string } | null;
+}
+
 export interface DBWord {
   id: number;
   lemma: string;

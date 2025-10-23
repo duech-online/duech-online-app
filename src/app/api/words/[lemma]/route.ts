@@ -1,8 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWordByLemma } from '@/lib/queries';
-import { updateWordByLemma, deleteWordByLemma, createWord } from '@/lib/editor-mutations';
+import {
+  updateWordByLemma,
+  deleteWordByLemma,
+  createWord,
+  addNoteToWord,
+} from '@/lib/editor-mutations';
 import { applyRateLimit } from '@/lib/rate-limiting';
-import type { Word, WordDefinition } from '@/lib/definitions';
+import { getSessionUser } from '@/lib/auth';
+import type { Word, WordDefinition, WordNote } from '@/lib/definitions';
 
 export async function GET(
   request: NextRequest,
@@ -196,11 +202,61 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ lem
     const { lemma } = await context.params;
     const decodedLemma = decodeURIComponent(lemma);
     const body = await request.json();
-    const { word: updatedWord, status, assignedTo } = body;
 
-    await updateWordByLemma(decodedLemma, updatedWord, { status, assignedTo });
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json(
+        { error: 'Solicitud inválida: se esperaba un objeto JSON' },
+        { status: 400 }
+      );
+    }
 
-    return NextResponse.json({ success: true });
+    const {
+      word: updatedWord,
+      status,
+      assignedTo,
+      comment,
+    } = body as {
+      word?: Word;
+      status?: string;
+      assignedTo?: number | null;
+      comment?: unknown;
+    };
+
+    const responseData: { comment?: WordNote } = {};
+
+    if (typeof comment === 'string' && comment.trim().length > 0) {
+      const session = await getSessionUser();
+      const maybeId = session?.id ? Number.parseInt(session.id, 10) : NaN;
+      const userId = Number.isInteger(maybeId) ? maybeId : null;
+
+      const created = await addNoteToWord(decodedLemma, comment.trim(), userId);
+
+      responseData.comment = {
+        id: created.id,
+        note: created.note,
+        createdAt: created.createdAt.toISOString(),
+        user: created.user
+          ? {
+              id: created.user.id,
+              username: created.user.username,
+            }
+          : null,
+      };
+    }
+
+    if (updatedWord) {
+      await updateWordByLemma(decodedLemma, updatedWord, { status, assignedTo });
+    } else if (!responseData.comment) {
+      return NextResponse.json(
+        { error: 'No se proporcionaron cambios para actualizar' },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      ...(responseData.comment ? { data: { comment: responseData.comment } } : {}),
+    });
   } catch (error) {
     return NextResponse.json(
       {

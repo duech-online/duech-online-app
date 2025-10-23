@@ -1,6 +1,6 @@
 import 'server-only';
 import { db } from '@/lib/db';
-import { words, meanings } from '@/lib/schema';
+import { words, meanings, notes } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import type { Word, Example } from '@/lib/definitions';
 
@@ -160,4 +160,40 @@ export async function deleteWordByLemma(lemma: string) {
 
   await db.delete(words).where(eq(words.id, existingWord.id));
   return { success: true };
+}
+
+/**
+ * Add a note (comment) to a word identified by lemma
+ */
+export async function addNoteToWord(lemma: string, noteValue: string, userId: number | null) {
+  const existingWord = await db.query.words.findFirst({
+    where: eq(words.lemma, lemma),
+    columns: { id: true },
+  });
+
+  if (!existingWord) {
+    throw new Error(`Word not found: ${lemma}`);
+  }
+
+  const [inserted] = await db
+    .insert(notes)
+    .values({
+      wordId: existingWord.id,
+      note: noteValue,
+      userId,
+    })
+    .returning({ id: notes.id });
+
+  const created = await db.query.notes.findFirst({
+    where: eq(notes.id, inserted.id),
+    with: {
+      user: true,
+    },
+  });
+
+  if (!created) {
+    throw new Error('Failed to retrieve the created note');
+  }
+
+  return created;
 }

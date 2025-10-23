@@ -17,12 +17,16 @@ import {
   type WordDefinition,
 } from '@/lib/definitions';
 import { ExampleEditorModal, type ExampleDraft } from '@/components/word/word-example-editor-modal';
+import WordCommentSection from '@/components/word/comment/section';
+import type { WordComment } from '@/components/word/comment/globe';
 
 interface WordDisplayProps {
   initialWord: Word;
   initialLetter: string;
   initialStatus?: string;
   initialAssignedTo?: number;
+  wordId: number;
+  initialComments: WordComment[];
   editorMode: boolean;
 }
 
@@ -39,6 +43,8 @@ export function WordDisplay({
   initialLetter,
   initialStatus,
   initialAssignedTo,
+  wordId,
+  initialComments,
   editorMode,
 }: WordDisplayProps) {
   const [word, setWord] = useState<Word>(initialWord);
@@ -428,6 +434,17 @@ export function WordDisplay({
             </div>
           )}
         </div>
+      </div>
+
+      {/* Comments Section */}
+
+      <div className="mt-12 lg:mt-16">
+        <WordCommentSection
+          key={wordId}
+          editorMode={editorMode}
+          initial={initialComments}
+          lemma={lastSavedLemma}
+        />
       </div>
 
       {/* Multi-select modals (editor mode only) */}

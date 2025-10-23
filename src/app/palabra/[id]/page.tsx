@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getWordByLemma } from '@/lib/queries';
-import { WordDisplay } from '@/components/word/word-display';
+import { WordDisplay } from '@/components/word/word-page';
 import { isEditorMode } from '@/lib/editor-mode-server';
 
 export default async function WordDetailPage({ params }: { params: { id: string } }) {
@@ -16,7 +16,7 @@ export default async function WordDetailPage({ params }: { params: { id: string 
     notFound();
   }
 
-  const { word, letter, status, assignedTo } = wordData;
+  const { word, letter, status, assignedTo, wordId, comments } = wordData;
 
   return (
     <WordDisplay
@@ -24,6 +24,8 @@ export default async function WordDetailPage({ params }: { params: { id: string 
       initialLetter={letter}
       initialStatus={status}
       initialAssignedTo={assignedTo ?? undefined}
+      wordId={wordId}
+      initialComments={comments}
       editorMode={editorMode}
     />
   );

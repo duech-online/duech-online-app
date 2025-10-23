@@ -58,7 +58,9 @@ export async function getWordOfTheDay(
 
     const detailed = await getWordByLemma(chosen.word.lemma);
 
-    const fallbackWord = detailed ?? { word: chosen.word, letter: chosen.letter };
+    const fallbackWord = detailed
+      ? { word: detailed.word, letter: detailed.letter }
+      : { word: chosen.word, letter: chosen.letter };
 
     wordOfTheDayCache.set(seed, fallbackWord);
     return fallbackWord;

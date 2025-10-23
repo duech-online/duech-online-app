@@ -6,7 +6,7 @@ import { eq, ilike, or, and, sql, SQL } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import { db } from '@/lib/db';
 import { words, meanings, users } from '@/lib/schema';
-import { Word, SearchResult } from '@/lib/definitions';
+import { Word, SearchResult, WordNote } from '@/lib/definitions';
 import { dbWordToWord, dbWordToSearchResult } from '@/lib/transformers';
 
 /**
@@ -20,7 +20,14 @@ interface GetWordByLemmaOptions {
 export async function getWordByLemma(
   lemma: string,
   options: GetWordByLemmaOptions = {}
-): Promise<{ word: Word; letter: string; status: string; assignedTo: number | null } | null> {
+): Promise<{
+  word: Word;
+  letter: string;
+  status: string;
+  assignedTo: number | null;
+  wordId: number;
+  comments: WordNote[];
+} | null> {
   const { includeDrafts = false } = options;
 
   const whereCondition = includeDrafts
@@ -33,6 +40,12 @@ export async function getWordByLemma(
       meanings: {
         orderBy: (meanings, { asc }) => [asc(meanings.number)],
       },
+      notes: {
+        orderBy: (notesTable, { desc }) => [desc(notesTable.createdAt)],
+        with: {
+          user: true,
+        },
+      },
     },
   });
 
@@ -43,6 +56,19 @@ export async function getWordByLemma(
     letter: result.letter,
     status: result.status,
     assignedTo: result.assignedTo ?? null,
+    wordId: result.id,
+    comments:
+      result.notes?.map((note) => ({
+        id: note.id,
+        note: note.note,
+        createdAt: note.createdAt.toISOString(),
+        user: note.user
+          ? {
+              id: note.user.id,
+              username: note.user.username,
+            }
+          : null,
+      })) ?? [],
   };
 }
 
