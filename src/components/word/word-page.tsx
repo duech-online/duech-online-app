@@ -437,15 +437,16 @@ export function WordDisplay({
       </div>
 
       {/* Comments Section */}
-
-      <div className="mt-12 lg:mt-16">
-        <WordCommentSection
-          key={wordId}
-          editorMode={editorMode}
-          initial={initialComments}
-          lemma={lastSavedLemma}
-        />
-      </div>
+      {editorMode && (
+        <div className="mt-12 lg:mt-16">
+          <WordCommentSection
+            key={wordId}
+            editorMode={editorMode}
+            initial={initialComments}
+            lemma={lastSavedLemma}
+          />
+        </div>
+      )}
 
       {/* Multi-select modals (editor mode only) */}
       {editorMode && editingCategories !== null && (
