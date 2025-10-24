@@ -25,7 +25,7 @@ test('renders main heading with correct text', () => {
   expect(
     screen.getByRole('heading', {
       level: 1,
-      name: /Diccionario del uso del[\s\S]*español de Chile/i,
+      name: /Diccionario de uso del[\s\S]*español de Chile/i,
     })
   ).toBeInTheDocument();
 });
