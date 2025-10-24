@@ -26,7 +26,7 @@ The platform now ships with two experiences:
 - **Quick search**: Search words by lemma or content in definitions (`/buscar`)
 - **Word lottery**: Discover a random word every time you visit the main page
 - **Advanced search**: Filter by grammatical categories, usage styles, origin, and initial letter
-- **Editor tools**: Manage dictionary entries through the `/editor/buscar` dashboard with additional filters (status, assigned lexicographer) and `/editor/editar/[id]` detail pages
+- **Editor tools**: Manage dictionary entries through editor mode for authenticated users.
 - **Detailed visualization**: Explore complete definitions with examples, variants, and related expressions
 - **Responsive design**: Interface optimized for mobile and desktop devices
 
