@@ -122,7 +122,7 @@ export const GRAMMATICAL_CATEGORIES: Record<string, string> = {
   adv: 'Adverbio',
 
   // Fórmula
-  'fórm': 'Fórmula',
+  fórm: 'Fórmula',
 
   // Interjección
   interj: 'Interjección',
@@ -152,9 +152,10 @@ export const GRAMMATICAL_CATEGORIES: Record<string, string> = {
   'loc sust': 'Locución sustantiva',
 
   // Marcador discursivo
-  'marc disc': 'Marcador discursivo',
+  marc: 'Marcador discursivo',
+  disc: 'Marcador discursivo',
 
-  // Sustantivo/Adjetivo 
+  // Sustantivo/Adjetivo
   sust: 'Sustantivo/Adjetivo',
 
   // Sustantivo femenino
@@ -179,13 +180,11 @@ export const GRAMMATICAL_CATEGORIES: Record<string, string> = {
   'f pl': 'Sustantivo femenino plural',
 
   // Verbo intransitivo
-  'v intr': 'Verbo intransitivo',
+  intr: 'Verbo intransitivo',
 
   // Verbo transitivo
-  'v tr': 'Verbo transitivo',
-
+  tr: 'Verbo transitivo',
 };
-
 
 // Style mappings
 export const USAGE_STYLES: Record<string, string> = {
