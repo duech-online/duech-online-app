@@ -9,7 +9,7 @@ export default function Home() {
     <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-16 text-center">
         <h1 className="mb-6 text-5xl font-bold text-gray-900">
-          <span className="text-duech-blue">Diccionario del uso del</span>
+          <span className="text-duech-blue">Diccionario de uso del</span>
           <br />
           <span className="text-duech-gold">español de Chile</span>
         </h1>

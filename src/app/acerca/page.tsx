@@ -8,7 +8,7 @@ export default function AcercaPage() {
           <h2 className="mb-4 text-2xl font-semibold text-gray-900">Digitalización del DUECh</h2>
           <p className="mb-4 text-gray-700">
             Este proyecto representa un esfuerzo por digitalizar y hacer accesible el Diccionario
-            del uso del español de Chile (DUECh), una obra fundamental para la comprensión y estudio
+            de uso del español de Chile (DUECh), una obra fundamental para la comprensión y estudio
             del español chileno.
           </p>
           <p className="text-gray-700">
@@ -63,7 +63,7 @@ export default function AcercaPage() {
             de digitalización del patrimonio lingüístico chileno.
           </p>
           <p className="mt-4 text-gray-700">
-            El contenido lexicográfico proviene del Diccionario del uso del español de Chile
+            El contenido lexicográfico proviene del Diccionario de uso del español de Chile
             (DUECh).
           </p>
         </div>
