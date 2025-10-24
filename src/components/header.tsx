@@ -28,8 +28,8 @@ export default function Header({ editorMode }: HeaderProps) {
   const homeLink = '/';
   const title = editorMode ? 'DUECh Editor' : 'DUECh';
   const subtitle = editorMode
-    ? 'Editor del Diccionario del uso del español de Chile'
-    : 'Diccionario del uso del español de Chile';
+    ? 'Editor del Diccionario de uso del español de Chile'
+    : 'Diccionario de uso del español de Chile';
 
   const fetchUser = useCallback(async () => {
     if (!editorMode) {
