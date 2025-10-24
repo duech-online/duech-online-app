@@ -11,11 +11,13 @@ export default function Home() {
         <h1 className="mb-6 text-5xl font-bold text-gray-900">
           <span className="text-duech-blue">Diccionario de uso del</span>
           <br />
-          <span className="text-duech-gold">español de Chile</span>
+          <span className="text-duech-gold">español de Chile (2026)</span>
+          <br />
+          <span className="text-2xl font-semibold text-gray-700">Edición actualizada</span>
         </h1>
         <p className="mx-auto max-w-3xl text-xl leading-relaxed text-gray-700">
           Explora la riqueza del español chileno a través de este diccionario digital. Descubre
-          chilenismos, modismos y expresiones únicas de nuestro país.
+          palabras propias de Chile que revelan su riqueza y diversidad.
         </p>
       </div>
 
@@ -32,9 +34,9 @@ export default function Home() {
             Acerca del DUECh
           </h2>
           <p className="mb-6 text-lg leading-relaxed text-gray-800">
-            El Diccionario del uso del español de Chile (DUECh) es una obra lexicográfica que
-            documenta el uso del español en Chile, incluyendo chilenismos, modismos y expresiones
-            propias del país.
+            El Diccionario de uso del español de Chile (DUECh) en su edición de 2026 es una obra
+            lexicográfica que documenta el uso del español en Chile, incluyendo voces y expresiones
+            propias de Chile, que revelan la riqueza y diversidad de este país.
           </p>
           <div className="space-y-4">
             <div className="flex items-center text-gray-700">
