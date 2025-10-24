@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 const EDITOR_HOST = 'editor.localhost';
-const LOCALHOST = 'localhost';
 const EDITOR_PATH_PREFIX = '/editor';
 const SESSION_COOKIE = 'duech_session';
 
@@ -16,10 +15,6 @@ function shouldBypass(pathname: string): boolean {
 }
 
 function isEditorPathAccess(hostname: string | undefined, pathname: string): boolean {
-  if (hostname !== LOCALHOST) {
-    return false;
-  }
-
   return pathname === EDITOR_PATH_PREFIX || pathname.startsWith(`${EDITOR_PATH_PREFIX}/`);
 }
 
