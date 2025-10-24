@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const EDITOR_HOST = 'editor.localhost';
+const EDITOR_HOST = process.env.HOST_URL || 'editor.localhost';
 const SESSION_COOKIE = 'duech_session';
 
 function shouldBypass(pathname: string): boolean {
